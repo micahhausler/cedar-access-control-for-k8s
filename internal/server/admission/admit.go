@@ -40,13 +40,8 @@ func allowedResponse(uid types.UID) admission.Response {
 }
 
 func (h *cedarHandler) Handle(ctx context.Context, req admission.Request) admission.Response {
-	// Don't validate connect calls
-	if req.Operation == admissionv1.Connect {
-		return allowedResponse(req.UID)
-	}
-
 	// for now, skip some namespaces
-	if slices.Contains([]string{"cert-manager", "kube-system", "cedar-k8s-authz-system"}, req.Namespace) {
+	if slices.Contains([]string{"kube-system", "cedar-k8s-authz-system"}, req.Namespace) {
 		return allowedResponse(req.UID)
 	}
 

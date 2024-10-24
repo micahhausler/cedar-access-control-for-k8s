@@ -19,8 +19,6 @@ import (
 )
 
 type crdPolicyStore struct {
-	globalPolicyMap cedar.PolicyMap
-
 	initalPolicyLoadComplete   bool
 	initalPolicyLoadCompleteMu sync.RWMutex
 
@@ -111,17 +109,15 @@ func (s *crdPolicyStore) PolicySet(ctx context.Context) *cedar.PolicySet {
 		}
 	}
 
-	// TODO: this could overwrite policies with the same name, should we suffix with a uuid?
-	for name, policy := range s.globalPolicyMap {
-		set.Store(cedar.PolicyID(name), policy)
-	}
-
 	return set
 }
 
-func NewCRDPolicyStore(pm cedar.PolicyMap) (PolicyStore, error) {
+func (s *crdPolicyStore) Name() string {
+	return "CRDPolicyStore"
+}
+
+func NewCRDPolicyStore() (PolicyStore, error) {
 	resp := &crdPolicyStore{
-		globalPolicyMap:          pm,
 		initalPolicyLoadComplete: false,
 	}
 	go resp.populatePolicies()

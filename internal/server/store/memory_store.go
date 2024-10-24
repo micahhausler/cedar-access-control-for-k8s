@@ -9,6 +9,7 @@ import (
 type memoryStore struct {
 	policies     *cedar.PolicySet
 	loadComplete bool
+	name         string
 }
 
 // NewMemoryStore returns an in-memory PolicyStore that is immutable and always ready.
@@ -23,6 +24,7 @@ func NewMemoryStore(filename string, document []byte, loadComplete bool) (Policy
 	return &memoryStore{
 		policies:     policies,
 		loadComplete: loadComplete,
+		name:         filename,
 	}, nil
 }
 
@@ -33,3 +35,16 @@ func (s *memoryStore) PolicySet(_ context.Context) *cedar.PolicySet {
 func (s *memoryStore) InitalPolicyLoadComplete() bool {
 	return s.loadComplete
 }
+
+func (s *memoryStore) Name() string {
+	return s.name
+}
+
+type StaticStore cedar.PolicySet
+
+func (s StaticStore) PolicySet(_ context.Context) *cedar.PolicySet {
+	ps := cedar.PolicySet(s)
+	return &ps
+}
+func (s StaticStore) Name() string                   { return "StaticStore" }
+func (s StaticStore) InitalPolicyLoadComplete() bool { return true }

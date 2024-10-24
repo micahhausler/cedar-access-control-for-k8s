@@ -89,24 +89,32 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 	defer func() { cancel() }()
 	klog.InfoS("Starting cedar-webhook", "version", version.Get())
 
-	// TODO: use a unique policy name to not collide with other policies
-	crdStore, err := store.NewCRDPolicyStore(cedar.PolicyMap{
-		"always-allow": admission.AllowAllAdmissionPolicy(),
-	})
+	crdStore, err := store.NewCRDPolicyStore()
 	if err != nil {
 		klog.Fatal("error creating CRD policy store", "error", err)
 	}
 
+	fileStore := store.NewLocalPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
+
 	cedarauthorizer.NewAuthorizer(crdStore)
 	authorizer := union.New(
 		// file-backed authorizer goes first
-		cedarauthorizer.NewAuthorizer(store.NewLocalPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)),
+		cedarauthorizer.NewAuthorizer(fileStore),
 		// CRD-backed authorizer goes last
 		cedarauthorizer.NewAuthorizer(crdStore),
 	)
 
-	// TODO support multiple policy stores for admission
-	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(crdStore, true)}
+	pset := cedar.NewPolicySet()
+	pset.Store("always-allow", admission.AllowAllAdmissionPolicy())
+
+	// We use a unified store for admission because tehre'
+	// be
+	unifiedPolicyStore := store.NewUnifiedStore(
+		store.StaticStore(*pset),
+		fileStore,
+		crdStore,
+	)
+	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(unifiedPolicyStore, true)}
 
 	srv := server.NewServer(authorizer, vWebhook, config)
 	serverShutdownCh, listenerStoppedCh, err := config.SecureServing.Serve(srv.GetHandler(), 0, server.DeriveStopChannel(ctx))

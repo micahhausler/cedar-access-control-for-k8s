@@ -18,6 +18,7 @@ type localPolicyStore struct {
 	initalPolicyLoadComplete   bool
 	initalPolicyLoadCompleteMu sync.RWMutex
 
+	name            string
 	directory       string
 	refreshInterval time.Duration
 	policies        *cedar.PolicySet
@@ -31,6 +32,7 @@ func NewLocalPolicyStore(directory string, refreshInterval time.Duration) Policy
 	store := &localPolicyStore{
 		directory:       directory,
 		refreshInterval: refreshInterval,
+		name:            "FilePolicyStore",
 	}
 	store.loadPolicies()
 	go store.reloadAsync()
@@ -100,4 +102,8 @@ func (s *localPolicyStore) InitalPolicyLoadComplete() bool {
 	s.initalPolicyLoadCompleteMu.RLock()
 	defer s.initalPolicyLoadCompleteMu.RUnlock()
 	return s.initalPolicyLoadComplete
+}
+
+func (s *localPolicyStore) Name() string {
+	return s.name
 }
