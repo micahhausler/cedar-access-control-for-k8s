@@ -29,7 +29,7 @@ type PolicySpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Content is a string representing the policy content
-	Content string `json:"content,omitempty"`
+	Content string `json:"content"`
 }
 
 // PolicyStatus defines the observed state of Policy
@@ -47,7 +47,7 @@ type Policy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   PolicySpec   `json:"spec,omitempty"`
+	Spec   PolicySpec   `json:"spec"`
 	Status PolicyStatus `json:"status,omitempty"`
 }
 

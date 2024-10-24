@@ -42,10 +42,14 @@ spec:
               content:
                 description: Content is a string representing the policy content
                 type: string
+            required:
+            - content
             type: object
           status:
             description: PolicyStatus defines the observed state of Policy
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
