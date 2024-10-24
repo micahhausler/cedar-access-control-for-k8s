@@ -4,6 +4,5 @@ bin/
 
 # ignore mounted files
 mount/
-
-# Ignore previously exported image
-webhook.image.tar
+# Ignore scratch files
+scratch/
