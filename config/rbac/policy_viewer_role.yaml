@@ -1,0 +1,27 @@
+# permissions for end users to view policies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: policy-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: cedar-k8s-authz
+    app.kubernetes.io/part-of: cedar-k8s-authz
+    app.kubernetes.io/managed-by: kustomize
+  name: policy-viewer-role
+rules:
+- apiGroups:
+  - cedar.k8s.aws
+  resources:
+  - policies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - cedar.k8s.aws
+  resources:
+  - policies/status
+  verbs:
+  - get

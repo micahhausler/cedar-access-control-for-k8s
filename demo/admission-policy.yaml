@@ -1,0 +1,153 @@
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: combined-policy
+spec:
+  content: |
+    // Authorization policy
+    // test-user can do Action::"*" on configmaps in the default namespace
+    permit (
+        principal is k8s::User,
+        action,
+        resource is k8s::Resource
+    ) when {
+        principal.name == "test-user" &&
+        resource has namespace &&
+        resource.namespace == "default" &&
+        resource.apiGroup == "" &&
+        resource.resource == "configmaps"
+    };
+
+    // Admission policy preventing test-user from creating/updating configmaps with name starting with "prod"
+    forbid (
+        principal is k8s::User,
+        action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
+        resource is core::v1::ConfigMap
+    ) when {
+        principal.name == "test-user" &&
+        resource.metadata.name like "prod*"
+    };
+
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: self-node-policy
+spec:
+  content: |
+    // On Kubernetes versions 1.29+ with the `ServiceAccountTokenPodNodeInfo` flag enabled,
+    // Kubernetes injects a node name into the Service Account token, which gets propagated 
+    // into the user's info extras map. We transform the map into a set of key/value 
+    // records with key of string and value as a set of strings.
+    //
+    // This allows a service account to modify the status of a node only for the node included in the SA token's
+    // node claim, which practicly translates to "only modify the status of the node a pod is running on"
+    permit (
+        principal is k8s::ServiceAccount,
+        action in [k8s::Action::"get", k8s::Action::"update", k8s::Action::"patch"],
+        resource is k8s::Resource
+    ) when {
+        principal.name == "default" && 
+        principal.namespace == "default" &&
+        resource.apiGroup == "" &&
+        resource.resource == "nodes" &&
+        resource.subresource == "status" &&
+        principal.extra.contains({
+            "key": "authentication.kubernetes.io/node-name",
+            "values": [resource.name]})
+    };
+    // allow get node on for the node a sa's pod is running on
+    permit (
+        principal is k8s::ServiceAccount,
+        action == k8s::Action::"get",
+        resource is k8s::Resource
+    ) when {
+        principal.name == "default" && 
+        principal.namespace == "default" &&
+        resource.apiGroup == "" &&
+        resource.resource == "nodes" &&
+        principal.extra.contains({
+            "key": "authentication.kubernetes.io/node-name",
+            "values": [resource.name]})
+    };
+
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: label-enforcement-policy
+spec:
+  content: |
+    // authz policy allowing sample-user to do anything on configmaps in default namespace
+    permit (
+        principal is k8s::User,
+        action in [
+            k8s::Action::"create", 
+            k8s::Action::"list", 
+            k8s::Action::"watch",
+            k8s::Action::"update",
+            k8s::Action::"patch",
+            k8s::Action::"delete"],
+        resource is k8s::Resource
+    ) when {
+        principal.name == "sample-user" &&
+        resource has namespace &&
+        resource.namespace == "default" &&
+        resource.apiGroup == "" &&
+        resource.resource == "configmaps"
+    };
+
+    // authz policy forbiding users in group "requires-labels" to make list/watches without label selector owner={principal.name}
+    forbid (
+        principal is k8s::User,
+        action in [k8s::Action::"list", k8s::Action::"watch"],
+        resource is k8s::Resource
+    ) when {
+        principal in k8s::Group::"requires-labels"
+    } unless {
+        resource has labelSelector &&
+        resource.labelSelector.containsAny([
+            {"key": "owner","operator": "=", "values": [principal.name]}, 
+            {"key": "owner","operator": "==", "values": [principal.name]},
+            {"key": "owner","operator": "in", "values": [principal.name]}])
+    };
+
+    // admission policy to forbid resource creation without an owner key
+    forbid (
+        principal is k8s::User,
+        action == k8s::admission::Action::"create",
+        resource
+    ) when {
+        principal in k8s::Group::"requires-labels"
+    } unless {
+        resource has metadata &&
+        resource.metadata has labels &&
+        resource.metadata.labels.contains({"key": "owner", "value": principal.name})
+    };
+
+    // admission policy forbidding users in "requires-labels" group from updating or deleting 
+    // resources that they don't own
+    forbid (
+        principal is k8s::User,
+        action in [k8s::admission::Action::"delete", k8s::admission::Action::"update"],
+        resource
+    ) when {
+        principal in k8s::Group::"requires-labels"
+    } unless {
+        context has oldObject && 
+        context.oldObject has metadata &&
+        context.oldObject.metadata has labels &&
+        context.oldObject.metadata.labels.contains({"key": "owner", "value": principal.name})
+    };
+
+    // admission policy forbidding users in "requires-labels" group from changing the owner label
+    forbid (
+        principal is k8s::User,
+        action == k8s::admission::Action::"update",
+        resource
+    ) when {
+        principal in k8s::Group::"requires-labels" && 
+        resource has metadata &&
+        resource.metadata has labels &&
+        resource.metadata.labels.contains({"key": "owner", "value": principal.name}) != true
+    };

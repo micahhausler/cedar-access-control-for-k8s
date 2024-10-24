@@ -1,0 +1,9 @@
+# More info: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+# Ignore build and test binaries.
+bin/
+
+# ignore mounted files
+mount/
+
+# Ignore previously exported image
+webhook.image.tar

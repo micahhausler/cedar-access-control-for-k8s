@@ -1,0 +1,32 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: cedar-authz-cluster
+# Must use kind >= v0.24.0 with K8s 1.31+
+# for the following feature gates
+featureGates:
+  AuthorizeNodeWithSelectors: true
+  AuthorizeWithSelectors: true
+kubeadmConfigPatches:
+  - |
+    apiVersion: kubeadm.k8s.io/v1beta3
+    kind: ClusterConfiguration
+    apiServer:
+      extraArgs:
+        authorization-mode: Node,Webhook,RBAC
+        authorization-webhook-config-file: "/cedar-authorizer/webhook.yaml"
+        authorization-webhook-version: "v1"
+        authorization-webhook-cache-authorized-ttl: "30s"
+        authorization-webhook-cache-unauthorized-ttl: "30s"
+        audit-policy-file: "/cedar-authorizer/audit-policy.yaml"
+        audit-log-path: "/cedar-authorizer/logs/kube-apiserver-audit.log"
+        audit-log-maxsize: "50"
+        audit-log-maxbackup: "1"
+      extraVolumes:
+      - hostPath: /cedar-authorizer
+        mountPath: /cedar-authorizer
+        name: api-server-cedar-authorizer-files
+nodes:
+- role: control-plane
+  extraMounts:
+  - hostPath: "./mount"
+    containerPath: "/cedar-authorizer"

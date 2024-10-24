@@ -1,0 +1,157 @@
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: first-policy
+spec:
+  content: |
+    // test-user can get/list/watch pods at cluster scope
+    permit (
+        principal,
+        action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+        resource is k8s::Resource
+    ) when {
+        principal.name == "test-user" &&
+        resource.resource == "pods"
+    };
+    // forbid test-user to get/list/watch nodes
+    forbid (
+        principal,
+        action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+        resource is k8s::Resource
+    ) when {
+        principal.name == "test-user" &&
+        resource.resource == "nodes"
+    };
+
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: viewer-group
+spec:
+  content: |
+    // viewer group members can get/list/watch any Resource other than secrets
+    permit (
+        principal in k8s::Group::"viewers",
+        action in [ k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+        resource is k8s::Resource
+    ) unless {
+      resource.resource == "secrets" &&
+      resource.apiGroup == ""
+    };
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: system-public-viewer
+  annotations:
+    cedar.k8s.aws/description: "Grants access to public information, equivalent to RBAC CR/CRB system:public-info-viewer"
+spec:
+  content: |
+    permit (
+        principal in k8s::Group::"system:authenticated",
+        action == k8s::Action::"get",
+        resource is k8s::NonResourceURL
+    ) when {
+        [
+          "/healthz",
+          "/livez",
+          "/readyz",
+          "/version",
+          "/version/"
+        ].contains(resource.path)
+    };
+    permit (
+        principal in k8s::Group::"system:unauthenticated",
+        action == k8s::Action::"get",
+        resource is k8s::NonResourceURL
+    ) when {
+        [
+          "/healthz",
+          "/livez",
+          "/readyz",
+          "/version",
+          "/version/"
+        ].contains(resource.path)
+    };
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: example-secret
+  labels:
+    owner: test-user
+data:
+  key: dmFsdWU=
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: other-example-secret
+  labels:
+    owner: prod-user
+data:
+  key: dmFsdWU=
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: secrets-label-selector-example
+spec:
+  content: |
+    permit (
+        principal is k8s::User,
+        action in [k8s::Action::"list", k8s::Action::"watch"],
+        resource is k8s::Resource
+    ) when {
+        resource.resource == "secrets" &&
+        resource.apiGroup == "" &&
+        resource has labelSelector &&
+        resource.labelSelector.containsAny([
+          {"key": "owner","operator": "=", "values": [principal.name]}, 
+          {"key": "owner","operator": "==", "values": [principal.name]},
+          {"key": "owner","operator": "in", "values": [principal.name]}])
+    };
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config
+  labels:
+    owner: default
+data:
+  key: value
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-manager
+  namespace: default
+---
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: service-account-impersonate-example
+spec:
+  content: |
+    // test-user can impersonate the service-manager service account in the default namespace
+    permit (
+        principal is k8s::User,
+        action in [k8s::Action::"impersonate"],
+        resource is k8s::ServiceAccount
+    ) when {
+        principal.name == "test-user" &&
+        resource.namespace == "default" &&
+        resource.name == "service-manager"
+    };
+    
+    // SA named 'service-manager' can act on services in its own namespace 
+    permit (
+        principal is k8s::ServiceAccount,
+        action,
+        resource is k8s::Resource
+    ) when {
+        principal.name == "service-manager" && // no principal.namespace restriction
+        resource.resource == "services" &&
+        resource.namespace == principal.namespace 
+    };

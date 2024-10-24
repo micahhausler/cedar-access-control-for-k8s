@@ -1,0 +1,144 @@
+namespace k8s {
+	type Extra = {
+		"key": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	type FieldRequirement = {
+		"key": __cedar::String,
+		"op": __cedar::String,
+		"value": __cedar::String
+	};
+	type LabelRequirement = {
+		"key": __cedar::String,
+		"operator": __cedar::String,
+		"values": Set < __cedar::String >
+	};
+	entity Group;
+	entity Node in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String
+	};
+	entity NonResourceURL = {
+		"path": __cedar::String
+	};
+	entity Resource = {
+		"apiGroup": __cedar::String,
+		"fieldSelector"?: Set < FieldRequirement >,
+		"labelSelector"?: Set < LabelRequirement >,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"resource": __cedar::String,
+		"subresource"?: __cedar::String
+	};
+	entity ServiceAccount in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String,
+		"namespace": __cedar::String
+	};
+	entity User in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String
+	};
+	entity UserUID;
+	action "approve" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "attest" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "bind" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "create" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "delete" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "deletecollection" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "escalate" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "get" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "head" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "impersonate" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Group, Node, ServiceAccount, User, UserUID],
+		context: {}
+	};
+	action "list" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "options" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "patch" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "post" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "put" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "readOnly" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "sign" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "update" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "use" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "watch" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+}
+

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: cedarwebhook
+  cluster:
+    certificate-authority: /cedar-authorizer/certs/cedar-authorizer-server.crt
+    server: https://cedar-authorizer:10288/authorize
+users:
+- name: api-server
+  user:
+    # NOTE: webhook server doesn't do any auth
+    token: not-a-real-token
+current-context: cedarwebhook
+contexts:
+- context:
+    cluster: cedarwebhook
+    user: api-server
+  name: cedarwebhook

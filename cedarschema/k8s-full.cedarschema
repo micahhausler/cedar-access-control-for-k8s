@@ -1,0 +1,3854 @@
+namespace k8s::admission {
+	action "all" appliesTo {
+		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		context: {}
+	};
+	action "connect" in [Action::"all"] appliesTo {
+		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		context: {}
+	};
+	action "create" in [Action::"all"] appliesTo {
+		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		context: {}
+	};
+	action "delete" in [Action::"all"] appliesTo {
+		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		context: {}
+	};
+	action "update" in [Action::"all"] appliesTo {
+		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		context: {}
+	};
+}
+
+namespace k8s {
+	type Extra = {
+		"key": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	type FieldRequirement = {
+		"key": __cedar::String,
+		"op": __cedar::String,
+		"value": __cedar::String
+	};
+	type LabelRequirement = {
+		"key": __cedar::String,
+		"operator": __cedar::String,
+		"values": Set < __cedar::String >
+	};
+	entity Group;
+	entity Node in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String
+	};
+	entity NonResourceURL = {
+		"path": __cedar::String
+	};
+	entity Resource = {
+		"apiGroup": __cedar::String,
+		"fieldSelector"?: Set < FieldRequirement >,
+		"labelSelector"?: Set < LabelRequirement >,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"resource": __cedar::String,
+		"subresource"?: __cedar::String
+	};
+	entity ServiceAccount in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String,
+		"namespace": __cedar::String
+	};
+	entity User in [Group] = {
+		"extras"?: Set < Extra >,
+		"name": __cedar::String
+	};
+	entity UserUID;
+	action "approve" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "attest" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "bind" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "create" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "delete" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "deletecollection" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "escalate" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "get" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "head" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "impersonate" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Group, Node, ServiceAccount, User, UserUID],
+		context: {}
+	};
+	action "list" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "options" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "patch" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL, Resource],
+		context: {}
+	};
+	action "post" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "put" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [NonResourceURL],
+		context: {}
+	};
+	action "readOnly" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "sign" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "update" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "use" appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+	action "watch" in [Action::"readOnly"] appliesTo {
+		principal: [Group, Node, ServiceAccount, User],
+		resource: [Resource],
+		context: {}
+	};
+}
+
+namespace admissionregistration::v1 {
+	entity AuditAnnotation = {
+		"key": __cedar::String,
+		"valueExpression": __cedar::String
+	};
+	entity ExpressionWarning = {
+		"fieldRef": __cedar::String,
+		"warning": __cedar::String
+	};
+	entity MatchCondition = {
+		"expression": __cedar::String,
+		"name": __cedar::String
+	};
+	entity MatchResources = {
+		"excludeResourceRules"?: Set < NamedRuleWithOperations >,
+		"matchPolicy"?: __cedar::String,
+		"namespaceSelector"?: meta::v1::LabelSelector,
+		"objectSelector"?: meta::v1::LabelSelector,
+		"resourceRules"?: Set < NamedRuleWithOperations >
+	};
+	entity MutatingWebhook = {
+		"admissionReviewVersions": Set < __cedar::String >,
+		"clientConfig": WebhookClientConfig,
+		"failurePolicy"?: __cedar::String,
+		"matchConditions"?: Set < MatchCondition >,
+		"matchPolicy"?: __cedar::String,
+		"name": __cedar::String,
+		"namespaceSelector"?: meta::v1::LabelSelector,
+		"objectSelector"?: meta::v1::LabelSelector,
+		"reinvocationPolicy"?: __cedar::String,
+		"rules"?: Set < RuleWithOperations >,
+		"sideEffects": __cedar::String,
+		"timeoutSeconds"?: __cedar::Long
+	};
+	entity MutatingWebhookConfiguration = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"webhooks"?: Set < MutatingWebhook >
+	};
+	entity MutatingWebhookConfigurationList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < MutatingWebhookConfiguration >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity NamedRuleWithOperations = {
+		"apiGroups"?: Set < __cedar::String >,
+		"apiVersions"?: Set < __cedar::String >,
+		"operations"?: Set < __cedar::String >,
+		"resourceNames"?: Set < __cedar::String >,
+		"resources"?: Set < __cedar::String >,
+		"scope"?: __cedar::String
+	};
+	entity ParamKind = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String
+	};
+	entity ParamRef = {
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"parameterNotFoundAction"?: __cedar::String,
+		"selector"?: meta::v1::LabelSelector
+	};
+	entity RuleWithOperations = {
+		"apiGroups"?: Set < __cedar::String >,
+		"apiVersions"?: Set < __cedar::String >,
+		"operations"?: Set < __cedar::String >,
+		"resources"?: Set < __cedar::String >,
+		"scope"?: __cedar::String
+	};
+	entity ServiceReference = {
+		"name": __cedar::String,
+		"namespace": __cedar::String,
+		"path"?: __cedar::String,
+		"port"?: __cedar::Long
+	};
+	entity TypeChecking = {
+		"expressionWarnings"?: Set < ExpressionWarning >
+	};
+	entity ValidatingAdmissionPolicy = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ValidatingAdmissionPolicySpec,
+		"status"?: ValidatingAdmissionPolicyStatus
+	};
+	entity ValidatingAdmissionPolicyBinding = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ValidatingAdmissionPolicyBindingSpec
+	};
+	entity ValidatingAdmissionPolicyBindingList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ValidatingAdmissionPolicyBinding >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ValidatingAdmissionPolicyBindingSpec = {
+		"matchResources"?: MatchResources,
+		"paramRef"?: ParamRef,
+		"policyName"?: __cedar::String,
+		"validationActions"?: Set < __cedar::String >
+	};
+	entity ValidatingAdmissionPolicyList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ValidatingAdmissionPolicy >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ValidatingAdmissionPolicySpec = {
+		"auditAnnotations"?: Set < AuditAnnotation >,
+		"failurePolicy"?: __cedar::String,
+		"matchConditions"?: Set < MatchCondition >,
+		"matchConstraints"?: MatchResources,
+		"paramKind"?: ParamKind,
+		"validations"?: Set < Validation >,
+		"variables"?: Set < Variable >
+	};
+	entity ValidatingAdmissionPolicyStatus = {
+		"conditions"?: Set < meta::v1::Condition >,
+		"observedGeneration"?: __cedar::Long,
+		"typeChecking"?: TypeChecking
+	};
+	entity ValidatingWebhook = {
+		"admissionReviewVersions": Set < __cedar::String >,
+		"clientConfig": WebhookClientConfig,
+		"failurePolicy"?: __cedar::String,
+		"matchConditions"?: Set < MatchCondition >,
+		"matchPolicy"?: __cedar::String,
+		"name": __cedar::String,
+		"namespaceSelector"?: meta::v1::LabelSelector,
+		"objectSelector"?: meta::v1::LabelSelector,
+		"rules"?: Set < RuleWithOperations >,
+		"sideEffects": __cedar::String,
+		"timeoutSeconds"?: __cedar::Long
+	};
+	entity ValidatingWebhookConfiguration = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"webhooks"?: Set < ValidatingWebhook >
+	};
+	entity ValidatingWebhookConfigurationList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ValidatingWebhookConfiguration >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity Validation = {
+		"expression": __cedar::String,
+		"message"?: __cedar::String,
+		"messageExpression"?: __cedar::String,
+		"reason"?: __cedar::String
+	};
+	entity Variable = {
+		"expression": __cedar::String,
+		"name": __cedar::String
+	};
+	entity WebhookClientConfig = {
+		"caBundle"?: __cedar::String,
+		"service"?: ServiceReference,
+		"url"?: __cedar::String
+	};
+}
+
+namespace apps::v1 {
+	entity ControllerRevision = {
+		"apiVersion"?: __cedar::String,
+		"data"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"revision": __cedar::Long
+	};
+	entity ControllerRevisionList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ControllerRevision >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity DaemonSet = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: DaemonSetSpec,
+		"status"?: DaemonSetStatus
+	};
+	entity DaemonSetCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity DaemonSetList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < DaemonSet >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity DaemonSetSpec = {
+		"minReadySeconds"?: __cedar::Long,
+		"revisionHistoryLimit"?: __cedar::Long,
+		"selector": meta::v1::LabelSelector,
+		"template": core::v1::PodTemplateSpec,
+		"updateStrategy"?: DaemonSetUpdateStrategy
+	};
+	entity DaemonSetStatus = {
+		"collisionCount"?: __cedar::Long,
+		"conditions"?: Set < DaemonSetCondition >,
+		"currentNumberScheduled": __cedar::Long,
+		"desiredNumberScheduled": __cedar::Long,
+		"numberAvailable"?: __cedar::Long,
+		"numberMisscheduled": __cedar::Long,
+		"numberReady": __cedar::Long,
+		"numberUnavailable"?: __cedar::Long,
+		"observedGeneration"?: __cedar::Long,
+		"updatedNumberScheduled"?: __cedar::Long
+	};
+	entity DaemonSetUpdateStrategy = {
+		"rollingUpdate"?: RollingUpdateDaemonSet,
+		"type"?: __cedar::String
+	};
+	entity Deployment = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: DeploymentSpec,
+		"status"?: DeploymentStatus
+	};
+	entity DeploymentCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"lastUpdateTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity DeploymentList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Deployment >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity DeploymentSpec = {
+		"minReadySeconds"?: __cedar::Long,
+		"paused"?: __cedar::Bool,
+		"progressDeadlineSeconds"?: __cedar::Long,
+		"replicas"?: __cedar::Long,
+		"revisionHistoryLimit"?: __cedar::Long,
+		"selector": meta::v1::LabelSelector,
+		"strategy"?: DeploymentStrategy,
+		"template": core::v1::PodTemplateSpec
+	};
+	entity DeploymentStatus = {
+		"availableReplicas"?: __cedar::Long,
+		"collisionCount"?: __cedar::Long,
+		"conditions"?: Set < DeploymentCondition >,
+		"observedGeneration"?: __cedar::Long,
+		"readyReplicas"?: __cedar::Long,
+		"replicas"?: __cedar::Long,
+		"unavailableReplicas"?: __cedar::Long,
+		"updatedReplicas"?: __cedar::Long
+	};
+	entity DeploymentStrategy = {
+		"rollingUpdate"?: RollingUpdateDeployment,
+		"type"?: __cedar::String
+	};
+	entity ReplicaSet = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ReplicaSetSpec,
+		"status"?: ReplicaSetStatus
+	};
+	entity ReplicaSetCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity ReplicaSetList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ReplicaSet >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ReplicaSetSpec = {
+		"minReadySeconds"?: __cedar::Long,
+		"replicas"?: __cedar::Long,
+		"selector": meta::v1::LabelSelector,
+		"template"?: core::v1::PodTemplateSpec
+	};
+	entity ReplicaSetStatus = {
+		"availableReplicas"?: __cedar::Long,
+		"conditions"?: Set < ReplicaSetCondition >,
+		"fullyLabeledReplicas"?: __cedar::Long,
+		"observedGeneration"?: __cedar::Long,
+		"readyReplicas"?: __cedar::Long,
+		"replicas": __cedar::Long
+	};
+	entity RollingUpdateDaemonSet = {
+		"maxSurge"?: __cedar::String,
+		"maxUnavailable"?: __cedar::String
+	};
+	entity RollingUpdateDeployment = {
+		"maxSurge"?: __cedar::String,
+		"maxUnavailable"?: __cedar::String
+	};
+	entity RollingUpdateStatefulSetStrategy = {
+		"maxUnavailable"?: __cedar::String,
+		"partition"?: __cedar::Long
+	};
+	entity StatefulSet = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: StatefulSetSpec,
+		"status"?: StatefulSetStatus
+	};
+	entity StatefulSetCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity StatefulSetList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < StatefulSet >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity StatefulSetOrdinals = {
+		"start"?: __cedar::Long
+	};
+	entity StatefulSetPersistentVolumeClaimRetentionPolicy = {
+		"whenDeleted"?: __cedar::String,
+		"whenScaled"?: __cedar::String
+	};
+	entity StatefulSetSpec = {
+		"minReadySeconds"?: __cedar::Long,
+		"ordinals"?: StatefulSetOrdinals,
+		"persistentVolumeClaimRetentionPolicy"?: StatefulSetPersistentVolumeClaimRetentionPolicy,
+		"podManagementPolicy"?: __cedar::String,
+		"replicas"?: __cedar::Long,
+		"revisionHistoryLimit"?: __cedar::Long,
+		"selector": meta::v1::LabelSelector,
+		"serviceName": __cedar::String,
+		"template": core::v1::PodTemplateSpec,
+		"updateStrategy"?: StatefulSetUpdateStrategy,
+		"volumeClaimTemplates"?: Set < core::v1::PersistentVolumeClaim >
+	};
+	entity StatefulSetStatus = {
+		"availableReplicas"?: __cedar::Long,
+		"collisionCount"?: __cedar::Long,
+		"conditions"?: Set < StatefulSetCondition >,
+		"currentReplicas"?: __cedar::Long,
+		"currentRevision"?: __cedar::String,
+		"observedGeneration"?: __cedar::Long,
+		"readyReplicas"?: __cedar::Long,
+		"replicas": __cedar::Long,
+		"updateRevision"?: __cedar::String,
+		"updatedReplicas"?: __cedar::Long
+	};
+	entity StatefulSetUpdateStrategy = {
+		"rollingUpdate"?: RollingUpdateStatefulSetStrategy,
+		"type"?: __cedar::String
+	};
+}
+
+namespace authentication::v1 {
+	entity BoundObjectReference = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"name"?: __cedar::String,
+		"uid"?: __cedar::String
+	};
+	entity SelfSubjectReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"status"?: SelfSubjectReviewStatus
+	};
+	entity SelfSubjectReviewStatus = {
+		"userInfo"?: UserInfo
+	};
+	entity TokenRequest = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": TokenRequestSpec,
+		"status"?: TokenRequestStatus
+	};
+	entity TokenRequestSpec = {
+		"audiences": Set < __cedar::String >,
+		"boundObjectRef"?: BoundObjectReference,
+		"expirationSeconds"?: __cedar::Long
+	};
+	entity TokenRequestStatus = {
+		"expirationTimestamp": __cedar::String,
+		"token": __cedar::String
+	};
+	entity TokenReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": TokenReviewSpec,
+		"status"?: TokenReviewStatus
+	};
+	entity TokenReviewSpec = {
+		"audiences"?: Set < __cedar::String >,
+		"token"?: __cedar::String
+	};
+	entity TokenReviewStatus = {
+		"audiences"?: Set < __cedar::String >,
+		"authenticated"?: __cedar::Bool,
+		"error"?: __cedar::String,
+		"user"?: UserInfo
+	};
+	entity UserInfo = {
+		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"groups"?: Set < __cedar::String >,
+		"uid"?: __cedar::String,
+		"username"?: __cedar::String
+	};
+}
+
+namespace authorization::v1 {
+	entity FieldSelectorAttributes = {
+		"rawSelector"?: __cedar::String,
+		"requirements"?: Set < meta::v1::FieldSelectorRequirement >
+	};
+	entity LabelSelectorAttributes = {
+		"rawSelector"?: __cedar::String,
+		"requirements"?: Set < meta::v1::LabelSelectorRequirement >
+	};
+	entity LocalSubjectAccessReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": SubjectAccessReviewSpec,
+		"status"?: SubjectAccessReviewStatus
+	};
+	entity NonResourceAttributes = {
+		"path"?: __cedar::String,
+		"verb"?: __cedar::String
+	};
+	entity NonResourceRule = {
+		"nonResourceURLs"?: Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity ResourceAttributes = {
+		"fieldSelector"?: FieldSelectorAttributes,
+		"group"?: __cedar::String,
+		"labelSelector"?: LabelSelectorAttributes,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"resource"?: __cedar::String,
+		"subresource"?: __cedar::String,
+		"verb"?: __cedar::String,
+		"version"?: __cedar::String
+	};
+	entity ResourceRule = {
+		"apiGroups"?: Set < __cedar::String >,
+		"resourceNames"?: Set < __cedar::String >,
+		"resources"?: Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity SelfSubjectAccessReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": SelfSubjectAccessReviewSpec,
+		"status"?: SubjectAccessReviewStatus
+	};
+	entity SelfSubjectAccessReviewSpec = {
+		"nonResourceAttributes"?: NonResourceAttributes,
+		"resourceAttributes"?: ResourceAttributes
+	};
+	entity SelfSubjectRulesReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": SelfSubjectRulesReviewSpec,
+		"status"?: SubjectRulesReviewStatus
+	};
+	entity SelfSubjectRulesReviewSpec = {
+		"namespace"?: __cedar::String
+	};
+	entity SubjectAccessReview = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": SubjectAccessReviewSpec,
+		"status"?: SubjectAccessReviewStatus
+	};
+	entity SubjectAccessReviewSpec = {
+		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"groups"?: Set < __cedar::String >,
+		"nonResourceAttributes"?: NonResourceAttributes,
+		"resourceAttributes"?: ResourceAttributes,
+		"uid"?: __cedar::String,
+		"user"?: __cedar::String
+	};
+	entity SubjectAccessReviewStatus = {
+		"allowed": __cedar::Bool,
+		"denied"?: __cedar::Bool,
+		"evaluationError"?: __cedar::String,
+		"reason"?: __cedar::String
+	};
+	entity SubjectRulesReviewStatus = {
+		"evaluationError"?: __cedar::String,
+		"incomplete": __cedar::Bool,
+		"nonResourceRules": Set < NonResourceRule >,
+		"resourceRules": Set < ResourceRule >
+	};
+}
+
+namespace autoscaling::v1 {
+	entity CrossVersionObjectReference = {
+		"apiVersion"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String
+	};
+	entity HorizontalPodAutoscaler = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: HorizontalPodAutoscalerSpec,
+		"status"?: HorizontalPodAutoscalerStatus
+	};
+	entity HorizontalPodAutoscalerList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < HorizontalPodAutoscaler >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity HorizontalPodAutoscalerSpec = {
+		"maxReplicas": __cedar::Long,
+		"minReplicas"?: __cedar::Long,
+		"scaleTargetRef": CrossVersionObjectReference,
+		"targetCPUUtilizationPercentage"?: __cedar::Long
+	};
+	entity HorizontalPodAutoscalerStatus = {
+		"currentCPUUtilizationPercentage"?: __cedar::Long,
+		"currentReplicas": __cedar::Long,
+		"desiredReplicas": __cedar::Long,
+		"lastScaleTime"?: __cedar::String,
+		"observedGeneration"?: __cedar::Long
+	};
+	entity Scale = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ScaleSpec,
+		"status"?: ScaleStatus
+	};
+	entity ScaleSpec = {
+		"replicas"?: __cedar::Long
+	};
+	entity ScaleStatus = {
+		"replicas": __cedar::Long,
+		"selector"?: __cedar::String
+	};
+}
+
+namespace batch::v1 {
+	entity CronJob = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: CronJobSpec,
+		"status"?: CronJobStatus
+	};
+	entity CronJobList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < CronJob >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity CronJobSpec = {
+		"concurrencyPolicy"?: __cedar::String,
+		"failedJobsHistoryLimit"?: __cedar::Long,
+		"jobTemplate": JobTemplateSpec,
+		"schedule": __cedar::String,
+		"startingDeadlineSeconds"?: __cedar::Long,
+		"successfulJobsHistoryLimit"?: __cedar::Long,
+		"suspend"?: __cedar::Bool,
+		"timeZone"?: __cedar::String
+	};
+	entity CronJobStatus = {
+		"active"?: Set < core::v1::ObjectReference >,
+		"lastScheduleTime"?: __cedar::String,
+		"lastSuccessfulTime"?: __cedar::String
+	};
+	entity Job = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: JobSpec,
+		"status"?: JobStatus
+	};
+	entity JobCondition = {
+		"lastProbeTime"?: __cedar::String,
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity JobList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Job >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity JobSpec = {
+		"activeDeadlineSeconds"?: __cedar::Long,
+		"backoffLimit"?: __cedar::Long,
+		"backoffLimitPerIndex"?: __cedar::Long,
+		"completionMode"?: __cedar::String,
+		"completions"?: __cedar::Long,
+		"managedBy"?: __cedar::String,
+		"manualSelector"?: __cedar::Bool,
+		"maxFailedIndexes"?: __cedar::Long,
+		"parallelism"?: __cedar::Long,
+		"podFailurePolicy"?: PodFailurePolicy,
+		"podReplacementPolicy"?: __cedar::String,
+		"selector"?: meta::v1::LabelSelector,
+		"successPolicy"?: SuccessPolicy,
+		"suspend"?: __cedar::Bool,
+		"template": core::v1::PodTemplateSpec,
+		"ttlSecondsAfterFinished"?: __cedar::Long
+	};
+	entity JobStatus = {
+		"active"?: __cedar::Long,
+		"completedIndexes"?: __cedar::String,
+		"completionTime"?: __cedar::String,
+		"conditions"?: Set < JobCondition >,
+		"failed"?: __cedar::Long,
+		"failedIndexes"?: __cedar::String,
+		"ready"?: __cedar::Long,
+		"startTime"?: __cedar::String,
+		"succeeded"?: __cedar::Long,
+		"terminating"?: __cedar::Long,
+		"uncountedTerminatedPods"?: UncountedTerminatedPods
+	};
+	entity JobTemplateSpec = {
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: JobSpec
+	};
+	entity PodFailurePolicy = {
+		"rules": Set < PodFailurePolicyRule >
+	};
+	entity PodFailurePolicyOnExitCodesRequirement = {
+		"containerName"?: __cedar::String,
+		"operator": __cedar::String,
+		"values": Set < __cedar::Long >
+	};
+	entity PodFailurePolicyOnPodConditionsPattern = {
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity PodFailurePolicyRule = {
+		"action": __cedar::String,
+		"onExitCodes"?: PodFailurePolicyOnExitCodesRequirement,
+		"onPodConditions"?: Set < PodFailurePolicyOnPodConditionsPattern >
+	};
+	entity SuccessPolicy = {
+		"rules": Set < SuccessPolicyRule >
+	};
+	entity SuccessPolicyRule = {
+		"succeededCount"?: __cedar::Long,
+		"succeededIndexes"?: __cedar::String
+	};
+	entity UncountedTerminatedPods = {
+		"failed"?: Set < __cedar::String >,
+		"succeeded"?: Set < __cedar::String >
+	};
+}
+
+namespace certificates::v1 {
+	entity CertificateSigningRequest = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": CertificateSigningRequestSpec,
+		"status"?: CertificateSigningRequestStatus
+	};
+	entity CertificateSigningRequestCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"lastUpdateTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity CertificateSigningRequestList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < CertificateSigningRequest >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity CertificateSigningRequestSpec = {
+		"expirationSeconds"?: __cedar::Long,
+		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"groups"?: Set < __cedar::String >,
+		"request": __cedar::String,
+		"signerName": __cedar::String,
+		"uid"?: __cedar::String,
+		"usages"?: Set < __cedar::String >,
+		"username"?: __cedar::String
+	};
+	entity CertificateSigningRequestStatus = {
+		"certificate"?: __cedar::String,
+		"conditions"?: Set < CertificateSigningRequestCondition >
+	};
+}
+
+namespace coordination::v1 {
+	entity Lease = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: LeaseSpec
+	};
+	entity LeaseList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Lease >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity LeaseSpec = {
+		"acquireTime"?: __cedar::String,
+		"holderIdentity"?: __cedar::String,
+		"leaseDurationSeconds"?: __cedar::Long,
+		"leaseTransitions"?: __cedar::Long,
+		"preferredHolder"?: __cedar::String,
+		"renewTime"?: __cedar::String,
+		"strategy"?: __cedar::String
+	};
+}
+
+namespace core::v1 {
+	entity AWSElasticBlockStoreVolumeSource = {
+		"fsType"?: __cedar::String,
+		"partition"?: __cedar::Long,
+		"readOnly"?: __cedar::Bool,
+		"volumeID": __cedar::String
+	};
+	entity Affinity = {
+		"nodeAffinity"?: NodeAffinity,
+		"podAffinity"?: PodAffinity,
+		"podAntiAffinity"?: PodAntiAffinity
+	};
+	entity AppArmorProfile = {
+		"localhostProfile"?: __cedar::String,
+		"type": __cedar::String
+	};
+	entity AttachedVolume = {
+		"devicePath": __cedar::String,
+		"name": __cedar::String
+	};
+	entity AzureDiskVolumeSource = {
+		"cachingMode"?: __cedar::String,
+		"diskName": __cedar::String,
+		"diskURI": __cedar::String,
+		"fsType"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"readOnly"?: __cedar::Bool
+	};
+	entity AzureFilePersistentVolumeSource = {
+		"readOnly"?: __cedar::Bool,
+		"secretName": __cedar::String,
+		"secretNamespace"?: __cedar::String,
+		"shareName": __cedar::String
+	};
+	entity AzureFileVolumeSource = {
+		"readOnly"?: __cedar::Bool,
+		"secretName": __cedar::String,
+		"shareName": __cedar::String
+	};
+	entity Binding = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"target": ObjectReference
+	};
+	entity CSIPersistentVolumeSource = {
+		"controllerExpandSecretRef"?: SecretReference,
+		"controllerPublishSecretRef"?: SecretReference,
+		"driver": __cedar::String,
+		"fsType"?: __cedar::String,
+		"nodeExpandSecretRef"?: SecretReference,
+		"nodePublishSecretRef"?: SecretReference,
+		"nodeStageSecretRef"?: SecretReference,
+		"readOnly"?: __cedar::Bool,
+		"volumeAttributes"?: Set < meta::v1::KeyValue >,
+		"volumeHandle": __cedar::String
+	};
+	entity CSIVolumeSource = {
+		"driver": __cedar::String,
+		"fsType"?: __cedar::String,
+		"nodePublishSecretRef"?: LocalObjectReference,
+		"readOnly"?: __cedar::Bool,
+		"volumeAttributes"?: Set < meta::v1::KeyValue >
+	};
+	entity Capabilities = {
+		"add"?: Set < __cedar::String >,
+		"drop"?: Set < __cedar::String >
+	};
+	entity CephFSPersistentVolumeSource = {
+		"monitors": Set < __cedar::String >,
+		"path"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretFile"?: __cedar::String,
+		"secretRef"?: SecretReference,
+		"user"?: __cedar::String
+	};
+	entity CephFSVolumeSource = {
+		"monitors": Set < __cedar::String >,
+		"path"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretFile"?: __cedar::String,
+		"secretRef"?: LocalObjectReference,
+		"user"?: __cedar::String
+	};
+	entity CinderPersistentVolumeSource = {
+		"fsType"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: SecretReference,
+		"volumeID": __cedar::String
+	};
+	entity CinderVolumeSource = {
+		"fsType"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: LocalObjectReference,
+		"volumeID": __cedar::String
+	};
+	entity ClientIPConfig = {
+		"timeoutSeconds"?: __cedar::Long
+	};
+	entity ClusterTrustBundleProjection = {
+		"labelSelector"?: meta::v1::LabelSelector,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool,
+		"path": __cedar::String,
+		"signerName"?: __cedar::String
+	};
+	entity ComponentCondition = {
+		"error"?: __cedar::String,
+		"message"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity ComponentStatus = {
+		"apiVersion"?: __cedar::String,
+		"conditions"?: Set < ComponentCondition >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta
+	};
+	entity ComponentStatusList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ComponentStatus >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ConfigMap = {
+		"apiVersion"?: __cedar::String,
+		"binaryData"?: Set < meta::v1::KeyValue >,
+		"data"?: Set < meta::v1::KeyValue >,
+		"immutable"?: __cedar::Bool,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta
+	};
+	entity ConfigMapEnvSource = {
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity ConfigMapKeySelector = {
+		"key": __cedar::String,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity ConfigMapList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ConfigMap >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ConfigMapNodeConfigSource = {
+		"kubeletConfigKey": __cedar::String,
+		"name": __cedar::String,
+		"namespace": __cedar::String,
+		"resourceVersion"?: __cedar::String,
+		"uid"?: __cedar::String
+	};
+	entity ConfigMapProjection = {
+		"items"?: Set < KeyToPath >,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity ConfigMapVolumeSource = {
+		"defaultMode"?: __cedar::Long,
+		"items"?: Set < KeyToPath >,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity Container = {
+		"args"?: Set < __cedar::String >,
+		"command"?: Set < __cedar::String >,
+		"env"?: Set < EnvVar >,
+		"envFrom"?: Set < EnvFromSource >,
+		"image"?: __cedar::String,
+		"imagePullPolicy"?: __cedar::String,
+		"lifecycle"?: Lifecycle,
+		"livenessProbe"?: Probe,
+		"name": __cedar::String,
+		"ports"?: Set < ContainerPort >,
+		"readinessProbe"?: Probe,
+		"resizePolicy"?: Set < ContainerResizePolicy >,
+		"resources"?: ResourceRequirements,
+		"restartPolicy"?: __cedar::String,
+		"securityContext"?: SecurityContext,
+		"startupProbe"?: Probe,
+		"stdin"?: __cedar::Bool,
+		"stdinOnce"?: __cedar::Bool,
+		"terminationMessagePath"?: __cedar::String,
+		"terminationMessagePolicy"?: __cedar::String,
+		"tty"?: __cedar::Bool,
+		"volumeDevices"?: Set < VolumeDevice >,
+		"volumeMounts"?: Set < VolumeMount >,
+		"workingDir"?: __cedar::String
+	};
+	entity ContainerImage = {
+		"names"?: Set < __cedar::String >,
+		"sizeBytes"?: __cedar::Long
+	};
+	entity ContainerPort = {
+		"containerPort": __cedar::Long,
+		"hostIP"?: __cedar::String,
+		"hostPort"?: __cedar::Long,
+		"name"?: __cedar::String,
+		"protocol"?: __cedar::String
+	};
+	entity ContainerResizePolicy = {
+		"resourceName": __cedar::String,
+		"restartPolicy": __cedar::String
+	};
+	entity ContainerState = {
+		"running"?: ContainerStateRunning,
+		"terminated"?: ContainerStateTerminated,
+		"waiting"?: ContainerStateWaiting
+	};
+	entity ContainerStateRunning = {
+		"startedAt"?: __cedar::String
+	};
+	entity ContainerStateTerminated = {
+		"containerID"?: __cedar::String,
+		"exitCode": __cedar::Long,
+		"finishedAt"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"signal"?: __cedar::Long,
+		"startedAt"?: __cedar::String
+	};
+	entity ContainerStateWaiting = {
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String
+	};
+	entity ContainerStatus = {
+		"allocatedResources"?: __cedar::String,
+		"allocatedResourcesStatus"?: Set < ResourceStatus >,
+		"containerID"?: __cedar::String,
+		"image": __cedar::String,
+		"imageID": __cedar::String,
+		"lastState"?: ContainerState,
+		"name": __cedar::String,
+		"ready": __cedar::Bool,
+		"resources"?: ResourceRequirements,
+		"restartCount": __cedar::Long,
+		"started"?: __cedar::Bool,
+		"state"?: ContainerState,
+		"user"?: ContainerUser,
+		"volumeMounts"?: Set < VolumeMountStatus >
+	};
+	entity ContainerUser = {
+		"linux"?: LinuxContainerUser
+	};
+	entity DaemonEndpoint = {
+		"Port": __cedar::Long
+	};
+	entity DownwardAPIProjection = {
+		"items"?: Set < DownwardAPIVolumeFile >
+	};
+	entity DownwardAPIVolumeFile = {
+		"fieldRef"?: ObjectFieldSelector,
+		"mode"?: __cedar::Long,
+		"path": __cedar::String,
+		"resourceFieldRef"?: ResourceFieldSelector
+	};
+	entity DownwardAPIVolumeSource = {
+		"defaultMode"?: __cedar::Long,
+		"items"?: Set < DownwardAPIVolumeFile >
+	};
+	entity EmptyDirVolumeSource = {
+		"medium"?: __cedar::String,
+		"sizeLimit"?: __cedar::String
+	};
+	entity EndpointAddress = {
+		"hostname"?: __cedar::String,
+		"ip": __cedar::String,
+		"nodeName"?: __cedar::String,
+		"targetRef"?: ObjectReference
+	};
+	entity EndpointPort = {
+		"appProtocol"?: __cedar::String,
+		"name"?: __cedar::String,
+		"port": __cedar::Long,
+		"protocol"?: __cedar::String
+	};
+	entity EndpointSubset = {
+		"addresses"?: Set < EndpointAddress >,
+		"notReadyAddresses"?: Set < EndpointAddress >,
+		"ports"?: Set < EndpointPort >
+	};
+	entity Endpoints = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"subsets"?: Set < EndpointSubset >
+	};
+	entity EndpointsList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Endpoints >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity EnvFromSource = {
+		"configMapRef"?: ConfigMapEnvSource,
+		"prefix"?: __cedar::String,
+		"secretRef"?: SecretEnvSource
+	};
+	entity EnvVar = {
+		"name": __cedar::String,
+		"value"?: __cedar::String,
+		"valueFrom"?: EnvVarSource
+	};
+	entity EnvVarSource = {
+		"configMapKeyRef"?: ConfigMapKeySelector,
+		"fieldRef"?: ObjectFieldSelector,
+		"resourceFieldRef"?: ResourceFieldSelector,
+		"secretKeyRef"?: SecretKeySelector
+	};
+	entity EphemeralContainer = {
+		"args"?: Set < __cedar::String >,
+		"command"?: Set < __cedar::String >,
+		"env"?: Set < EnvVar >,
+		"envFrom"?: Set < EnvFromSource >,
+		"image"?: __cedar::String,
+		"imagePullPolicy"?: __cedar::String,
+		"lifecycle"?: Lifecycle,
+		"livenessProbe"?: Probe,
+		"name": __cedar::String,
+		"ports"?: Set < ContainerPort >,
+		"readinessProbe"?: Probe,
+		"resizePolicy"?: Set < ContainerResizePolicy >,
+		"resources"?: ResourceRequirements,
+		"restartPolicy"?: __cedar::String,
+		"securityContext"?: SecurityContext,
+		"startupProbe"?: Probe,
+		"stdin"?: __cedar::Bool,
+		"stdinOnce"?: __cedar::Bool,
+		"targetContainerName"?: __cedar::String,
+		"terminationMessagePath"?: __cedar::String,
+		"terminationMessagePolicy"?: __cedar::String,
+		"tty"?: __cedar::Bool,
+		"volumeDevices"?: Set < VolumeDevice >,
+		"volumeMounts"?: Set < VolumeMount >,
+		"workingDir"?: __cedar::String
+	};
+	entity EphemeralVolumeSource = {
+		"volumeClaimTemplate"?: PersistentVolumeClaimTemplate
+	};
+	entity Event = {
+		"action"?: __cedar::String,
+		"apiVersion"?: __cedar::String,
+		"count"?: __cedar::Long,
+		"eventTime"?: __cedar::String,
+		"firstTimestamp"?: __cedar::String,
+		"involvedObject": ObjectReference,
+		"kind"?: __cedar::String,
+		"lastTimestamp"?: __cedar::String,
+		"message"?: __cedar::String,
+		"metadata": meta::v1::ObjectMeta,
+		"reason"?: __cedar::String,
+		"related"?: ObjectReference,
+		"reportingComponent"?: __cedar::String,
+		"reportingInstance"?: __cedar::String,
+		"series"?: EventSeries,
+		"source"?: EventSource,
+		"type"?: __cedar::String
+	};
+	entity EventList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Event >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity EventSeries = {
+		"count"?: __cedar::Long,
+		"lastObservedTime"?: __cedar::String
+	};
+	entity EventSource = {
+		"component"?: __cedar::String,
+		"host"?: __cedar::String
+	};
+	entity ExecAction = {
+		"command"?: Set < __cedar::String >
+	};
+	entity FCVolumeSource = {
+		"fsType"?: __cedar::String,
+		"lun"?: __cedar::Long,
+		"readOnly"?: __cedar::Bool,
+		"targetWWNs"?: Set < __cedar::String >,
+		"wwids"?: Set < __cedar::String >
+	};
+	entity FlexPersistentVolumeSource = {
+		"driver": __cedar::String,
+		"fsType"?: __cedar::String,
+		"options"?: Set < meta::v1::KeyValue >,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: SecretReference
+	};
+	entity FlexVolumeSource = {
+		"driver": __cedar::String,
+		"fsType"?: __cedar::String,
+		"options"?: Set < meta::v1::KeyValue >,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: LocalObjectReference
+	};
+	entity FlockerVolumeSource = {
+		"datasetName"?: __cedar::String,
+		"datasetUUID"?: __cedar::String
+	};
+	entity GCEPersistentDiskVolumeSource = {
+		"fsType"?: __cedar::String,
+		"partition"?: __cedar::Long,
+		"pdName": __cedar::String,
+		"readOnly"?: __cedar::Bool
+	};
+	entity GRPCAction = {
+		"port": __cedar::Long,
+		"service"?: __cedar::String
+	};
+	entity GitRepoVolumeSource = {
+		"directory"?: __cedar::String,
+		"repository": __cedar::String,
+		"revision"?: __cedar::String
+	};
+	entity GlusterfsPersistentVolumeSource = {
+		"endpoints": __cedar::String,
+		"endpointsNamespace"?: __cedar::String,
+		"path": __cedar::String,
+		"readOnly"?: __cedar::Bool
+	};
+	entity GlusterfsVolumeSource = {
+		"endpoints": __cedar::String,
+		"path": __cedar::String,
+		"readOnly"?: __cedar::Bool
+	};
+	entity HTTPGetAction = {
+		"host"?: __cedar::String,
+		"httpHeaders"?: Set < HTTPHeader >,
+		"path"?: __cedar::String,
+		"port": __cedar::String,
+		"scheme"?: __cedar::String
+	};
+	entity HTTPHeader = {
+		"name": __cedar::String,
+		"value": __cedar::String
+	};
+	entity HostAlias = {
+		"hostnames"?: Set < __cedar::String >,
+		"ip": __cedar::String
+	};
+	entity HostIP = {
+		"ip": __cedar::String
+	};
+	entity HostPathVolumeSource = {
+		"path": __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity ISCSIPersistentVolumeSource = {
+		"chapAuthDiscovery"?: __cedar::Bool,
+		"chapAuthSession"?: __cedar::Bool,
+		"fsType"?: __cedar::String,
+		"initiatorName"?: __cedar::String,
+		"iqn": __cedar::String,
+		"iscsiInterface"?: __cedar::String,
+		"lun": __cedar::Long,
+		"portals"?: Set < __cedar::String >,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: SecretReference,
+		"targetPortal": __cedar::String
+	};
+	entity ISCSIVolumeSource = {
+		"chapAuthDiscovery"?: __cedar::Bool,
+		"chapAuthSession"?: __cedar::Bool,
+		"fsType"?: __cedar::String,
+		"initiatorName"?: __cedar::String,
+		"iqn": __cedar::String,
+		"iscsiInterface"?: __cedar::String,
+		"lun": __cedar::Long,
+		"portals"?: Set < __cedar::String >,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: LocalObjectReference,
+		"targetPortal": __cedar::String
+	};
+	entity ImageVolumeSource = {
+		"pullPolicy"?: __cedar::String,
+		"reference"?: __cedar::String
+	};
+	entity KeyToPath = {
+		"key": __cedar::String,
+		"mode"?: __cedar::Long,
+		"path": __cedar::String
+	};
+	entity Lifecycle = {
+		"postStart"?: LifecycleHandler,
+		"preStop"?: LifecycleHandler
+	};
+	entity LifecycleHandler = {
+		"exec"?: ExecAction,
+		"httpGet"?: HTTPGetAction,
+		"sleep"?: SleepAction,
+		"tcpSocket"?: TCPSocketAction
+	};
+	entity LimitRange = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: LimitRangeSpec
+	};
+	entity LimitRangeItem = {
+		"default"?: __cedar::String,
+		"defaultRequest"?: __cedar::String,
+		"max"?: __cedar::String,
+		"maxLimitRequestRatio"?: __cedar::String,
+		"min"?: __cedar::String,
+		"type": __cedar::String
+	};
+	entity LimitRangeList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < LimitRange >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity LimitRangeSpec = {
+		"limits": Set < LimitRangeItem >
+	};
+	entity LinuxContainerUser = {
+		"gid": __cedar::Long,
+		"supplementalGroups"?: Set < __cedar::Long >,
+		"uid": __cedar::Long
+	};
+	entity LoadBalancerIngress = {
+		"hostname"?: __cedar::String,
+		"ip"?: __cedar::String,
+		"ipMode"?: __cedar::String,
+		"ports"?: Set < PortStatus >
+	};
+	entity LoadBalancerStatus = {
+		"ingress"?: Set < LoadBalancerIngress >
+	};
+	entity LocalObjectReference = {
+		"name"?: __cedar::String
+	};
+	entity LocalVolumeSource = {
+		"fsType"?: __cedar::String,
+		"path": __cedar::String
+	};
+	entity ModifyVolumeStatus = {
+		"status": __cedar::String,
+		"targetVolumeAttributesClassName"?: __cedar::String
+	};
+	entity NFSVolumeSource = {
+		"path": __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"server": __cedar::String
+	};
+	entity Namespace = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: NamespaceSpec,
+		"status"?: NamespaceStatus
+	};
+	entity NamespaceCondition = {
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity NamespaceList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Namespace >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity NamespaceSpec = {
+		"finalizers"?: Set < __cedar::String >
+	};
+	entity NamespaceStatus = {
+		"conditions"?: Set < NamespaceCondition >,
+		"phase"?: __cedar::String
+	};
+	entity Node = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: NodeSpec,
+		"status"?: NodeStatus
+	};
+	entity NodeAddress = {
+		"address": __cedar::String,
+		"type": __cedar::String
+	};
+	entity NodeAffinity = {
+		"preferredDuringSchedulingIgnoredDuringExecution"?: Set < PreferredSchedulingTerm >,
+		"requiredDuringSchedulingIgnoredDuringExecution"?: NodeSelector
+	};
+	entity NodeCondition = {
+		"lastHeartbeatTime"?: __cedar::String,
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity NodeConfigSource = {
+		"configMap"?: ConfigMapNodeConfigSource
+	};
+	entity NodeConfigStatus = {
+		"active"?: NodeConfigSource,
+		"assigned"?: NodeConfigSource,
+		"error"?: __cedar::String,
+		"lastKnownGood"?: NodeConfigSource
+	};
+	entity NodeDaemonEndpoints = {
+		"kubeletEndpoint"?: DaemonEndpoint
+	};
+	entity NodeFeatures = {
+		"supplementalGroupsPolicy"?: __cedar::Bool
+	};
+	entity NodeList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Node >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity NodeRuntimeHandler = {
+		"features"?: NodeRuntimeHandlerFeatures,
+		"name"?: __cedar::String
+	};
+	entity NodeRuntimeHandlerFeatures = {
+		"recursiveReadOnlyMounts"?: __cedar::Bool,
+		"userNamespaces"?: __cedar::Bool
+	};
+	entity NodeSelector = {
+		"nodeSelectorTerms": Set < NodeSelectorTerm >
+	};
+	entity NodeSelectorRequirement = {
+		"key": __cedar::String,
+		"operator": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	entity NodeSelectorTerm = {
+		"matchExpressions"?: Set < NodeSelectorRequirement >,
+		"matchFields"?: Set < NodeSelectorRequirement >
+	};
+	entity NodeSpec = {
+		"configSource"?: NodeConfigSource,
+		"externalID"?: __cedar::String,
+		"podCIDR"?: __cedar::String,
+		"podCIDRs"?: Set < __cedar::String >,
+		"providerID"?: __cedar::String,
+		"taints"?: Set < Taint >,
+		"unschedulable"?: __cedar::Bool
+	};
+	entity NodeStatus = {
+		"addresses"?: Set < NodeAddress >,
+		"allocatable"?: __cedar::String,
+		"capacity"?: __cedar::String,
+		"conditions"?: Set < NodeCondition >,
+		"config"?: NodeConfigStatus,
+		"daemonEndpoints"?: NodeDaemonEndpoints,
+		"features"?: NodeFeatures,
+		"images"?: Set < ContainerImage >,
+		"nodeInfo"?: NodeSystemInfo,
+		"phase"?: __cedar::String,
+		"runtimeHandlers"?: Set < NodeRuntimeHandler >,
+		"volumesAttached"?: Set < AttachedVolume >,
+		"volumesInUse"?: Set < __cedar::String >
+	};
+	entity NodeSystemInfo = {
+		"architecture": __cedar::String,
+		"bootID": __cedar::String,
+		"containerRuntimeVersion": __cedar::String,
+		"kernelVersion": __cedar::String,
+		"kubeProxyVersion": __cedar::String,
+		"kubeletVersion": __cedar::String,
+		"machineID": __cedar::String,
+		"operatingSystem": __cedar::String,
+		"osImage": __cedar::String,
+		"systemUUID": __cedar::String
+	};
+	entity ObjectFieldSelector = {
+		"apiVersion"?: __cedar::String,
+		"fieldPath": __cedar::String
+	};
+	entity ObjectReference = {
+		"apiVersion"?: __cedar::String,
+		"fieldPath"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"resourceVersion"?: __cedar::String,
+		"uid"?: __cedar::String
+	};
+	entity PersistentVolume = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PersistentVolumeSpec,
+		"status"?: PersistentVolumeStatus
+	};
+	entity PersistentVolumeClaim = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PersistentVolumeClaimSpec,
+		"status"?: PersistentVolumeClaimStatus
+	};
+	entity PersistentVolumeClaimCondition = {
+		"lastProbeTime"?: __cedar::String,
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity PersistentVolumeClaimList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PersistentVolumeClaim >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PersistentVolumeClaimSpec = {
+		"accessModes"?: Set < __cedar::String >,
+		"dataSource"?: TypedLocalObjectReference,
+		"dataSourceRef"?: TypedObjectReference,
+		"resources"?: VolumeResourceRequirements,
+		"selector"?: meta::v1::LabelSelector,
+		"storageClassName"?: __cedar::String,
+		"volumeAttributesClassName"?: __cedar::String,
+		"volumeMode"?: __cedar::String,
+		"volumeName"?: __cedar::String
+	};
+	entity PersistentVolumeClaimStatus = {
+		"accessModes"?: Set < __cedar::String >,
+		"allocatedResourceStatuses"?: Set < meta::v1::KeyValue >,
+		"allocatedResources"?: __cedar::String,
+		"capacity"?: __cedar::String,
+		"conditions"?: Set < PersistentVolumeClaimCondition >,
+		"currentVolumeAttributesClassName"?: __cedar::String,
+		"modifyVolumeStatus"?: ModifyVolumeStatus,
+		"phase"?: __cedar::String
+	};
+	entity PersistentVolumeClaimTemplate = {
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": PersistentVolumeClaimSpec
+	};
+	entity PersistentVolumeClaimVolumeSource = {
+		"claimName": __cedar::String,
+		"readOnly"?: __cedar::Bool
+	};
+	entity PersistentVolumeList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PersistentVolume >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PersistentVolumeSpec = {
+		"accessModes"?: Set < __cedar::String >,
+		"awsElasticBlockStore"?: AWSElasticBlockStoreVolumeSource,
+		"azureDisk"?: AzureDiskVolumeSource,
+		"azureFile"?: AzureFilePersistentVolumeSource,
+		"capacity"?: __cedar::String,
+		"cephfs"?: CephFSPersistentVolumeSource,
+		"cinder"?: CinderPersistentVolumeSource,
+		"claimRef"?: ObjectReference,
+		"csi"?: CSIPersistentVolumeSource,
+		"fc"?: FCVolumeSource,
+		"flexVolume"?: FlexPersistentVolumeSource,
+		"flocker"?: FlockerVolumeSource,
+		"gcePersistentDisk"?: GCEPersistentDiskVolumeSource,
+		"glusterfs"?: GlusterfsPersistentVolumeSource,
+		"hostPath"?: HostPathVolumeSource,
+		"iscsi"?: ISCSIPersistentVolumeSource,
+		"local"?: LocalVolumeSource,
+		"mountOptions"?: Set < __cedar::String >,
+		"nfs"?: NFSVolumeSource,
+		"nodeAffinity"?: VolumeNodeAffinity,
+		"persistentVolumeReclaimPolicy"?: __cedar::String,
+		"photonPersistentDisk"?: PhotonPersistentDiskVolumeSource,
+		"portworxVolume"?: PortworxVolumeSource,
+		"quobyte"?: QuobyteVolumeSource,
+		"rbd"?: RBDPersistentVolumeSource,
+		"scaleIO"?: ScaleIOPersistentVolumeSource,
+		"storageClassName"?: __cedar::String,
+		"storageos"?: StorageOSPersistentVolumeSource,
+		"volumeAttributesClassName"?: __cedar::String,
+		"volumeMode"?: __cedar::String,
+		"vsphereVolume"?: VsphereVirtualDiskVolumeSource
+	};
+	entity PersistentVolumeStatus = {
+		"lastPhaseTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"phase"?: __cedar::String,
+		"reason"?: __cedar::String
+	};
+	entity PhotonPersistentDiskVolumeSource = {
+		"fsType"?: __cedar::String,
+		"pdID": __cedar::String
+	};
+	entity Pod = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PodSpec,
+		"status"?: PodStatus
+	};
+	entity PodAffinity = {
+		"preferredDuringSchedulingIgnoredDuringExecution"?: Set < WeightedPodAffinityTerm >,
+		"requiredDuringSchedulingIgnoredDuringExecution"?: Set < PodAffinityTerm >
+	};
+	entity PodAffinityTerm = {
+		"labelSelector"?: meta::v1::LabelSelector,
+		"matchLabelKeys"?: Set < __cedar::String >,
+		"mismatchLabelKeys"?: Set < __cedar::String >,
+		"namespaceSelector"?: meta::v1::LabelSelector,
+		"namespaces"?: Set < __cedar::String >,
+		"topologyKey": __cedar::String
+	};
+	entity PodAntiAffinity = {
+		"preferredDuringSchedulingIgnoredDuringExecution"?: Set < WeightedPodAffinityTerm >,
+		"requiredDuringSchedulingIgnoredDuringExecution"?: Set < PodAffinityTerm >
+	};
+	entity PodCondition = {
+		"lastProbeTime"?: __cedar::String,
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity PodDNSConfig = {
+		"nameservers"?: Set < __cedar::String >,
+		"options"?: Set < PodDNSConfigOption >,
+		"searches"?: Set < __cedar::String >
+	};
+	entity PodDNSConfigOption = {
+		"name"?: __cedar::String,
+		"value"?: __cedar::String
+	};
+	entity PodIP = {
+		"ip": __cedar::String
+	};
+	entity PodList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Pod >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PodOS = {
+		"name": __cedar::String
+	};
+	entity PodReadinessGate = {
+		"conditionType": __cedar::String
+	};
+	entity PodResourceClaim = {
+		"name": __cedar::String,
+		"resourceClaimName"?: __cedar::String,
+		"resourceClaimTemplateName"?: __cedar::String
+	};
+	entity PodResourceClaimStatus = {
+		"name": __cedar::String,
+		"resourceClaimName"?: __cedar::String
+	};
+	entity PodSchedulingGate = {
+		"name": __cedar::String
+	};
+	entity PodSecurityContext = {
+		"appArmorProfile"?: AppArmorProfile,
+		"fsGroup"?: __cedar::Long,
+		"fsGroupChangePolicy"?: __cedar::String,
+		"runAsGroup"?: __cedar::Long,
+		"runAsNonRoot"?: __cedar::Bool,
+		"runAsUser"?: __cedar::Long,
+		"seLinuxOptions"?: SELinuxOptions,
+		"seccompProfile"?: SeccompProfile,
+		"supplementalGroups"?: Set < __cedar::Long >,
+		"supplementalGroupsPolicy"?: __cedar::String,
+		"sysctls"?: Set < Sysctl >,
+		"windowsOptions"?: WindowsSecurityContextOptions
+	};
+	entity PodSpec = {
+		"activeDeadlineSeconds"?: __cedar::Long,
+		"affinity"?: Affinity,
+		"automountServiceAccountToken"?: __cedar::Bool,
+		"containers": Set < Container >,
+		"dnsConfig"?: PodDNSConfig,
+		"dnsPolicy"?: __cedar::String,
+		"enableServiceLinks"?: __cedar::Bool,
+		"ephemeralContainers"?: Set < EphemeralContainer >,
+		"hostAliases"?: Set < HostAlias >,
+		"hostIPC"?: __cedar::Bool,
+		"hostNetwork"?: __cedar::Bool,
+		"hostPID"?: __cedar::Bool,
+		"hostUsers"?: __cedar::Bool,
+		"hostname"?: __cedar::String,
+		"imagePullSecrets"?: Set < LocalObjectReference >,
+		"initContainers"?: Set < Container >,
+		"nodeName"?: __cedar::String,
+		"nodeSelector"?: Set < meta::v1::KeyValue >,
+		"os"?: PodOS,
+		"overhead"?: __cedar::String,
+		"preemptionPolicy"?: __cedar::String,
+		"priority"?: __cedar::Long,
+		"priorityClassName"?: __cedar::String,
+		"readinessGates"?: Set < PodReadinessGate >,
+		"resourceClaims"?: Set < PodResourceClaim >,
+		"restartPolicy"?: __cedar::String,
+		"runtimeClassName"?: __cedar::String,
+		"schedulerName"?: __cedar::String,
+		"schedulingGates"?: Set < PodSchedulingGate >,
+		"securityContext"?: PodSecurityContext,
+		"serviceAccount"?: __cedar::String,
+		"serviceAccountName"?: __cedar::String,
+		"setHostnameAsFQDN"?: __cedar::Bool,
+		"shareProcessNamespace"?: __cedar::Bool,
+		"subdomain"?: __cedar::String,
+		"terminationGracePeriodSeconds"?: __cedar::Long,
+		"tolerations"?: Set < Toleration >,
+		"topologySpreadConstraints"?: Set < TopologySpreadConstraint >,
+		"volumes"?: Set < Volume >
+	};
+	entity PodStatus = {
+		"conditions"?: Set < PodCondition >,
+		"containerStatuses"?: Set < ContainerStatus >,
+		"ephemeralContainerStatuses"?: Set < ContainerStatus >,
+		"hostIP"?: __cedar::String,
+		"hostIPs"?: Set < HostIP >,
+		"initContainerStatuses"?: Set < ContainerStatus >,
+		"message"?: __cedar::String,
+		"nominatedNodeName"?: __cedar::String,
+		"phase"?: __cedar::String,
+		"podIP"?: __cedar::String,
+		"podIPs"?: Set < PodIP >,
+		"qosClass"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"resize"?: __cedar::String,
+		"resourceClaimStatuses"?: Set < PodResourceClaimStatus >,
+		"startTime"?: __cedar::String
+	};
+	entity PodTemplate = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"template"?: PodTemplateSpec
+	};
+	entity PodTemplateList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PodTemplate >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PodTemplateSpec = {
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PodSpec
+	};
+	entity PortStatus = {
+		"error"?: __cedar::String,
+		"port": __cedar::Long,
+		"protocol": __cedar::String
+	};
+	entity PortworxVolumeSource = {
+		"fsType"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"volumeID": __cedar::String
+	};
+	entity PreferredSchedulingTerm = {
+		"preference": NodeSelectorTerm,
+		"weight": __cedar::Long
+	};
+	entity Probe = {
+		"exec"?: ExecAction,
+		"failureThreshold"?: __cedar::Long,
+		"grpc"?: GRPCAction,
+		"httpGet"?: HTTPGetAction,
+		"initialDelaySeconds"?: __cedar::Long,
+		"periodSeconds"?: __cedar::Long,
+		"successThreshold"?: __cedar::Long,
+		"tcpSocket"?: TCPSocketAction,
+		"terminationGracePeriodSeconds"?: __cedar::Long,
+		"timeoutSeconds"?: __cedar::Long
+	};
+	entity ProjectedVolumeSource = {
+		"defaultMode"?: __cedar::Long,
+		"sources"?: Set < VolumeProjection >
+	};
+	entity QuobyteVolumeSource = {
+		"group"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"registry": __cedar::String,
+		"tenant"?: __cedar::String,
+		"user"?: __cedar::String,
+		"volume": __cedar::String
+	};
+	entity RBDPersistentVolumeSource = {
+		"fsType"?: __cedar::String,
+		"image": __cedar::String,
+		"keyring"?: __cedar::String,
+		"monitors": Set < __cedar::String >,
+		"pool"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: SecretReference,
+		"user"?: __cedar::String
+	};
+	entity RBDVolumeSource = {
+		"fsType"?: __cedar::String,
+		"image": __cedar::String,
+		"keyring"?: __cedar::String,
+		"monitors": Set < __cedar::String >,
+		"pool"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: LocalObjectReference,
+		"user"?: __cedar::String
+	};
+	entity ReplicationController = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ReplicationControllerSpec,
+		"status"?: ReplicationControllerStatus
+	};
+	entity ReplicationControllerCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity ReplicationControllerList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ReplicationController >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ReplicationControllerSpec = {
+		"minReadySeconds"?: __cedar::Long,
+		"replicas"?: __cedar::Long,
+		"selector"?: Set < meta::v1::KeyValue >,
+		"template"?: PodTemplateSpec
+	};
+	entity ReplicationControllerStatus = {
+		"availableReplicas"?: __cedar::Long,
+		"conditions"?: Set < ReplicationControllerCondition >,
+		"fullyLabeledReplicas"?: __cedar::Long,
+		"observedGeneration"?: __cedar::Long,
+		"readyReplicas"?: __cedar::Long,
+		"replicas": __cedar::Long
+	};
+	entity ResourceClaim = {
+		"name": __cedar::String,
+		"request"?: __cedar::String
+	};
+	entity ResourceFieldSelector = {
+		"containerName"?: __cedar::String,
+		"divisor"?: __cedar::String,
+		"resource": __cedar::String
+	};
+	entity ResourceHealth = {
+		"health"?: __cedar::String,
+		"resourceID": __cedar::String
+	};
+	entity ResourceQuota = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ResourceQuotaSpec,
+		"status"?: ResourceQuotaStatus
+	};
+	entity ResourceQuotaList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ResourceQuota >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ResourceQuotaSpec = {
+		"hard"?: __cedar::String,
+		"scopeSelector"?: ScopeSelector,
+		"scopes"?: Set < __cedar::String >
+	};
+	entity ResourceQuotaStatus = {
+		"hard"?: __cedar::String,
+		"used"?: __cedar::String
+	};
+	entity ResourceRequirements = {
+		"claims"?: Set < ResourceClaim >,
+		"limits"?: __cedar::String,
+		"requests"?: __cedar::String
+	};
+	entity ResourceStatus = {
+		"name": __cedar::String,
+		"resources"?: Set < ResourceHealth >
+	};
+	entity SELinuxOptions = {
+		"level"?: __cedar::String,
+		"role"?: __cedar::String,
+		"type"?: __cedar::String,
+		"user"?: __cedar::String
+	};
+	entity ScaleIOPersistentVolumeSource = {
+		"fsType"?: __cedar::String,
+		"gateway": __cedar::String,
+		"protectionDomain"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef": SecretReference,
+		"sslEnabled"?: __cedar::Bool,
+		"storageMode"?: __cedar::String,
+		"storagePool"?: __cedar::String,
+		"system": __cedar::String,
+		"volumeName"?: __cedar::String
+	};
+	entity ScaleIOVolumeSource = {
+		"fsType"?: __cedar::String,
+		"gateway": __cedar::String,
+		"protectionDomain"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef": LocalObjectReference,
+		"sslEnabled"?: __cedar::Bool,
+		"storageMode"?: __cedar::String,
+		"storagePool"?: __cedar::String,
+		"system": __cedar::String,
+		"volumeName"?: __cedar::String
+	};
+	entity ScopeSelector = {
+		"matchExpressions"?: Set < ScopedResourceSelectorRequirement >
+	};
+	entity ScopedResourceSelectorRequirement = {
+		"operator": __cedar::String,
+		"scopeName": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	entity SeccompProfile = {
+		"localhostProfile"?: __cedar::String,
+		"type": __cedar::String
+	};
+	entity Secret = {
+		"apiVersion"?: __cedar::String,
+		"data"?: Set < meta::v1::KeyValue >,
+		"immutable"?: __cedar::Bool,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"stringData"?: Set < meta::v1::KeyValue >,
+		"type"?: __cedar::String
+	};
+	entity SecretEnvSource = {
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity SecretKeySelector = {
+		"key": __cedar::String,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity SecretList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Secret >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity SecretProjection = {
+		"items"?: Set < KeyToPath >,
+		"name"?: __cedar::String,
+		"optional"?: __cedar::Bool
+	};
+	entity SecretReference = {
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String
+	};
+	entity SecretVolumeSource = {
+		"defaultMode"?: __cedar::Long,
+		"items"?: Set < KeyToPath >,
+		"optional"?: __cedar::Bool,
+		"secretName"?: __cedar::String
+	};
+	entity SecurityContext = {
+		"allowPrivilegeEscalation"?: __cedar::Bool,
+		"appArmorProfile"?: AppArmorProfile,
+		"capabilities"?: Capabilities,
+		"privileged"?: __cedar::Bool,
+		"procMount"?: __cedar::String,
+		"readOnlyRootFilesystem"?: __cedar::Bool,
+		"runAsGroup"?: __cedar::Long,
+		"runAsNonRoot"?: __cedar::Bool,
+		"runAsUser"?: __cedar::Long,
+		"seLinuxOptions"?: SELinuxOptions,
+		"seccompProfile"?: SeccompProfile,
+		"windowsOptions"?: WindowsSecurityContextOptions
+	};
+	entity Service = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: ServiceSpec,
+		"status"?: ServiceStatus
+	};
+	entity ServiceAccount = {
+		"apiVersion"?: __cedar::String,
+		"automountServiceAccountToken"?: __cedar::Bool,
+		"imagePullSecrets"?: Set < LocalObjectReference >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"secrets"?: Set < ObjectReference >
+	};
+	entity ServiceAccountList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ServiceAccount >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ServiceAccountTokenProjection = {
+		"audience"?: __cedar::String,
+		"expirationSeconds"?: __cedar::Long,
+		"path": __cedar::String
+	};
+	entity ServiceList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Service >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ServicePort = {
+		"appProtocol"?: __cedar::String,
+		"name"?: __cedar::String,
+		"nodePort"?: __cedar::Long,
+		"port": __cedar::Long,
+		"protocol"?: __cedar::String,
+		"targetPort"?: __cedar::String
+	};
+	entity ServiceSpec = {
+		"allocateLoadBalancerNodePorts"?: __cedar::Bool,
+		"clusterIP"?: __cedar::String,
+		"clusterIPs"?: Set < __cedar::String >,
+		"externalIPs"?: Set < __cedar::String >,
+		"externalName"?: __cedar::String,
+		"externalTrafficPolicy"?: __cedar::String,
+		"healthCheckNodePort"?: __cedar::Long,
+		"internalTrafficPolicy"?: __cedar::String,
+		"ipFamilies"?: Set < __cedar::String >,
+		"ipFamilyPolicy"?: __cedar::String,
+		"loadBalancerClass"?: __cedar::String,
+		"loadBalancerIP"?: __cedar::String,
+		"loadBalancerSourceRanges"?: Set < __cedar::String >,
+		"ports"?: Set < ServicePort >,
+		"publishNotReadyAddresses"?: __cedar::Bool,
+		"selector"?: Set < meta::v1::KeyValue >,
+		"sessionAffinity"?: __cedar::String,
+		"sessionAffinityConfig"?: SessionAffinityConfig,
+		"trafficDistribution"?: __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity ServiceStatus = {
+		"conditions"?: Set < meta::v1::Condition >,
+		"loadBalancer"?: LoadBalancerStatus
+	};
+	entity SessionAffinityConfig = {
+		"clientIP"?: ClientIPConfig
+	};
+	entity SleepAction = {
+		"seconds": __cedar::Long
+	};
+	entity StorageOSPersistentVolumeSource = {
+		"fsType"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: ObjectReference,
+		"volumeName"?: __cedar::String,
+		"volumeNamespace"?: __cedar::String
+	};
+	entity StorageOSVolumeSource = {
+		"fsType"?: __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"secretRef"?: LocalObjectReference,
+		"volumeName"?: __cedar::String,
+		"volumeNamespace"?: __cedar::String
+	};
+	entity Sysctl = {
+		"name": __cedar::String,
+		"value": __cedar::String
+	};
+	entity TCPSocketAction = {
+		"host"?: __cedar::String,
+		"port": __cedar::String
+	};
+	entity Taint = {
+		"effect": __cedar::String,
+		"key": __cedar::String,
+		"timeAdded"?: __cedar::String,
+		"value"?: __cedar::String
+	};
+	entity Toleration = {
+		"effect"?: __cedar::String,
+		"key"?: __cedar::String,
+		"operator"?: __cedar::String,
+		"tolerationSeconds"?: __cedar::Long,
+		"value"?: __cedar::String
+	};
+	entity TopologySelectorLabelRequirement = {
+		"key": __cedar::String,
+		"values": Set < __cedar::String >
+	};
+	entity TopologySelectorTerm = {
+		"matchLabelExpressions"?: Set < TopologySelectorLabelRequirement >
+	};
+	entity TopologySpreadConstraint = {
+		"labelSelector"?: meta::v1::LabelSelector,
+		"matchLabelKeys"?: Set < __cedar::String >,
+		"maxSkew": __cedar::Long,
+		"minDomains"?: __cedar::Long,
+		"nodeAffinityPolicy"?: __cedar::String,
+		"nodeTaintsPolicy"?: __cedar::String,
+		"topologyKey": __cedar::String,
+		"whenUnsatisfiable": __cedar::String
+	};
+	entity TypedLocalObjectReference = {
+		"apiGroup"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String
+	};
+	entity TypedObjectReference = {
+		"apiGroup"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String,
+		"namespace"?: __cedar::String
+	};
+	entity Volume = {
+		"awsElasticBlockStore"?: AWSElasticBlockStoreVolumeSource,
+		"azureDisk"?: AzureDiskVolumeSource,
+		"azureFile"?: AzureFileVolumeSource,
+		"cephfs"?: CephFSVolumeSource,
+		"cinder"?: CinderVolumeSource,
+		"configMap"?: ConfigMapVolumeSource,
+		"csi"?: CSIVolumeSource,
+		"downwardAPI"?: DownwardAPIVolumeSource,
+		"emptyDir"?: EmptyDirVolumeSource,
+		"ephemeral"?: EphemeralVolumeSource,
+		"fc"?: FCVolumeSource,
+		"flexVolume"?: FlexVolumeSource,
+		"flocker"?: FlockerVolumeSource,
+		"gcePersistentDisk"?: GCEPersistentDiskVolumeSource,
+		"gitRepo"?: GitRepoVolumeSource,
+		"glusterfs"?: GlusterfsVolumeSource,
+		"hostPath"?: HostPathVolumeSource,
+		"image"?: ImageVolumeSource,
+		"iscsi"?: ISCSIVolumeSource,
+		"name": __cedar::String,
+		"nfs"?: NFSVolumeSource,
+		"persistentVolumeClaim"?: PersistentVolumeClaimVolumeSource,
+		"photonPersistentDisk"?: PhotonPersistentDiskVolumeSource,
+		"portworxVolume"?: PortworxVolumeSource,
+		"projected"?: ProjectedVolumeSource,
+		"quobyte"?: QuobyteVolumeSource,
+		"rbd"?: RBDVolumeSource,
+		"scaleIO"?: ScaleIOVolumeSource,
+		"secret"?: SecretVolumeSource,
+		"storageos"?: StorageOSVolumeSource,
+		"vsphereVolume"?: VsphereVirtualDiskVolumeSource
+	};
+	entity VolumeDevice = {
+		"devicePath": __cedar::String,
+		"name": __cedar::String
+	};
+	entity VolumeMount = {
+		"mountPath": __cedar::String,
+		"mountPropagation"?: __cedar::String,
+		"name": __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"recursiveReadOnly"?: __cedar::String,
+		"subPath"?: __cedar::String,
+		"subPathExpr"?: __cedar::String
+	};
+	entity VolumeMountStatus = {
+		"mountPath": __cedar::String,
+		"name": __cedar::String,
+		"readOnly"?: __cedar::Bool,
+		"recursiveReadOnly"?: __cedar::String
+	};
+	entity VolumeNodeAffinity = {
+		"required"?: NodeSelector
+	};
+	entity VolumeProjection = {
+		"clusterTrustBundle"?: ClusterTrustBundleProjection,
+		"configMap"?: ConfigMapProjection,
+		"downwardAPI"?: DownwardAPIProjection,
+		"secret"?: SecretProjection,
+		"serviceAccountToken"?: ServiceAccountTokenProjection
+	};
+	entity VolumeResourceRequirements = {
+		"limits"?: __cedar::String,
+		"requests"?: __cedar::String
+	};
+	entity VsphereVirtualDiskVolumeSource = {
+		"fsType"?: __cedar::String,
+		"storagePolicyID"?: __cedar::String,
+		"storagePolicyName"?: __cedar::String,
+		"volumePath": __cedar::String
+	};
+	entity WeightedPodAffinityTerm = {
+		"podAffinityTerm": PodAffinityTerm,
+		"weight": __cedar::Long
+	};
+	entity WindowsSecurityContextOptions = {
+		"gmsaCredentialSpec"?: __cedar::String,
+		"gmsaCredentialSpecName"?: __cedar::String,
+		"hostProcess"?: __cedar::Bool,
+		"runAsUserName"?: __cedar::String
+	};
+}
+
+namespace discovery::v1 {
+	entity Endpoint = {
+		"addresses": Set < __cedar::String >,
+		"conditions"?: EndpointConditions,
+		"deprecatedTopology"?: Set < meta::v1::KeyValue >,
+		"hints"?: EndpointHints,
+		"hostname"?: __cedar::String,
+		"nodeName"?: __cedar::String,
+		"targetRef"?: core::v1::ObjectReference,
+		"zone"?: __cedar::String
+	};
+	entity EndpointConditions = {
+		"ready"?: __cedar::Bool,
+		"serving"?: __cedar::Bool,
+		"terminating"?: __cedar::Bool
+	};
+	entity EndpointHints = {
+		"forZones"?: Set < ForZone >
+	};
+	entity EndpointPort = {
+		"appProtocol"?: __cedar::String,
+		"name"?: __cedar::String,
+		"port"?: __cedar::Long,
+		"protocol"?: __cedar::String
+	};
+	entity EndpointSlice = {
+		"addressType": __cedar::String,
+		"apiVersion"?: __cedar::String,
+		"endpoints": Set < Endpoint >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"ports"?: Set < EndpointPort >
+	};
+	entity EndpointSliceList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < EndpointSlice >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ForZone = {
+		"name": __cedar::String
+	};
+}
+
+namespace events::v1 {
+	entity Event = {
+		"action"?: __cedar::String,
+		"apiVersion"?: __cedar::String,
+		"deprecatedCount"?: __cedar::Long,
+		"deprecatedFirstTimestamp"?: __cedar::String,
+		"deprecatedLastTimestamp"?: __cedar::String,
+		"deprecatedSource"?: core::v1::EventSource,
+		"eventTime": __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"note"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"regarding"?: core::v1::ObjectReference,
+		"related"?: core::v1::ObjectReference,
+		"reportingController"?: __cedar::String,
+		"reportingInstance"?: __cedar::String,
+		"series"?: EventSeries,
+		"type"?: __cedar::String
+	};
+	entity EventList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Event >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity EventSeries = {
+		"count": __cedar::Long,
+		"lastObservedTime": __cedar::String
+	};
+}
+
+namespace flowcontrol::v1 {
+	entity ExemptPriorityLevelConfiguration = {
+		"lendablePercent"?: __cedar::Long,
+		"nominalConcurrencyShares"?: __cedar::Long
+	};
+	entity FlowDistinguisherMethod = {
+		"type": __cedar::String
+	};
+	entity FlowSchema = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: FlowSchemaSpec,
+		"status"?: FlowSchemaStatus
+	};
+	entity FlowSchemaCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status"?: __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity FlowSchemaList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < FlowSchema >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity FlowSchemaSpec = {
+		"distinguisherMethod"?: FlowDistinguisherMethod,
+		"matchingPrecedence"?: __cedar::Long,
+		"priorityLevelConfiguration": PriorityLevelConfigurationReference,
+		"rules"?: Set < PolicyRulesWithSubjects >
+	};
+	entity FlowSchemaStatus = {
+		"conditions"?: Set < FlowSchemaCondition >
+	};
+	entity GroupSubject = {
+		"name": __cedar::String
+	};
+	entity LimitResponse = {
+		"queuing"?: QueuingConfiguration,
+		"type": __cedar::String
+	};
+	entity LimitedPriorityLevelConfiguration = {
+		"borrowingLimitPercent"?: __cedar::Long,
+		"lendablePercent"?: __cedar::Long,
+		"limitResponse"?: LimitResponse,
+		"nominalConcurrencyShares"?: __cedar::Long
+	};
+	entity NonResourcePolicyRule = {
+		"nonResourceURLs": Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity PolicyRulesWithSubjects = {
+		"nonResourceRules"?: Set < NonResourcePolicyRule >,
+		"resourceRules"?: Set < ResourcePolicyRule >,
+		"subjects": Set < Subject >
+	};
+	entity PriorityLevelConfiguration = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PriorityLevelConfigurationSpec,
+		"status"?: PriorityLevelConfigurationStatus
+	};
+	entity PriorityLevelConfigurationCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status"?: __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity PriorityLevelConfigurationList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PriorityLevelConfiguration >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PriorityLevelConfigurationReference = {
+		"name": __cedar::String
+	};
+	entity PriorityLevelConfigurationSpec = {
+		"exempt"?: ExemptPriorityLevelConfiguration,
+		"limited"?: LimitedPriorityLevelConfiguration,
+		"type": __cedar::String
+	};
+	entity PriorityLevelConfigurationStatus = {
+		"conditions"?: Set < PriorityLevelConfigurationCondition >
+	};
+	entity QueuingConfiguration = {
+		"handSize"?: __cedar::Long,
+		"queueLengthLimit"?: __cedar::Long,
+		"queues"?: __cedar::Long
+	};
+	entity ResourcePolicyRule = {
+		"apiGroups": Set < __cedar::String >,
+		"clusterScope"?: __cedar::Bool,
+		"namespaces"?: Set < __cedar::String >,
+		"resources": Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity ServiceAccountSubject = {
+		"name": __cedar::String,
+		"namespace": __cedar::String
+	};
+	entity Subject = {
+		"group"?: GroupSubject,
+		"kind": __cedar::String,
+		"serviceAccount"?: ServiceAccountSubject,
+		"user"?: UserSubject
+	};
+	entity UserSubject = {
+		"name": __cedar::String
+	};
+}
+
+namespace io::cert_manager::v1 {
+	entity Certificate = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: {
+			"commonName"?: __cedar::String,
+			"dnsNames"?: Set < __cedar::String >,
+			"duration"?: __cedar::String,
+			"emailAddresses"?: Set < __cedar::String >,
+			"encodeUsagesInRequest"?: __cedar::Bool,
+			"ipAddresses"?: Set < __cedar::String >,
+			"isCA"?: __cedar::Bool,
+			"issuerRef"?: {
+				"group"?: __cedar::String,
+				"kind"?: __cedar::String,
+				"name"?: __cedar::String
+			},
+			"keystores"?: {
+				"jks"?: {
+					"alias"?: __cedar::String,
+					"create"?: __cedar::Bool,
+					"passwordSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					}
+				},
+				"pkcs12"?: {
+					"create"?: __cedar::Bool,
+					"passwordSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					},
+					"profile"?: __cedar::String
+				}
+			},
+			"literalSubject"?: __cedar::String,
+			"nameConstraints"?: {
+				"critical"?: __cedar::Bool,
+				"excluded"?: {
+					"dnsDomains"?: Set < __cedar::String >,
+					"emailAddresses"?: Set < __cedar::String >,
+					"ipRanges"?: Set < __cedar::String >,
+					"uriDomains"?: Set < __cedar::String >
+				},
+				"permitted"?: {
+					"dnsDomains"?: Set < __cedar::String >,
+					"emailAddresses"?: Set < __cedar::String >,
+					"ipRanges"?: Set < __cedar::String >,
+					"uriDomains"?: Set < __cedar::String >
+				}
+			},
+			"privateKey"?: {
+				"algorithm"?: __cedar::String,
+				"encoding"?: __cedar::String,
+				"rotationPolicy"?: __cedar::String,
+				"size"?: __cedar::Long
+			},
+			"renewBefore"?: __cedar::String,
+			"renewBeforePercentage"?: __cedar::Long,
+			"revisionHistoryLimit"?: __cedar::Long,
+			"secretName"?: __cedar::String,
+		"secretTemplate"?: {},
+			"subject"?: {
+				"countries"?: Set < __cedar::String >,
+				"localities"?: Set < __cedar::String >,
+				"organizationalUnits"?: Set < __cedar::String >,
+				"organizations"?: Set < __cedar::String >,
+				"postalCodes"?: Set < __cedar::String >,
+				"provinces"?: Set < __cedar::String >,
+				"serialNumber"?: __cedar::String,
+				"streetAddresses"?: Set < __cedar::String >
+			},
+			"uris"?: Set < __cedar::String >,
+			"usages"?: Set < __cedar::String >
+		},
+		"status"?: {
+			"failedIssuanceAttempts"?: __cedar::Long,
+			"lastFailureTime"?: __cedar::String,
+			"nextPrivateKeySecretName"?: __cedar::String,
+			"notAfter"?: __cedar::String,
+			"notBefore"?: __cedar::String,
+			"renewalTime"?: __cedar::String,
+			"revision"?: __cedar::Long
+		}
+	};
+	entity CertificateList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity CertificateRequest = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: {
+			"duration"?: __cedar::String,
+			"groups"?: Set < __cedar::String >,
+			"isCA"?: __cedar::Bool,
+			"issuerRef"?: {
+				"group"?: __cedar::String,
+				"kind"?: __cedar::String,
+				"name"?: __cedar::String
+			},
+			"request"?: __cedar::String,
+			"uid"?: __cedar::String,
+			"usages"?: Set < __cedar::String >,
+			"username"?: __cedar::String
+		},
+		"status"?: {
+			"ca"?: __cedar::String,
+			"certificate"?: __cedar::String,
+			"failureTime"?: __cedar::String
+		}
+	};
+	entity CertificateRequestList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ClusterIssuer = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": {
+			"acme"?: {
+				"caBundle"?: __cedar::String,
+				"disableAccountKeyGeneration"?: __cedar::Bool,
+				"email"?: __cedar::String,
+				"enableDurationFeature"?: __cedar::Bool,
+				"externalAccountBinding"?: {
+					"keyAlgorithm"?: __cedar::String,
+					"keyID"?: __cedar::String,
+					"keySecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					}
+				},
+				"preferredChain"?: __cedar::String,
+				"privateKeySecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"server"?: __cedar::String,
+				"skipTLSVerify"?: __cedar::Bool
+			},
+			"ca"?: {
+				"crlDistributionPoints"?: Set < __cedar::String >,
+				"issuingCertificateURLs"?: Set < __cedar::String >,
+				"ocspServers"?: Set < __cedar::String >,
+				"secretName"?: __cedar::String
+			},
+			"selfSigned"?: {
+				"crlDistributionPoints"?: Set < __cedar::String >
+			},
+			"vault"?: {
+				"auth"?: {
+					"appRole"?: {
+						"path"?: __cedar::String,
+						"roleId"?: __cedar::String,
+						"secretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"clientCertificate"?: {
+						"mountPath"?: __cedar::String,
+						"name"?: __cedar::String,
+						"secretName"?: __cedar::String
+					},
+					"kubernetes"?: {
+						"mountPath"?: __cedar::String,
+						"role"?: __cedar::String,
+						"secretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"serviceAccountRef"?: {
+							"audiences"?: Set < __cedar::String >,
+							"name"?: __cedar::String
+						}
+					},
+					"tokenSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					}
+				},
+				"caBundle"?: __cedar::String,
+				"caBundleSecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"clientCertSecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"clientKeySecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"namespace"?: __cedar::String,
+				"path"?: __cedar::String,
+				"server"?: __cedar::String
+			},
+			"venafi"?: {
+				"cloud"?: {
+					"apiTokenSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					},
+					"url"?: __cedar::String
+				},
+				"tpp"?: {
+					"caBundle"?: __cedar::String,
+					"caBundleSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					},
+					"credentialsRef"?: {
+						"name"?: __cedar::String
+					},
+					"url"?: __cedar::String
+				},
+				"zone"?: __cedar::String
+			}
+		},
+		"status"?: {
+			"acme"?: {
+				"lastPrivateKeyHash"?: __cedar::String,
+				"lastRegisteredEmail"?: __cedar::String,
+				"uri"?: __cedar::String
+			}
+		}
+	};
+	entity ClusterIssuerList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity Issuer = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": {
+			"acme"?: {
+				"caBundle"?: __cedar::String,
+				"disableAccountKeyGeneration"?: __cedar::Bool,
+				"email"?: __cedar::String,
+				"enableDurationFeature"?: __cedar::Bool,
+				"externalAccountBinding"?: {
+					"keyAlgorithm"?: __cedar::String,
+					"keyID"?: __cedar::String,
+					"keySecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					}
+				},
+				"preferredChain"?: __cedar::String,
+				"privateKeySecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"server"?: __cedar::String,
+				"skipTLSVerify"?: __cedar::Bool
+			},
+			"ca"?: {
+				"crlDistributionPoints"?: Set < __cedar::String >,
+				"issuingCertificateURLs"?: Set < __cedar::String >,
+				"ocspServers"?: Set < __cedar::String >,
+				"secretName"?: __cedar::String
+			},
+			"selfSigned"?: {
+				"crlDistributionPoints"?: Set < __cedar::String >
+			},
+			"vault"?: {
+				"auth"?: {
+					"appRole"?: {
+						"path"?: __cedar::String,
+						"roleId"?: __cedar::String,
+						"secretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"clientCertificate"?: {
+						"mountPath"?: __cedar::String,
+						"name"?: __cedar::String,
+						"secretName"?: __cedar::String
+					},
+					"kubernetes"?: {
+						"mountPath"?: __cedar::String,
+						"role"?: __cedar::String,
+						"secretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"serviceAccountRef"?: {
+							"audiences"?: Set < __cedar::String >,
+							"name"?: __cedar::String
+						}
+					},
+					"tokenSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					}
+				},
+				"caBundle"?: __cedar::String,
+				"caBundleSecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"clientCertSecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"clientKeySecretRef"?: {
+					"key"?: __cedar::String,
+					"name"?: __cedar::String
+				},
+				"namespace"?: __cedar::String,
+				"path"?: __cedar::String,
+				"server"?: __cedar::String
+			},
+			"venafi"?: {
+				"cloud"?: {
+					"apiTokenSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					},
+					"url"?: __cedar::String
+				},
+				"tpp"?: {
+					"caBundle"?: __cedar::String,
+					"caBundleSecretRef"?: {
+						"key"?: __cedar::String,
+						"name"?: __cedar::String
+					},
+					"credentialsRef"?: {
+						"name"?: __cedar::String
+					},
+					"url"?: __cedar::String
+				},
+				"zone"?: __cedar::String
+			}
+		},
+		"status"?: {
+			"acme"?: {
+				"lastPrivateKeyHash"?: __cedar::String,
+				"lastRegisteredEmail"?: __cedar::String,
+				"uri"?: __cedar::String
+			}
+		}
+	};
+	entity IssuerList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+}
+
+namespace io::cert_manager::acme::v1 {
+	entity Challenge = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata": meta::v1::ObjectMeta,
+		"spec": {
+			"authorizationURL"?: __cedar::String,
+			"dnsName"?: __cedar::String,
+			"issuerRef"?: {
+				"group"?: __cedar::String,
+				"kind"?: __cedar::String,
+				"name"?: __cedar::String
+			},
+			"key"?: __cedar::String,
+			"solver"?: {
+				"dns01"?: {
+					"acmeDNS"?: {
+						"accountSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"host"?: __cedar::String
+					},
+					"akamai"?: {
+						"accessTokenSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"clientSecretSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"clientTokenSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"serviceConsumerDomain"?: __cedar::String
+					},
+					"azureDNS"?: {
+						"clientID"?: __cedar::String,
+						"clientSecretSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"environment"?: __cedar::String,
+						"hostedZoneName"?: __cedar::String,
+						"managedIdentity"?: {
+							"clientID"?: __cedar::String,
+							"resourceID"?: __cedar::String
+						},
+						"resourceGroupName"?: __cedar::String,
+						"subscriptionID"?: __cedar::String,
+						"tenantID"?: __cedar::String
+					},
+					"cloudDNS"?: {
+						"hostedZoneName"?: __cedar::String,
+						"project"?: __cedar::String,
+						"serviceAccountSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"cloudflare"?: {
+						"apiKeySecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"apiTokenSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"email"?: __cedar::String
+					},
+					"cnameStrategy"?: __cedar::String,
+					"digitalocean"?: {
+						"tokenSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"rfc2136"?: {
+						"nameserver"?: __cedar::String,
+						"tsigAlgorithm"?: __cedar::String,
+						"tsigKeyName"?: __cedar::String,
+						"tsigSecretSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"route53"?: {
+						"accessKeyID"?: __cedar::String,
+						"accessKeyIDSecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						},
+						"auth"?: {
+							"kubernetes"?: {
+								"serviceAccountRef"?: {
+									"audiences"?: Set < __cedar::String >,
+									"name"?: __cedar::String
+								}
+							}
+						},
+						"hostedZoneID"?: __cedar::String,
+						"region"?: __cedar::String,
+						"role"?: __cedar::String,
+						"secretAccessKeySecretRef"?: {
+							"key"?: __cedar::String,
+							"name"?: __cedar::String
+						}
+					},
+					"webhook"?: {
+						"groupName"?: __cedar::String,
+						"solverName"?: __cedar::String
+					}
+				},
+				"http01"?: {
+					"gatewayHTTPRoute"?: {
+						"podTemplate"?: core::v1::PodTemplate,
+						"serviceType"?: __cedar::String
+					},
+					"ingress"?: {
+						"class"?: __cedar::String,
+						"ingressClassName"?: __cedar::String,
+						"ingressTemplate"?: {
+							"metadata"?: {}
+						},
+						"name"?: __cedar::String,
+						"podTemplate"?: core::v1::PodTemplate,
+						"serviceType"?: __cedar::String
+					}
+				},
+				"selector"?: {
+					"dnsNames"?: Set < __cedar::String >,
+					"dnsZones"?: Set < __cedar::String >
+				}
+			},
+			"token"?: __cedar::String,
+			"type"?: __cedar::String,
+			"url"?: __cedar::String,
+			"wildcard"?: __cedar::Bool
+		},
+		"status"?: {
+			"presented"?: __cedar::Bool,
+			"processing"?: __cedar::Bool,
+			"reason"?: __cedar::String,
+			"state"?: __cedar::String
+		}
+	};
+	entity ChallengeList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity Order = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata": meta::v1::ObjectMeta,
+		"spec": {
+			"commonName"?: __cedar::String,
+			"dnsNames"?: Set < __cedar::String >,
+			"duration"?: __cedar::String,
+			"ipAddresses"?: Set < __cedar::String >,
+			"issuerRef"?: {
+				"group"?: __cedar::String,
+				"kind"?: __cedar::String,
+				"name"?: __cedar::String
+			},
+			"request"?: __cedar::String
+		},
+		"status"?: {
+			"certificate"?: __cedar::String,
+			"failureTime"?: __cedar::String,
+			"finalizeURL"?: __cedar::String,
+			"reason"?: __cedar::String,
+			"state"?: __cedar::String,
+			"url"?: __cedar::String
+		}
+	};
+	entity OrderList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+}
+
+namespace meta::v1 {
+	type KeyValue = {
+		"key": __cedar::String,
+		"value"?: __cedar::String
+	};
+	type KeyValueStringSlice = {
+		"key": __cedar::String,
+		"value"?: Set < __cedar::String >
+	};
+	entity APIResource = {
+		"categories"?: Set < __cedar::String >,
+		"group"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String,
+		"namespaced": __cedar::Bool,
+		"shortNames"?: Set < __cedar::String >,
+		"singularName": __cedar::String,
+		"storageVersionHash"?: __cedar::String,
+		"verbs": Set < __cedar::String >,
+		"version"?: __cedar::String
+	};
+	entity APIResourceList = {
+		"apiVersion"?: __cedar::String,
+		"groupVersion": __cedar::String,
+		"kind"?: __cedar::String,
+		"resources": Set < APIResource >
+	};
+	entity Condition = {
+		"lastTransitionTime": __cedar::String,
+		"message": __cedar::String,
+		"observedGeneration"?: __cedar::Long,
+		"reason": __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity DeleteOptions = {
+		"apiVersion"?: __cedar::String,
+		"dryRun"?: Set < __cedar::String >,
+		"gracePeriodSeconds"?: __cedar::Long,
+		"kind"?: __cedar::String,
+		"orphanDependents"?: __cedar::Bool,
+		"preconditions"?: Preconditions,
+		"propagationPolicy"?: __cedar::String
+	};
+	entity FieldSelectorRequirement = {
+		"key": __cedar::String,
+		"operator": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	entity FieldsV1;
+	entity LabelSelector = {
+		"matchExpressions"?: Set < LabelSelectorRequirement >,
+		"matchLabels"?: Set < meta::v1::KeyValue >
+	};
+	entity LabelSelectorRequirement = {
+		"key": __cedar::String,
+		"operator": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
+	entity ListMeta = {
+		"continue"?: __cedar::String,
+		"remainingItemCount"?: __cedar::Long,
+		"resourceVersion"?: __cedar::String,
+		"selfLink"?: __cedar::String
+	};
+	entity ManagedFieldsEntry = {
+		"apiVersion"?: __cedar::String,
+		"fieldsType"?: __cedar::String,
+		"fieldsV1"?: FieldsV1,
+		"manager"?: __cedar::String,
+		"operation"?: __cedar::String,
+		"subresource"?: __cedar::String,
+		"time"?: __cedar::String
+	};
+	entity ObjectMeta = {
+		"annotations"?: Set < meta::v1::KeyValue >,
+		"creationTimestamp"?: __cedar::String,
+		"deletionGracePeriodSeconds"?: __cedar::Long,
+		"deletionTimestamp"?: __cedar::String,
+		"finalizers"?: Set < __cedar::String >,
+		"generateName"?: __cedar::String,
+		"generation"?: __cedar::Long,
+		"labels"?: Set < meta::v1::KeyValue >,
+		"managedFields"?: Set < ManagedFieldsEntry >,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
+		"ownerReferences"?: Set < OwnerReference >,
+		"resourceVersion"?: __cedar::String,
+		"selfLink"?: __cedar::String,
+		"uid"?: __cedar::String
+	};
+	entity OwnerReference = {
+		"apiVersion": __cedar::String,
+		"blockOwnerDeletion"?: __cedar::Bool,
+		"controller"?: __cedar::Bool,
+		"kind": __cedar::String,
+		"name": __cedar::String,
+		"uid": __cedar::String
+	};
+	entity Patch;
+	entity Preconditions = {
+		"resourceVersion"?: __cedar::String,
+		"uid"?: __cedar::String
+	};
+	entity Status = {
+		"apiVersion"?: __cedar::String,
+		"code"?: __cedar::Long,
+		"details"?: StatusDetails,
+		"kind"?: __cedar::String,
+		"message"?: __cedar::String,
+		"metadata"?: ListMeta,
+		"reason"?: __cedar::String,
+		"status"?: __cedar::String
+	};
+	entity StatusCause = {
+		"field"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String
+	};
+	entity StatusDetails = {
+		"causes"?: Set < StatusCause >,
+		"group"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"name"?: __cedar::String,
+		"retryAfterSeconds"?: __cedar::Long,
+		"uid"?: __cedar::String
+	};
+	entity WatchEvent = {
+		"object": __cedar::String,
+		"type": __cedar::String
+	};
+}
+
+namespace networking::v1 {
+	entity HTTPIngressPath = {
+		"backend": IngressBackend,
+		"path"?: __cedar::String,
+		"pathType": __cedar::String
+	};
+	entity HTTPIngressRuleValue = {
+		"paths": Set < HTTPIngressPath >
+	};
+	entity IPBlock = {
+		"cidr": __cedar::String,
+		"except"?: Set < __cedar::String >
+	};
+	entity Ingress = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: IngressSpec,
+		"status"?: IngressStatus
+	};
+	entity IngressBackend = {
+		"resource"?: core::v1::TypedLocalObjectReference,
+		"service"?: IngressServiceBackend
+	};
+	entity IngressClass = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: IngressClassSpec
+	};
+	entity IngressClassList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < IngressClass >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity IngressClassParametersReference = {
+		"apiGroup"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String,
+		"namespace"?: __cedar::String,
+		"scope"?: __cedar::String
+	};
+	entity IngressClassSpec = {
+		"controller"?: __cedar::String,
+		"parameters"?: IngressClassParametersReference
+	};
+	entity IngressList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Ingress >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity IngressLoadBalancerIngress = {
+		"hostname"?: __cedar::String,
+		"ip"?: __cedar::String,
+		"ports"?: Set < IngressPortStatus >
+	};
+	entity IngressLoadBalancerStatus = {
+		"ingress"?: Set < IngressLoadBalancerIngress >
+	};
+	entity IngressPortStatus = {
+		"error"?: __cedar::String,
+		"port": __cedar::Long,
+		"protocol": __cedar::String
+	};
+	entity IngressRule = {
+		"host"?: __cedar::String
+	};
+	entity IngressServiceBackend = {
+		"name": __cedar::String,
+		"port"?: ServiceBackendPort
+	};
+	entity IngressSpec = {
+		"defaultBackend"?: IngressBackend,
+		"ingressClassName"?: __cedar::String,
+		"rules"?: Set < IngressRule >,
+		"tls"?: Set < IngressTLS >
+	};
+	entity IngressStatus = {
+		"loadBalancer"?: IngressLoadBalancerStatus
+	};
+	entity IngressTLS = {
+		"hosts"?: Set < __cedar::String >,
+		"secretName"?: __cedar::String
+	};
+	entity NetworkPolicy = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: NetworkPolicySpec
+	};
+	entity NetworkPolicyEgressRule = {
+		"ports"?: Set < NetworkPolicyPort >,
+		"to"?: Set < NetworkPolicyPeer >
+	};
+	entity NetworkPolicyIngressRule = {
+		"from"?: Set < NetworkPolicyPeer >,
+		"ports"?: Set < NetworkPolicyPort >
+	};
+	entity NetworkPolicyList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < NetworkPolicy >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity NetworkPolicyPeer = {
+		"ipBlock"?: IPBlock,
+		"namespaceSelector"?: meta::v1::LabelSelector,
+		"podSelector"?: meta::v1::LabelSelector
+	};
+	entity NetworkPolicyPort = {
+		"endPort"?: __cedar::Long,
+		"port"?: __cedar::String,
+		"protocol"?: __cedar::String
+	};
+	entity NetworkPolicySpec = {
+		"egress"?: Set < NetworkPolicyEgressRule >,
+		"ingress"?: Set < NetworkPolicyIngressRule >,
+		"podSelector": meta::v1::LabelSelector,
+		"policyTypes"?: Set < __cedar::String >
+	};
+	entity ServiceBackendPort = {
+		"name"?: __cedar::String,
+		"number"?: __cedar::Long
+	};
+}
+
+namespace node::v1 {
+	entity Overhead = {
+		"podFixed"?: __cedar::String
+	};
+	entity RuntimeClass = {
+		"apiVersion"?: __cedar::String,
+		"handler": __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"overhead"?: Overhead,
+		"scheduling"?: Scheduling
+	};
+	entity RuntimeClassList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < RuntimeClass >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity Scheduling = {
+		"nodeSelector"?: Set < meta::v1::KeyValue >,
+		"tolerations"?: Set < core::v1::Toleration >
+	};
+}
+
+namespace policy::v1 {
+	entity Eviction = {
+		"apiVersion"?: __cedar::String,
+		"deleteOptions"?: meta::v1::DeleteOptions,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta
+	};
+	entity PodDisruptionBudget = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PodDisruptionBudgetSpec,
+		"status"?: PodDisruptionBudgetStatus
+	};
+	entity PodDisruptionBudgetList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PodDisruptionBudget >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PodDisruptionBudgetSpec = {
+		"maxUnavailable"?: __cedar::String,
+		"minAvailable"?: __cedar::String,
+		"selector"?: meta::v1::LabelSelector,
+		"unhealthyPodEvictionPolicy"?: __cedar::String
+	};
+	entity PodDisruptionBudgetStatus = {
+		"conditions"?: Set < meta::v1::Condition >,
+		"currentHealthy": __cedar::Long,
+		"desiredHealthy": __cedar::Long,
+		"disruptedPods"?: __cedar::String,
+		"disruptionsAllowed": __cedar::Long,
+		"expectedPods": __cedar::Long,
+		"observedGeneration"?: __cedar::Long
+	};
+}
+
+namespace rbac::v1 {
+	entity AggregationRule = {
+		"clusterRoleSelectors"?: Set < meta::v1::LabelSelector >
+	};
+	entity ClusterRole = {
+		"aggregationRule"?: AggregationRule,
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"rules"?: Set < PolicyRule >
+	};
+	entity ClusterRoleBinding = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"roleRef": RoleRef,
+		"subjects"?: Set < Subject >
+	};
+	entity ClusterRoleBindingList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ClusterRoleBinding >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity ClusterRoleList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < ClusterRole >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PolicyRule = {
+		"apiGroups"?: Set < __cedar::String >,
+		"nonResourceURLs"?: Set < __cedar::String >,
+		"resourceNames"?: Set < __cedar::String >,
+		"resources"?: Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity Role = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"rules"?: Set < PolicyRule >
+	};
+	entity RoleBinding = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"roleRef": RoleRef,
+		"subjects"?: Set < Subject >
+	};
+	entity RoleBindingList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < RoleBinding >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity RoleList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < Role >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity RoleRef = {
+		"apiGroup": __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String
+	};
+	entity Subject = {
+		"apiGroup"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String,
+		"namespace"?: __cedar::String
+	};
+}
+
+namespace scheduling::v1 {
+	entity PriorityClass = {
+		"apiVersion"?: __cedar::String,
+		"description"?: __cedar::String,
+		"globalDefault"?: __cedar::Bool,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"preemptionPolicy"?: __cedar::String,
+		"value": __cedar::Long
+	};
+	entity PriorityClassList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PriorityClass >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+}
+
+namespace storage::v1 {
+	entity CSIDriver = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": CSIDriverSpec
+	};
+	entity CSIDriverList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < CSIDriver >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity CSIDriverSpec = {
+		"attachRequired"?: __cedar::Bool,
+		"fsGroupPolicy"?: __cedar::String,
+		"podInfoOnMount"?: __cedar::Bool,
+		"requiresRepublish"?: __cedar::Bool,
+		"seLinuxMount"?: __cedar::Bool,
+		"storageCapacity"?: __cedar::Bool,
+		"tokenRequests"?: Set < TokenRequest >,
+		"volumeLifecycleModes"?: Set < __cedar::String >
+	};
+	entity CSINode = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": CSINodeSpec
+	};
+	entity CSINodeDriver = {
+		"allocatable"?: VolumeNodeResources,
+		"name": __cedar::String,
+		"nodeID": __cedar::String,
+		"topologyKeys"?: Set < __cedar::String >
+	};
+	entity CSINodeList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < CSINode >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity CSINodeSpec = {
+		"drivers": Set < CSINodeDriver >
+	};
+	entity CSIStorageCapacity = {
+		"apiVersion"?: __cedar::String,
+		"capacity"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"maximumVolumeSize"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"nodeTopology"?: meta::v1::LabelSelector,
+		"storageClassName": __cedar::String
+	};
+	entity CSIStorageCapacityList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < CSIStorageCapacity >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity StorageClass = {
+		"allowVolumeExpansion"?: __cedar::Bool,
+		"allowedTopologies"?: Set < core::v1::TopologySelectorTerm >,
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"mountOptions"?: Set < __cedar::String >,
+		"parameters"?: Set < meta::v1::KeyValue >,
+		"provisioner": __cedar::String,
+		"reclaimPolicy"?: __cedar::String,
+		"volumeBindingMode"?: __cedar::String
+	};
+	entity StorageClassList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < StorageClass >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity TokenRequest = {
+		"audience": __cedar::String,
+		"expirationSeconds"?: __cedar::Long
+	};
+	entity VolumeAttachment = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec": VolumeAttachmentSpec,
+		"status"?: VolumeAttachmentStatus
+	};
+	entity VolumeAttachmentList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < VolumeAttachment >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity VolumeAttachmentSource = {
+		"inlineVolumeSpec"?: core::v1::PersistentVolumeSpec,
+		"persistentVolumeName"?: __cedar::String
+	};
+	entity VolumeAttachmentSpec = {
+		"attacher": __cedar::String,
+		"nodeName": __cedar::String,
+		"source": VolumeAttachmentSource
+	};
+	entity VolumeAttachmentStatus = {
+		"attachError"?: VolumeError,
+		"attached": __cedar::Bool,
+		"attachmentMetadata"?: Set < meta::v1::KeyValue >,
+		"detachError"?: VolumeError
+	};
+	entity VolumeError = {
+		"message"?: __cedar::String,
+		"time"?: __cedar::String
+	};
+	entity VolumeNodeResources = {
+		"count"?: __cedar::Long
+	};
+}
+
+namespace aws::k8s::cedar::v1alpha1 {
+	entity Policy = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: {
+			"content"?: __cedar::String
+		}
+	};
+	entity PolicyList = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+}
+
+namespace flowcontrol::v1beta3 {
+	entity ExemptPriorityLevelConfiguration = {
+		"lendablePercent"?: __cedar::Long,
+		"nominalConcurrencyShares"?: __cedar::Long
+	};
+	entity FlowDistinguisherMethod = {
+		"type": __cedar::String
+	};
+	entity FlowSchema = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: FlowSchemaSpec,
+		"status"?: FlowSchemaStatus
+	};
+	entity FlowSchemaCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status"?: __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity FlowSchemaList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < FlowSchema >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity FlowSchemaSpec = {
+		"distinguisherMethod"?: FlowDistinguisherMethod,
+		"matchingPrecedence"?: __cedar::Long,
+		"priorityLevelConfiguration": PriorityLevelConfigurationReference,
+		"rules"?: Set < PolicyRulesWithSubjects >
+	};
+	entity FlowSchemaStatus = {
+		"conditions"?: Set < FlowSchemaCondition >
+	};
+	entity GroupSubject = {
+		"name": __cedar::String
+	};
+	entity LimitResponse = {
+		"queuing"?: QueuingConfiguration,
+		"type": __cedar::String
+	};
+	entity LimitedPriorityLevelConfiguration = {
+		"borrowingLimitPercent"?: __cedar::Long,
+		"lendablePercent"?: __cedar::Long,
+		"limitResponse"?: LimitResponse,
+		"nominalConcurrencyShares"?: __cedar::Long
+	};
+	entity NonResourcePolicyRule = {
+		"nonResourceURLs": Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity PolicyRulesWithSubjects = {
+		"nonResourceRules"?: Set < NonResourcePolicyRule >,
+		"resourceRules"?: Set < ResourcePolicyRule >,
+		"subjects": Set < Subject >
+	};
+	entity PriorityLevelConfiguration = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: PriorityLevelConfigurationSpec,
+		"status"?: PriorityLevelConfigurationStatus
+	};
+	entity PriorityLevelConfigurationCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status"?: __cedar::String,
+		"type"?: __cedar::String
+	};
+	entity PriorityLevelConfigurationList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < PriorityLevelConfiguration >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity PriorityLevelConfigurationReference = {
+		"name": __cedar::String
+	};
+	entity PriorityLevelConfigurationSpec = {
+		"exempt"?: ExemptPriorityLevelConfiguration,
+		"limited"?: LimitedPriorityLevelConfiguration,
+		"type": __cedar::String
+	};
+	entity PriorityLevelConfigurationStatus = {
+		"conditions"?: Set < PriorityLevelConfigurationCondition >
+	};
+	entity QueuingConfiguration = {
+		"handSize"?: __cedar::Long,
+		"queueLengthLimit"?: __cedar::Long,
+		"queues"?: __cedar::Long
+	};
+	entity ResourcePolicyRule = {
+		"apiGroups": Set < __cedar::String >,
+		"clusterScope"?: __cedar::Bool,
+		"namespaces"?: Set < __cedar::String >,
+		"resources": Set < __cedar::String >,
+		"verbs": Set < __cedar::String >
+	};
+	entity ServiceAccountSubject = {
+		"name": __cedar::String,
+		"namespace": __cedar::String
+	};
+	entity Subject = {
+		"group"?: GroupSubject,
+		"kind": __cedar::String,
+		"serviceAccount"?: ServiceAccountSubject,
+		"user"?: UserSubject
+	};
+	entity UserSubject = {
+		"name": __cedar::String
+	};
+}
+
+namespace autoscaling::v2 {
+	entity ContainerResourceMetricSource = {
+		"container": __cedar::String,
+		"name": __cedar::String,
+		"target": MetricTarget
+	};
+	entity ContainerResourceMetricStatus = {
+		"container": __cedar::String,
+		"current": MetricValueStatus,
+		"name": __cedar::String
+	};
+	entity CrossVersionObjectReference = {
+		"apiVersion"?: __cedar::String,
+		"kind": __cedar::String,
+		"name": __cedar::String
+	};
+	entity ExternalMetricSource = {
+		"metric": MetricIdentifier,
+		"target": MetricTarget
+	};
+	entity ExternalMetricStatus = {
+		"current": MetricValueStatus,
+		"metric": MetricIdentifier
+	};
+	entity HPAScalingPolicy = {
+		"periodSeconds": __cedar::Long,
+		"type": __cedar::String,
+		"value": __cedar::Long
+	};
+	entity HPAScalingRules = {
+		"policies"?: Set < HPAScalingPolicy >,
+		"selectPolicy"?: __cedar::String,
+		"stabilizationWindowSeconds"?: __cedar::Long
+	};
+	entity HorizontalPodAutoscaler = {
+		"apiVersion"?: __cedar::String,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ObjectMeta,
+		"spec"?: HorizontalPodAutoscalerSpec,
+		"status"?: HorizontalPodAutoscalerStatus
+	};
+	entity HorizontalPodAutoscalerBehavior = {
+		"scaleDown"?: HPAScalingRules,
+		"scaleUp"?: HPAScalingRules
+	};
+	entity HorizontalPodAutoscalerCondition = {
+		"lastTransitionTime"?: __cedar::String,
+		"message"?: __cedar::String,
+		"reason"?: __cedar::String,
+		"status": __cedar::String,
+		"type": __cedar::String
+	};
+	entity HorizontalPodAutoscalerList = {
+		"apiVersion"?: __cedar::String,
+		"items": Set < HorizontalPodAutoscaler >,
+		"kind"?: __cedar::String,
+		"metadata"?: meta::v1::ListMeta
+	};
+	entity HorizontalPodAutoscalerSpec = {
+		"behavior"?: HorizontalPodAutoscalerBehavior,
+		"maxReplicas": __cedar::Long,
+		"metrics"?: Set < MetricSpec >,
+		"minReplicas"?: __cedar::Long,
+		"scaleTargetRef": CrossVersionObjectReference
+	};
+	entity HorizontalPodAutoscalerStatus = {
+		"conditions"?: Set < HorizontalPodAutoscalerCondition >,
+		"currentMetrics"?: Set < MetricStatus >,
+		"currentReplicas"?: __cedar::Long,
+		"desiredReplicas": __cedar::Long,
+		"lastScaleTime"?: __cedar::String,
+		"observedGeneration"?: __cedar::Long
+	};
+	entity MetricIdentifier = {
+		"name": __cedar::String,
+		"selector"?: meta::v1::LabelSelector
+	};
+	entity MetricSpec = {
+		"containerResource"?: ContainerResourceMetricSource,
+		"external"?: ExternalMetricSource,
+		"object"?: ObjectMetricSource,
+		"pods"?: PodsMetricSource,
+		"resource"?: ResourceMetricSource,
+		"type": __cedar::String
+	};
+	entity MetricStatus = {
+		"containerResource"?: ContainerResourceMetricStatus,
+		"external"?: ExternalMetricStatus,
+		"object"?: ObjectMetricStatus,
+		"pods"?: PodsMetricStatus,
+		"resource"?: ResourceMetricStatus,
+		"type": __cedar::String
+	};
+	entity MetricTarget = {
+		"averageUtilization"?: __cedar::Long,
+		"averageValue"?: __cedar::String,
+		"type": __cedar::String,
+		"value"?: __cedar::String
+	};
+	entity MetricValueStatus = {
+		"averageUtilization"?: __cedar::Long,
+		"averageValue"?: __cedar::String,
+		"value"?: __cedar::String
+	};
+	entity ObjectMetricSource = {
+		"describedObject": CrossVersionObjectReference,
+		"metric": MetricIdentifier,
+		"target": MetricTarget
+	};
+	entity ObjectMetricStatus = {
+		"current": MetricValueStatus,
+		"describedObject": CrossVersionObjectReference,
+		"metric": MetricIdentifier
+	};
+	entity PodsMetricSource = {
+		"metric": MetricIdentifier,
+		"target": MetricTarget
+	};
+	entity PodsMetricStatus = {
+		"current": MetricValueStatus,
+		"metric": MetricIdentifier
+	};
+	entity ResourceMetricSource = {
+		"name": __cedar::String,
+		"target": MetricTarget
+	};
+	entity ResourceMetricStatus = {
+		"current": MetricValueStatus,
+		"name": __cedar::String
+	};
+}
+

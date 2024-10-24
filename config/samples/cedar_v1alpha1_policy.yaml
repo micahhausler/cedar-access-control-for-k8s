@@ -1,0 +1,30 @@
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  labels:
+    app.kubernetes.io/name: policy
+    app.kubernetes.io/instance: policy-sample
+    app.kubernetes.io/part-of: cedar-k8s-authz
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: cedar-k8s-authz
+  name: policy-sample-cluster-admin
+spec:
+  content: |
+    // cluster-admin
+    @clusterRoleBinding("cluster-admin")
+    @clusterRole("cluster-admin")
+    @policyRule("01")
+    permit (
+        principal in Group::"system:masters",
+        action,
+        resource is k8s::NonResourceURL
+    );
+
+    @clusterRoleBinding("cluster-admin")
+    @clusterRole("cluster-admin")
+    @policyRule("00")
+    permit (
+        principal in Group::"system:masters",
+        action,
+        resource is Resource
+    );

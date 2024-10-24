@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - cedar.k8s.aws
+  resources:
+  - policies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cedar.k8s.aws
+  resources:
+  - policies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - cedar.k8s.aws
+  resources:
+  - policies/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,11 +1,23 @@
-# Contributing Guidelines
+# Development
+
+- [Development](#development)
+  - [Contributing Guidelines](#contributing-guidelines)
+  - [Reporting Bugs/Feature Requests](#reporting-bugsfeature-requests)
+  - [Contributing via Pull Requests](#contributing-via-pull-requests)
+  - [Finding contributions to work on](#finding-contributions-to-work-on)
+  - [Code of Conduct](#code-of-conduct)
+  - [Security issue notifications](#security-issue-notifications)
+  - [Licensing](#licensing)
+  - [TODOs](#todos)
+  - [Converter testing](#converter-testing)
+
+## Contributing Guidelines
 
 Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional
 documentation, we greatly value feedback and contributions from our community.
 
 Please read through this document before submitting any issues or pull requests to ensure we have all the necessary
 information to effectively respond to your bug report or contribution.
-
 
 ## Reporting Bugs/Feature Requests
 
@@ -51,9 +63,30 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 
 
 ## Security issue notifications
-If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
-
+If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public GitHub issue.
 
 ## Licensing
 
 See the [LICENSE](LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+
+## TODOs
+
+Initial development needed:
+- [ ] Add corresponding flags for hard coded options in `server/options/options.go` (`CedarAuthorizerDefaultCertDir`, `CedarAuthorizerPolicyDir`) so local non-container development is easier to work with
+- [ ] Create a validating webhook to validate policy validity
+- [ ] RBAC Converter
+  - [ ] Update converter test cases to read YAML input from testcase files
+  - [ ] Migrate custom policies in tests to YAML testcase files
+- [ ] Merge authorization and admission webhook into one server with multiple handlers
+
+## Converter testing
+
+To run the converter tests, run:
+```sh
+go test ./converter/...
+```
+
+To update the goldenfile outputs in the `converter/convert/testcases/*.cedar`, run
+```sh
+go test ./converter/... -update=true
+```
