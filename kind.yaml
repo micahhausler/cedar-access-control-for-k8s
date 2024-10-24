@@ -12,11 +12,7 @@ kubeadmConfigPatches:
     kind: ClusterConfiguration
     apiServer:
       extraArgs:
-        authorization-mode: Node,Webhook,RBAC
-        authorization-webhook-config-file: "/cedar-authorizer/webhook.yaml"
-        authorization-webhook-version: "v1"
-        authorization-webhook-cache-authorized-ttl: "30s"
-        authorization-webhook-cache-unauthorized-ttl: "30s"
+        authorization-config: "/cedar-authorizer/authorization-config.yaml"
         audit-policy-file: "/cedar-authorizer/audit-policy.yaml"
         audit-log-path: "/cedar-authorizer/logs/kube-apiserver-audit.log"
         audit-log-maxsize: "50"
