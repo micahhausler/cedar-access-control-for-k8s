@@ -23,7 +23,7 @@ The referenced schemas are primarily created to document the entity shapes and a
 
 ## Authorizer cedarschema
 
-For the full authorization schema, see [cedarschema/k8s-authorization.cedarschema](./cedarschema/k8s-authorization.cedarschema).
+For the full authorization schema, see [cedarschema/k8s-authorization.cedarschema](../cedarschema/k8s-authorization.cedarschema).
 
 ### Principals
 
@@ -292,7 +292,7 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
 
 ## Admission Webhook overview
 
-To see a generated schema with all admission entities and actions, you can view [k8s-full.cedarschema](./cedarschema/k8s-full.cedarschema).
+To see a generated schema with all admission entities and actions, you can view [k8s-full.cedarschema](../cedarschema/k8s-full.cedarschema).
 
 This package also contains a webhook that can evaluate Kubernetes requests in the Admission validation stage, evaluating the full request object.
 Unlike authorization which is deny by default, Cedar Admission policies are allow by default, so only `forbid` policies have any effect on admission.

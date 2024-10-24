@@ -9,7 +9,8 @@ Users can dynamically create authorization policies for Kubernetes that support 
 Users can also create admission policies in the same file as authorization policy, giving policy authors a single language to write and reason about.
 
 ```cedar
-// Authorization cedar policy to create a secret. Create authorization requests do not contain the resource's name
+// Authorization cedar policy to create a secret. Create authorization requests
+// do not contain the resource's name
 permit (
     principal in k8s::Group::"personal-secret-creators",
     action == k8s::Action::"create",
