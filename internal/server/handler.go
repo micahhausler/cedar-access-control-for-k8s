@@ -34,10 +34,11 @@ type AuthorizerServer struct {
 
 // NewServer is a constructor for the AuthorizerServer.  It defines the
 // /authorize handler.
-func NewServer(authorizer cedarauthorizer.Authorizer, cfg *config.AuthorizationWebhookConfig) *AuthorizerServer {
+func NewServer(authorizer cedarauthorizer.Authorizer, admissionHandler http.Handler, cfg *config.AuthorizationWebhookConfig) *AuthorizerServer {
 	mux := http.NewServeMux()
 	errorInjector := NewErrorInjector(cfg.ErrorInjection)
-	mux.HandleFunc("/authorize", authorizeHandlerFunc(authorizer, errorInjector))
+	mux.HandleFunc("/v1/authorize", authorizeHandlerFunc(authorizer, errorInjector))
+	mux.Handle("/v1/admit", admissionHandler)
 	return &AuthorizerServer{
 		handler:    mux,
 		authorizer: authorizer,
@@ -46,7 +47,9 @@ func NewServer(authorizer cedarauthorizer.Authorizer, cfg *config.AuthorizationW
 
 func newServer() *http.ServeMux {
 	mux := http.NewServeMux()
+	// TODO: actually check health status
 	mux.HandleFunc("/healthz", healthzHandlerFunc())
+	mux.HandleFunc("/readyz", healthzHandlerFunc())
 	mux.Handle("/metrics", legacyregistry.Handler())
 	return mux
 }

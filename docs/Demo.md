@@ -416,7 +416,6 @@ kubectl get cm --show-labels
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl auth whoami
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl label cm/other-config stage=test
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl get cm
-
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl create cm sample-config --from-literal=k1=v1
 
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl get cm -l owner=sample-user --show-labels
@@ -432,6 +431,7 @@ data:
 EOF
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl create -f ./sample-config.yaml
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl get cm -l owner=sample-user --show-labels
+
 # try to change the owner
 KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl patch configmap/sample-config -p '{"metadata":{"labels":{"owner":"other-user"}}}'
 ```

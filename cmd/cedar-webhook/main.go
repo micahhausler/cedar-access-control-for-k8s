@@ -1,19 +1,3 @@
-/*
-Copyright 2024.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
 
 import (
@@ -36,8 +20,10 @@ import (
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
 	"k8s.io/klog/v2"
+	cradmission "sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server"
+	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/admission"
 	cedarauthorizer "github.com/awslabs/cedar-access-control-for-k8s/internal/server/authorizer"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/config"
 	serveroptions "github.com/awslabs/cedar-access-control-for-k8s/internal/server/options"
@@ -60,10 +46,9 @@ func NewAuthorizerCommand() *cobra.Command {
 	c := logsapi.NewLoggingConfiguration()
 	o := serveroptions.NewCedarAuthorizerOptions()
 	cmd := &cobra.Command{
-		Use: "authz-webhook",
-		Long: `The authz-webhook is an API server authorization webhook which
-		runs on the control plane instance alongside the kube-apiserver
-		and makes authorization decisions based on cedar policy configuraiton.`,
+		Use: "cedar-webhook",
+		Long: `The cedar-webhook is an authorization and admission webhook 
+		server which makes decisions based on cedar policy configuration.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := logsapi.ValidateAndApply(c, featureGate); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -102,12 +87,16 @@ func NewAuthorizerCommand() *cobra.Command {
 func Run(config *config.AuthorizationWebhookConfig) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer func() { cancel() }()
-	klog.InfoS("Starting cedar-authorizer", "version", version.Get())
+	klog.InfoS("Starting cedar-webhook", "version", version.Get())
 
-	crdStore, err := store.NewCRDPolicyStore(cedar.PolicyMap{})
+	// TODO: use a unique policy name to not collide with other policies
+	crdStore, err := store.NewCRDPolicyStore(cedar.PolicyMap{
+		"always-allow": admission.AllowAllAdmissionPolicy(),
+	})
 	if err != nil {
 		klog.Fatal("error creating CRD policy store", "error", err)
 	}
+
 	cedarauthorizer.NewAuthorizer(crdStore)
 	authorizer := union.New(
 		// file-backed authorizer goes first
@@ -116,7 +105,10 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 		cedarauthorizer.NewAuthorizer(crdStore),
 	)
 
-	srv := server.NewServer(authorizer, config)
+	// TODO support multiple policy stores for admission
+	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(crdStore, true)}
+
+	srv := server.NewServer(authorizer, vWebhook, config)
 	serverShutdownCh, listenerStoppedCh, err := config.SecureServing.Serve(srv.GetHandler(), 0, server.DeriveStopChannel(ctx))
 
 	if err != nil {

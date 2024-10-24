@@ -11,7 +11,7 @@ spec:
         image: cedar-webhook:latest
         imagePullPolicy: IfNotPresent
         command:
-        - /admission-webhook
+        - /cedar-webhook
         - -v=9
         args: []
         ports:

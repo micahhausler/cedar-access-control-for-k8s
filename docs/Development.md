@@ -77,7 +77,7 @@ Initial development needed:
 - [ ] RBAC Converter
   - [ ] Update converter test cases to read YAML input from testcase files
   - [ ] Migrate custom policies in tests to YAML testcase files
-- [ ] Merge authorization and admission webhook into one server with multiple handlers
+- [x] Merge authorization and admission webhook into one server with multiple handlers
 
 ## Converter testing
 

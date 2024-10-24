@@ -25,21 +25,17 @@ COPY internal/ internal/
 # was called. For example, if we call make docker-build in a local env which has the Apple Silicon M1 SO
 # the docker BUILDPLATFORM arg will be linux/arm64 when for Apple x86 it will be linux/amd64. Therefore,
 # by leaving it empty we can ensure that the container and binary shipped on it will have the same platform. 
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o converter cmd/converter/main.go
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o authz-webhook cmd/authz-webhook/main.go
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o admission-webhook cmd/admission-webhook/main.go
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o cedar-webhook cmd/cedar-webhook/main.go
 
 # Use distroless as minimal base image to package the webhook binary
 # Refer to https://github.com/aws/eks-distro-build-tooling/tree/main/eks-distro-base#minimal-variants for more details
 FROM public.ecr.aws/eks-distro-build-tooling/eks-distro-minimal-base:latest-al23
 WORKDIR /
 # COPY --from=builder /workspace/manager .
-COPY --from=builder /workspace/authz-webhook .
-COPY --from=builder /workspace/converter .
-COPY --from=builder /workspace/admission-webhook .
+COPY --from=builder /workspace/cedar-webhook .
 USER 65532:65532
 
 EXPOSE 10288
 EXPOSE 10289
 
-ENTRYPOINT ["/authz-webhook"]
+ENTRYPOINT ["/cedar-webhook"]

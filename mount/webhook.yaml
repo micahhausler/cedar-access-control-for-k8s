@@ -4,12 +4,11 @@ clusters:
 - name: cedarwebhook
   cluster:
     certificate-authority: /cedar-authorizer/certs/cedar-authorizer-server.crt
-    server: https://cedar-authorizer:10288/authorize
+    server: https://cedar-authorizer:10288/v1/authorize
 users:
 - name: api-server
-  user:
-    # NOTE: webhook server doesn't do any auth
-    token: not-a-real-token
+  user: {}
+  # NOTE: webhook server doesn't do any auth
 current-context: cedarwebhook
 contexts:
 - context:

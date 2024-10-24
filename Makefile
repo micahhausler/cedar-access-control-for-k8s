@@ -86,6 +86,12 @@ clean-kind: ## Delete the kind cluster and clean up genereated files
 	$(FINCH_FEATURE) kind delete cluster --name cedar-authz-cluster
 	rm ./mount/policies/cedar-kubeconfig.yaml ./mount/*-user-kubeconfig.yaml ./mount/logs/kube-apiserver-audit*
 
+.PHONY: admission-webhook
+admission-webhook: ## Install the Cedar validatingwebhookconfiguration 
+	cat demo/admission-webhook.yaml | \
+		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
+		kubectl apply -f -
+
 WEBHOOK_TARBALL = scratch/webhook.image.tar
 
 .PHONY: load-webhook-image
@@ -185,15 +191,14 @@ lint-fix: golangci-lint ## Run golangci-lint linter and perform fixes
 
 .PHONY: build
 build: manifests generate fmt vet ## Build binaries.
-	go build -o bin/authz-webhook cmd/authz-webhook/main.go
+	go build -o bin/cedar-webhook cmd/cedar-webhook/main.go
 	go build -o bin/converter cmd/converter/main.go
-	go build -o bin/admission-webhook cmd/admission-webhook/main.go
 	go build -o bin/schema-generator cmd/schema-generator/main.go
 	go build -o bin/schema-formatter cmd/schema-formatter/main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run ./cmd/authz-webhook/main.go
+	go run ./cmd/cedar-webhook/main.go
 
 # If you wish to build the manager image targeting other platforms you can use the --platform flag.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.

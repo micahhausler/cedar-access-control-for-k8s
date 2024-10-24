@@ -83,16 +83,10 @@ finch vm start
 8. To run the validating admission webhook:
     ```bash
     # (Optional) Update the validating webhook API groups/versions/resources you want validated
-    # by edting config/webhook/manifest.yaml
+    # by edting demo/admission-webhook.yaml
 
-    # Install cert-manager
-    make cert-manager
-
-    # Wait ~2 minutes for the cert-manager pods to come online.
-    kubectl get pods --watch --namespace cert-manager
-
-    # Deploy the admission webhook
-    make deploy
+    # Configure the admission webhook
+    make admission-webhook
 
     # Create sample user in requires-labels group
     make sample-user-kubeconfig
