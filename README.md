@@ -108,7 +108,6 @@ forbid (
 [gatekeeper]: https://open-policy-agent.github.io/gatekeeper/website/
 [kyverno]: https://kyverno.io/
 
-
 ## Security
 
 If you think you've found a security issue, [please let AWS know][aws security reporting]!

@@ -127,14 +127,14 @@ Cedar policy supports a [schema] defining all valid entities (principals and res
 You can see the Cedar schema used for Kubernetes authorization this project in [human][authz_human_schema] and [json][authz_json_schema] format.
 
 [schema]: https://docs.cedarpolicy.com/schema/schema.html
-[authz_human_schema]: ./cedarschema/k8s-authorization.cedarschema
-[authz_json_schema]: ./cedarschema/k8s-authorization.cedarschema.json
+[authz_human_schema]: ../cedarschema/k8s-authorization.cedarschema
+[authz_json_schema]: ../cedarschema/k8s-authorization.cedarschema.json
 
 Additionally, we've provided an example generated schema for all built-in Kubernetes types.
 You can review these in [human][full_human_schema] and [json][full_json_schema] format.
 
-[full_human_schema]: ./cedarschema/k8s-full.cedarschema
-[full_json_schema]: ./cedarschema/k8s-full.cedarschema.json
+[full_human_schema]: ../cedarschema/k8s-full.cedarschema
+[full_json_schema]: ../cedarschema/k8s-full.cedarschema.json
 
 Cedar policies can be evaluated against a schema to prove that the policy is valid. The [Cedar Go][cedar_go] library does not yet support schema validation of policy, but the rust library and CLI tool do. The example schema used in this project can be used with the [cedar CLI][cedar_cli] to validate policies.
 ```sh
