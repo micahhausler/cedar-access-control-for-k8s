@@ -133,7 +133,9 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 				condition = conditionForResourceNames(condition, rule)
 
 				if namespace != "" {
-					condition = condition.And(ast.Resource().Access("namespace").Equal(ast.String(namespace)))
+					condition = condition.And(ast.Resource().Has("namespace").And(
+						ast.Resource().Access("namespace").Equal(ast.String(namespace))),
+					)
 				}
 
 				if when != emptyNode {

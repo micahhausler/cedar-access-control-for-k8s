@@ -19,7 +19,7 @@ when
 @policyRule("01")
 permit (
   principal is k8s::ServiceAccount,
-  action == k8s::Action::"horizontalpodautoscalers/status",
+  action == k8s::Action::"update",
   resource is k8s::Resource
 )
 when
@@ -27,7 +27,9 @@ when
   principal.namespace == "kube-system" &&
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "autoscaling" &&
-  resource.resource == "update"
+  resource.resource == "horizontalpodautoscalers" &&
+  resource has subresource &&
+  resource.subresource == "status"
 };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")

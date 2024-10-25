@@ -210,8 +210,8 @@ func TestClusterRoleBindingToCedar(t *testing.T) {
 					},
 					{
 						APIGroups: []string{"autoscaling"},
-						Verbs:     []string{"horizontalpodautoscalers/status"},
-						Resources: []string{"update"},
+						Verbs:     []string{"update"},
+						Resources: []string{"horizontalpodautoscalers/status"},
 					},
 					{
 						APIGroups: []string{"*"},

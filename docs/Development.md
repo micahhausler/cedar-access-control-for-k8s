@@ -82,11 +82,12 @@ Initial development needed:
 ## Converter testing
 
 To run the converter tests, run:
-```sh
-go test ./converter/...
+```bash
+go test ./internal/convert/...
 ```
 
-To update the goldenfile outputs in the `converter/convert/testcases/*.cedar`, run
-```sh
-go test ./converter/... -update=true
+To update the goldenfile outputs in the `internal/convert/testcases/*.cedar`, format them, and validate them, run:
+```bash
+go test ./internal/convert/... -update=true
+make format-policies validate-policies
 ```

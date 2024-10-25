@@ -17,6 +17,7 @@ when
   principal.name == "token-cleaner" &&
   resource.apiGroup == "" &&
   resource.resource == "secrets" &&
+  resource has namespace &&
   resource.namespace == "kube-system"
 };
 
@@ -36,5 +37,6 @@ when
   principal.name == "token-cleaner" &&
   ["", "events.k8s.io"].contains(resource.apiGroup) &&
   resource.resource == "events" &&
+  resource has namespace &&
   resource.namespace == "kube-system"
 };

@@ -87,7 +87,7 @@ clean-kind: ## Delete the kind cluster and clean up genereated files
 	rm ./mount/policies/cedar-kubeconfig.yaml ./mount/*-user-kubeconfig.yaml ./mount/logs/kube-apiserver-audit*
 
 .PHONY: admission-webhook
-admission-webhook: ## Install the Cedar validatingwebhookconfiguration 
+admission-webhook: ## Install the Cedar validatingwebhookconfiguration
 	cat demo/admission-webhook.yaml | \
 		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
 		kubectl apply -f -
@@ -98,7 +98,6 @@ WEBHOOK_TARBALL = scratch/webhook.image.tar
 load-webhook-image:  ## Load the webhook image into the kind cluster
 	$(CONTAINER_TOOL) image save $(IMG) -o $(WEBHOOK_TARBALL)
 	$(FINCH_FEATURE) kind load image-archive $(WEBHOOK_TARBALL) --name cedar-authz-cluster
-
 
 ##@ Cedar Schema
 
@@ -134,6 +133,23 @@ authz-cedarschema: $(SCHEMA_DIR) ## Create authorization cedarschema in both ced
 
 .PHONY: cedarschemas
 cedarschemas: authz-cedarschema full-cedarschema ## Create all schemas
+
+##@ Cedar policies
+
+.PHONY: format-policies
+format-policies: ## Format all cedar policies in the repository. Does not apply to policies in CRDs
+	for file in $(shell find . -name '*.cedar'); do \
+		echo $$file; \
+		cedar format  -w -p $$file; \
+	done
+
+.PHONY: validate-policies
+validate-policies: ## Validate policies against the k8s-full cedarschema
+	for file in $(shell find . -name '*.cedar'); do \
+		echo $$file; \
+		cedar validate --schema cedarschema/k8s-full.cedarschema -p $$file; \
+	done
+
 
 ##@ General
 
