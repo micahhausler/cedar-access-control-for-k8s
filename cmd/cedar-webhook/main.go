@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/cedar-policy/cedar-go"
+	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apiserver/pkg/authorization/union"
@@ -20,6 +22,7 @@ import (
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
 	"k8s.io/klog/v2"
+	ctrl "sigs.k8s.io/controller-runtime"
 	cradmission "sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server"
@@ -115,6 +118,7 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 		crdStore,
 	)
 	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(unifiedPolicyStore, true)}
+	ctrl.SetLogger(logr.FromSlogHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug})))
 
 	srv := server.NewServer(authorizer, vWebhook, config)
 	serverShutdownCh, listenerStoppedCh, err := config.SecureServing.Serve(srv.GetHandler(), 0, server.DeriveStopChannel(ctx))

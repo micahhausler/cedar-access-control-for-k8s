@@ -44,7 +44,7 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 		!strings.HasPrefix(requestAttributes.GetUser().GetName(), "system:node:") {
 		// skip system users (nodes, anonymous, internal identities) for development, helps from accidentally halting normal operations
 		// TODO: are there any system users we should always skip? Anonymous probably?
-		return authorizer.DecisionNoOpinion, "no opinion on system:* identities", nil
+		return authorizer.DecisionNoOpinion, "", nil
 	}
 
 	if !e.store.InitalPolicyLoadComplete() {
