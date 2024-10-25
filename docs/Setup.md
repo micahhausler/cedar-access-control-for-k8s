@@ -31,51 +31,22 @@ finch vm start
 
 ## Local Quickstart
 
-<!--
-Once kind supports easily building node images with additional container images baked in, we'll just switch to that.
-https://github.com/kubernetes-sigs/kind/pull/3634
-
-This will reduce the steps to essentially:
-    make image-build
-    make kind
-
-We'll build the custom image in the `make kind` target like:
-    kind build add-image cedar-webhook:latest --image cedar-kind-node:latest
-    kind create cluster ...
-
-with an edit to kind.yaml to reference our image
-```yaml
-nodes:
-- role: control-plane
-  image: cedar-kind-node:latest
-```
-
-Then we won't rely on the concurrent image loading, and can have kind e2e tests in CI
- -->
-
 1. For an optional local build of the binaries, you can run:
     ```bash
     make build
     ```
-2. Build the authorizer/admission webhook container by running:
-    ```bash
-    make image-build
-    ```
-3. Start the Kind cluster. This cluster is configured to authorize requests via the cedar webhook
+2. Start the Kind cluster
+    This will build the webhook image, the Kind image, and create the Kind cluster. 
+    This cluster is configured to authorize and validate requests via the Cedar webhook:
    ```bash
    make kind
    ```
-4. While the Kind Kubernetes control plane is coming up, in another terminal you'll need to side-load the cedar container image into the kind cluster. You have about 20 seconds to do this after running `make kind` before the kind cluster will fail. 
-    If you miss the window, just run `make clean-kind` before trying `make kind` again.
-    ```bash
-    make load-webhook-image
-    ```
-5. Create policies. There's an example in `demo/authorization-policy.yaml` that is auto-created, but feel free to modify it or create more
+3. Create policies. There's an example in `demo/authorization-policy.yaml` that is auto-created, but feel free to modify it or create more
    ```bash
    # edit demo/authorization-policy.yaml
    kubectl apply -f demo/authorization-policy.yaml
    ```
-6. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in step 6. The user has the name `test-user` with the group `test-group`. Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
+4. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in step 6. The user has the name `test-user` with the group `test-group`. Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
     ```bash
     # Lookup the username you are testing
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl auth whoami
@@ -95,18 +66,18 @@ Then we won't rely on the concurrent image loading, and can have kind e2e tests 
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl get service \
         --as system:serviceaccount:default:service-manager
     ```
-7. Try out admission policies:
+5. Try out admission policies:
     ```bash
     # (Optional) Update the validating webhook API groups/versions/resources you want validated
-    # by edting demo/admission-webhook.yaml and then re-applying the webhook
+    # by edting manifests/admission-webhook.yaml and then re-applying the webhook
     # $ make admission-webhook
+
+    # Apply an example admission policy
+    kubectl apply -f demo/admission-policy.yaml
 
     # Create sample user in requires-labels group
     make sample-user-kubeconfig
     KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl auth whoami
-
-    # Apply an example admission policy
-    kubectl apply -f demo/admission-policy.yaml
 
     # Try to create a configmap without labels as the sample user
     KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl create configmap test-config --from-literal=k1=v1

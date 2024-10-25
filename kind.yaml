@@ -23,8 +23,9 @@ kubeadmConfigPatches:
         name: api-server-cedar-authorizer-files
 nodes:
 - role: control-plane
+  image: cedar-kind-node:latest
   extraMounts:
   - hostPath: "./mount"
     containerPath: "/cedar-authorizer"
-  - hostPath: "./manifests/cedar-webhook.yaml"
-    containerPath: "/etc/kubernetes/manifests/cedar-webhook.yaml"
+  - hostPath: "./manifests/cedar-authorization-webhook.yaml"
+    containerPath: "/etc/kubernetes/manifests/cedar-authorization-webhook.yaml"

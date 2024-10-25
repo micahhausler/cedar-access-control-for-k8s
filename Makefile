@@ -1,7 +1,7 @@
 # Image URL to use all building/pushing image targets
 IMG ?= cedar-webhook:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.31.0
+ENVTEST_K8S_VERSION = 1.31.1
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -24,29 +24,25 @@ SHELL = /usr/bin/env bash -o pipefail
 
 ##@ Demo
 
-.PHONY: authz-webhoook-container
-authz-webhook-container: ## Start the authorization webhook server
-	$(CONTAINER_TOOL) run \
-		-d \
-		--name cedar-authorizer \
-		-v ./mount/policies:/cedar-authorizer/policies/:ro \
-		-v ./mount/certs/:/var/run/cedar-authorizer/certs \
-		--network kind \
-		-p 10288:10288 \
-		-p 10289:10289 \
-		-e KUBECONFIG=/cedar-authorizer/policies/cedar-kubeconfig.yaml \
-		$(IMG) \
-		    -v 4 \
-			--bind-address 0.0.0.0
+WEBHOOK_TARBALL = webhook.image.tar
+KIND_NODE_IMG = cedar-kind-node:latest
 
-.PHONY: clean-authz-webhook
-clean-authz-webhook: ## Tear down and clean up the authorization webhook
-	$(CONTAINER_TOOL) kill cedar-authorizer
-	$(CONTAINER_TOOL) rm cedar-authorizer
-	rm ./mount/certs/cedar-authorizer-server.crt ./mount/certs/cedar-authorizer-server.key
+# Once kind supports easily building node images with additional container images baked in, we'll just switch to that.
+# https://github.com/kubernetes-sigs/kind/pull/3634
+# We'll drop the node dockerfile and build the custom image in the `kind-image` target like:
+#     kind build add-image cedar-webhook:latest --image cedar-kind-node:latest
+
+.PHONY: kind-image
+kind-image: image-build ## Build the kind node image
+	$(CONTAINER_TOOL) image save $(IMG) -o scratch/$(WEBHOOK_TARBALL)
+	$(CONTAINER_TOOL) build \
+		-t $(KIND_NODE_IMG) \
+		-f ./scratch/Dockerfile \
+		--build-arg BASE_IMAGE=kindest/node:v$(ENVTEST_K8S_VERSION) \
+		./scratch
 
 .PHONY: kind
-kind: ## Start a kind cluster configured to use the local authorization webhook
+kind: kind-image ## Start a kind cluster configured to use the local authorization webhook
 	$(FINCH_FEATURE) kind create cluster --config kind.yaml -v2
 	kubectl apply -f config/crd/bases/cedar.k8s.aws_policies.yaml
 	kubectl apply -f demo/authorization-policy.yaml
@@ -60,6 +56,16 @@ kind: ## Start a kind cluster configured to use the local authorization webhook
 	cat manifests/admission-webhook.yaml | \
 		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
 		kubectl apply -f -
+
+.PHONY: clean-kind
+clean-kind: ## Delete the kind cluster and clean up genereated files
+	$(FINCH_FEATURE) kind delete cluster --name cedar-authz-cluster
+	rm \
+		./mount/policies/cedar-kubeconfig.yaml \
+		./mount/*-user-kubeconfig.yaml \
+		./mount/logs/kube-apiserver-audit* \
+		./mount/certs/cedar-authorizer-server.* \
+		./scratch/webhook.image.tar
 
 .PHONY: sample-user-kubeconfig
 sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-group' and 'requires-labels'
@@ -85,23 +91,11 @@ test-user-kubeconfig: ## Create a user 'test-user' in the groups 'test-group' an
 	# Set the test user kubeconfig's server URL to something useable from the developer's desktop
 	kubectl --kubeconfig ./mount/test-user-kubeconfig.yaml config set clusters.kubernetes.server $(shell kubectl config view --minify -o jsonpath="{.clusters[0].cluster.server}")
 
-.PHONY: clean-kind
-clean-kind: ## Delete the kind cluster and clean up genereated files
-	$(FINCH_FEATURE) kind delete cluster --name cedar-authz-cluster
-	rm ./mount/policies/cedar-kubeconfig.yaml ./mount/*-user-kubeconfig.yaml ./mount/logs/kube-apiserver-audit*
-
 .PHONY: admission-webhook
 admission-webhook: ## Install the Cedar validatingwebhookconfiguration
 	cat manifests/admission-webhook.yaml | \
 		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
 		kubectl apply -f -
-
-WEBHOOK_TARBALL = scratch/webhook.image.tar
-
-.PHONY: load-webhook-image
-load-webhook-image:  ## Load the webhook image into the kind cluster
-	$(CONTAINER_TOOL) image save $(IMG) -o $(WEBHOOK_TARBALL)
-	$(FINCH_FEATURE) kind load image-archive $(WEBHOOK_TARBALL) --name cedar-authz-cluster
 
 ##@ Cedar Schema
 
