@@ -16,7 +16,7 @@ authorizers:
       failurePolicy: NoOpinion 
       connectionInfo:
         type: KubeConfigFile
-        kubeConfigFile: /cedar-authorizer/webhook.yaml
+        kubeConfigFile: /cedar-authorizer/authorization-webhook.yaml
       matchConditions:
       # don't intercept requests from kube-system service accounts
       - expression: "!('system:serviceaccounts:kube-system' in request.groups)"

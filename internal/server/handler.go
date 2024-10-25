@@ -143,7 +143,7 @@ func writeResponse(w http.ResponseWriter, requestId string, err error, decision 
 		resp.Status.EvaluationError = err.Error()
 	}
 
-	klog.InfoS("Response", "requestId", requestId, "response", resp)
+	klog.InfoS("Response", "requestId", requestId, "decision", authorizationDecisionString(decision), "response", resp)
 
 	if err = json.NewEncoder(w).Encode(resp); err != nil {
 		panic(err)

@@ -31,36 +31,51 @@ finch vm start
 
 ## Local Quickstart
 
-1. There is an inherent circular dependency between the webhook and the authorizer. You'll need to first create a default kind cluster to get the kind network created in your VM. This is only necessary the first time you set things up.
-    ```bash
-    KIND_EXPERIMENTAL_PROVIDER=finch kind create cluster --name test1
-    KIND_EXPERIMENTAL_PROVIDER=finch kind delete cluster --name test1
-    # validate the kind network is created
-    finch network ls
-    finch network inspect kind
-    ```
-2. For an optional local build of the binaries, you can run:
+<!--
+Once kind supports easily building node images with additional container images baked in, we'll just switch to that.
+https://github.com/kubernetes-sigs/kind/pull/3634
+
+This will reduce the steps to essentially:
+    make image-build
+    make kind
+
+We'll build the custom image in the `make kind` target like:
+    kind build add-image cedar-webhook:latest --image cedar-kind-node:latest
+    kind create cluster ...
+
+with an edit to kind.yaml to reference our image
+```yaml
+nodes:
+- role: control-plane
+  image: cedar-kind-node:latest
+```
+
+Then we won't rely on the concurrent image loading, and can have kind e2e tests in CI
+ -->
+
+1. For an optional local build of the binaries, you can run:
     ```bash
     make build
     ```
-3. To build the authorizer/admission webhook container locally, run:
+2. Build the authorizer/admission webhook container by running:
     ```bash
     make image-build
     ```
-4. Start the webhook container. For debug output, you can run `finch logs --tail 20 -f cedar-authorizer`. If you modify any server (Go) code, you'll need to be sure and run `make clean-authz-webhook image-build` first.
+3. Start the Kind cluster. This cluster is configured to authorize requests via the cedar webhook
+   ```bash
+   make kind
+   ```
+4. While the Kind Kubernetes control plane is coming up, in another terminal you'll need to side-load the cedar container image into the kind cluster. You have about 20 seconds to do this after running `make kind` before the kind cluster will fail. 
+    If you miss the window, just run `make clean-kind` before trying `make kind` again.
     ```bash
-    make authz-webhook-container
+    make load-webhook-image
     ```
-5. Start the Kind cluster. This cluster is configured to authorize requests via the webhook
+5. Create policies. There's an example in `demo/authorization-policy.yaml` that is auto-created, but feel free to modify it or create more
    ```bash
-   make kind test-user-kubeconfig
+   # edit demo/authorization-policy.yaml
+   kubectl apply -f demo/authorization-policy.yaml
    ```
-6. Create policies. There's an example in `demo/policy.yaml` that is auto-created, but feel free to modify it or create more
-   ```bash
-   # edit demo/policy.yaml
-   kubectl apply -f demo/policy.yaml
-   ```
-7. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in step 6. The user has the name `test-user` with the group `test-group`. Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
+6. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in step 6. The user has the name `test-user` with the group `test-group`. Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
     ```bash
     # Lookup the username you are testing
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl auth whoami
@@ -80,13 +95,11 @@ finch vm start
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl get service \
         --as system:serviceaccount:default:service-manager
     ```
-8. To run the validating admission webhook:
+7. Try out admission policies:
     ```bash
     # (Optional) Update the validating webhook API groups/versions/resources you want validated
-    # by edting demo/admission-webhook.yaml
-
-    # Configure the admission webhook
-    make admission-webhook
+    # by edting demo/admission-webhook.yaml and then re-applying the webhook
+    # $ make admission-webhook
 
     # Create sample user in requires-labels group
     make sample-user-kubeconfig
@@ -116,7 +129,7 @@ finch vm start
 
 And for teardown/cleanup:
 ```bash
-make clean-kind clean-authz-webhook
+make clean-kind
 ```
 
 ## Convert RBAC policies

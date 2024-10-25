@@ -4,7 +4,7 @@ clusters:
 - name: cedarwebhook
   cluster:
     certificate-authority: /cedar-authorizer/certs/cedar-authorizer-server.crt
-    server: https://cedar-authorizer:10288/v1/authorize
+    server: https://127.0.0.1:10288/v1/authorize
 users:
 - name: api-server
   user: {}

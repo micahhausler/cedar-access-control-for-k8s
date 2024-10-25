@@ -102,7 +102,9 @@ func NewCedarOptions() *CedarOptions {
 // Config creates a runtime config object from the options (command line flags).
 func (o *AuthorizerOptions) Config() (*config.AuthorizationWebhookConfig, error) {
 	// If we ever need to listen on non-localhost, provide the address here
-	alternateDNS, alternateIPs := []string{}, []net.IP{}
+	alternateDNS, alternateIPs := []string{}, []net.IP{
+		net.ParseIP("127.0.0.1"),
+	}
 	if err := o.SecureServing.MaybeDefaultWithSelfSignedCerts(CedarAuthorizerPublicAddress, alternateDNS, alternateIPs); err != nil {
 		return nil, err
 	}

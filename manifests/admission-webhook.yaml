@@ -6,7 +6,7 @@ webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
-    url: https://cedar-authorizer:10288/v1/admit
+    url: https://127.0.0.1:10288/v1/admit
     caBundle: CA_BUNDLE_CONTENT
   failurePolicy: Ignore
   name: vpolicy.cedar.k8s.aws

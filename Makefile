@@ -49,13 +49,17 @@ clean-authz-webhook: ## Tear down and clean up the authorization webhook
 kind: ## Start a kind cluster configured to use the local authorization webhook
 	$(FINCH_FEATURE) kind create cluster --config kind.yaml -v2
 	kubectl apply -f config/crd/bases/cedar.k8s.aws_policies.yaml
-	kubectl apply -f demo/policy.yaml
+	kubectl apply -f demo/authorization-policy.yaml
+	kubectl apply -f demo/admission-policy.yaml
 	# Create a kubeconfig for the authorizing webhoook to communicate with the API server
 	$(CONTAINER_TOOL) exec -it cedar-authz-cluster-control-plane \
 		/bin/sh -c '/usr/bin/kubeadm kubeconfig user \
 		--org system:authorizers \
 		--client-name system:authorizer:cedar-authorizer \
 		--validity-period 744h > /cedar-authorizer/policies/cedar-kubeconfig.yaml'
+	cat manifests/admission-webhook.yaml | \
+		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
+		kubectl apply -f -
 
 .PHONY: sample-user-kubeconfig
 sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-group' and 'requires-labels'
@@ -88,7 +92,7 @@ clean-kind: ## Delete the kind cluster and clean up genereated files
 
 .PHONY: admission-webhook
 admission-webhook: ## Install the Cedar validatingwebhookconfiguration
-	cat demo/admission-webhook.yaml | \
+	cat manifests/admission-webhook.yaml | \
 		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
 		kubectl apply -f -
 
