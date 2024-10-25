@@ -835,7 +835,7 @@ forbid (
 			},
 			storeComplete: true,
 			wantDecision:  authorizer.DecisionNoOpinion,
-			wantReason:    `no opinion on system:* identities`,
+			wantReason:    ``,
 		},
 		{
 			name: "store incomplete: No Opinion",
