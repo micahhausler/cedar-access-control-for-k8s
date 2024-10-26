@@ -6,6 +6,7 @@
 *.dylib
 bin/*
 # Ignore transient kind/cert files
+mount/logs/*
 mount/policies/cedar-kubeconfig.yaml
 mount/*-user-kubeconfig.yaml
 mount/certs/cedar-authorizer-server.crt
