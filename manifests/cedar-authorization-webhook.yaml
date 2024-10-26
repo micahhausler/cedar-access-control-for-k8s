@@ -8,61 +8,64 @@ metadata:
   namespace: kube-system
 spec:
   containers:
-  - command:
-    - /cedar-webhook
-    - -v=4
-    image: cedar-webhook:latest
-    imagePullPolicy: IfNotPresent
-    env:
-    - name: KUBECONFIG
-      value: "/cedar-authorizer/policies/cedar-kubeconfig.yaml"
-    livenessProbe:
-      failureThreshold: 8
-      httpGet:
-        path: /healthz
-        port: 10288
-        scheme: HTTPS
-      initialDelaySeconds: 5
-      periodSeconds: 10
-      timeoutSeconds: 15
-    name: cedar-webhook
-    readinessProbe:
-      failureThreshold: 3
-      httpGet:
-        path: /readyz
-        port: 10288
-        scheme: HTTPS
-      periodSeconds: 1
-      timeoutSeconds: 15
-    resources:
-      requests:
-        cpu: 250m
-    startupProbe:
-      failureThreshold: 24
-      httpGet:
-        path: /readyz
-        port: 10288
-        scheme: HTTPS
-      initialDelaySeconds: 5
-      periodSeconds: 10
-      timeoutSeconds: 15
-    volumeMounts:
-    - mountPath: /cedar-authorizer
-      name: api-server-cedar-authorizer-files
-    - mountPath: /etc/ssl/certs
-      name: ca-certs
-      readOnly: true
-    - mountPath: /etc/ca-certificates
-      name: etc-ca-certificates
-      readOnly: true
-    - mountPath: /usr/local/share/ca-certificates
-      name: usr-local-share-ca-certificates
-      readOnly: true
-    - mountPath: /usr/share/ca-certificates
-      name: usr-share-ca-certificates
-      readOnly: true
-    - mountPath: /var/run/cedar-authorizer/certs
-      name: var-run-cedar-authorizer-certs
+    - command:
+        - /cedar-webhook
+        - -v=4
+      image: cedar-webhook:latest
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: KUBECONFIG
+          value: "/cedar-authorizer/policies/cedar-kubeconfig.yaml"
+      livenessProbe:
+        failureThreshold: 8
+        httpGet:
+          host: 127.0.0.1
+          path: /healthz
+          port: 10289
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 15
+      name: cedar-webhook
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          host: 127.0.0.1
+          path: /readyz
+          port: 10289
+          scheme: HTTP
+        periodSeconds: 1
+        timeoutSeconds: 15
+      resources:
+        requests:
+          cpu: 250m
+      startupProbe:
+        failureThreshold: 24
+        httpGet:
+          host: 127.0.0.1
+          path: /readyz
+          port: 10289
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 15
+      volumeMounts:
+        - mountPath: /cedar-authorizer
+          name: api-server-cedar-authorizer-files
+        - mountPath: /etc/ssl/certs
+          name: ca-certs
+          readOnly: true
+        - mountPath: /etc/ca-certificates
+          name: etc-ca-certificates
+          readOnly: true
+        - mountPath: /usr/local/share/ca-certificates
+          name: usr-local-share-ca-certificates
+          readOnly: true
+        - mountPath: /usr/share/ca-certificates
+          name: usr-share-ca-certificates
+          readOnly: true
+        - mountPath: /var/run/cedar-authorizer/certs
+          name: var-run-cedar-authorizer-certs
   hostNetwork: true
   priority: 2000001000
   priorityClassName: system-node-critical
@@ -70,28 +73,28 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   volumes:
-  - hostPath:
-      path: /cedar-authorizer
-      type: ""
-    name: api-server-cedar-authorizer-files
-  - hostPath:
-      path: /etc/ssl/certs
-      type: DirectoryOrCreate
-    name: ca-certs
-  - hostPath:
-      path: /etc/ca-certificates
-      type: DirectoryOrCreate
-    name: etc-ca-certificates
-  - hostPath:
-      path: /usr/local/share/ca-certificates
-      type: DirectoryOrCreate
-    name: usr-local-share-ca-certificates
-  - hostPath:
-      path: /usr/share/ca-certificates
-      type: DirectoryOrCreate
-    name: usr-share-ca-certificates
-  - hostPath:
-      path: /cedar-authorizer/certs
-      type: DirectoryOrCreate
-    name: var-run-cedar-authorizer-certs
+    - hostPath:
+        path: /cedar-authorizer
+        type: ""
+      name: api-server-cedar-authorizer-files
+    - hostPath:
+        path: /etc/ssl/certs
+        type: DirectoryOrCreate
+      name: ca-certs
+    - hostPath:
+        path: /etc/ca-certificates
+        type: DirectoryOrCreate
+      name: etc-ca-certificates
+    - hostPath:
+        path: /usr/local/share/ca-certificates
+        type: DirectoryOrCreate
+      name: usr-local-share-ca-certificates
+    - hostPath:
+        path: /usr/share/ca-certificates
+        type: DirectoryOrCreate
+      name: usr-share-ca-certificates
+    - hostPath:
+        path: /cedar-authorizer/certs
+        type: DirectoryOrCreate
+      name: var-run-cedar-authorizer-certs
 status: {}

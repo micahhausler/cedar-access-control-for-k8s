@@ -1,6 +1,6 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: cedar-authz-cluster
+name: cedar-cluster
 # Must use kind >= v0.24.0 with K8s 1.31+
 # for the following feature gates
 featureGates:
@@ -22,10 +22,10 @@ kubeadmConfigPatches:
         mountPath: /cedar-authorizer
         name: api-server-cedar-authorizer-files
 nodes:
-- role: control-plane
-  image: cedar-kind-node:latest
-  extraMounts:
-  - hostPath: "./mount"
-    containerPath: "/cedar-authorizer"
-  - hostPath: "./manifests/cedar-authorization-webhook.yaml"
-    containerPath: "/etc/kubernetes/manifests/cedar-authorization-webhook.yaml"
+  - role: control-plane
+    image: cedar-kind-node:latest
+    extraMounts:
+      - hostPath: "./mount"
+        containerPath: "/cedar-authorizer"
+      - hostPath: "./manifests/cedar-authorization-webhook.yaml"
+        containerPath: "/etc/kubernetes/manifests/cedar-authorization-webhook.yaml"

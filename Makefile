@@ -32,6 +32,8 @@ KIND_NODE_IMG = cedar-kind-node:latest
 # We'll drop the node dockerfile and build the custom image in the `kind-image` target like:
 #     kind build add-image cedar-webhook:latest --image cedar-kind-node:latest
 
+KIND_NAME = cedar-cluster
+
 .PHONY: kind-image
 kind-image: image-build ## Build the kind node image
 	$(CONTAINER_TOOL) image save $(IMG) -o scratch/$(WEBHOOK_TARBALL)
@@ -48,7 +50,7 @@ kind: kind-image ## Start a kind cluster configured to use the local authorizati
 	kubectl apply -f demo/authorization-policy.yaml
 	kubectl apply -f demo/admission-policy.yaml
 	# Create a kubeconfig for the authorizing webhoook to communicate with the API server
-	$(CONTAINER_TOOL) exec -it cedar-authz-cluster-control-plane \
+	$(CONTAINER_TOOL) exec -it $(KIND_NAME)-control-plane \
 		/bin/sh -c '/usr/bin/kubeadm kubeconfig user \
 		--org system:authorizers \
 		--client-name system:authorizer:cedar-authorizer \
@@ -59,7 +61,7 @@ kind: kind-image ## Start a kind cluster configured to use the local authorizati
 
 .PHONY: clean-kind
 clean-kind: ## Delete the kind cluster and clean up genereated files
-	$(FINCH_FEATURE) kind delete cluster --name cedar-authz-cluster
+	$(FINCH_FEATURE) kind delete cluster --name $(KIND_NAME)
 	rm \
 		./mount/policies/cedar-kubeconfig.yaml \
 		./mount/*-user-kubeconfig.yaml \
@@ -70,7 +72,7 @@ clean-kind: ## Delete the kind cluster and clean up genereated files
 .PHONY: sample-user-kubeconfig
 sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-group' and 'requires-labels'
 	# Create a sample user kubeconfig so devs have an alternate identity to test things with
-	$(CONTAINER_TOOL) exec -it cedar-authz-cluster-control-plane \
+	$(CONTAINER_TOOL) exec -it $(KIND_NAME)-control-plane \
 		/bin/sh -c '/usr/bin/kubeadm kubeconfig user \
 		--org sample-group \
 		--org requires-labels \
@@ -82,7 +84,7 @@ sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-gro
 .PHONY: test-user-kubeconfig
 test-user-kubeconfig: ## Create a user 'test-user' in the groups 'test-group' and 'viewers'
 	# Create a test user kubeconfig so devs have an alternate identity to test things with
-	$(CONTAINER_TOOL) exec -it cedar-authz-cluster-control-plane \
+	$(CONTAINER_TOOL) exec -it $(KIND_NAME)-control-plane \
 		/bin/sh -c '/usr/bin/kubeadm kubeconfig user \
 		--org test-group \
 		--org viewers \
