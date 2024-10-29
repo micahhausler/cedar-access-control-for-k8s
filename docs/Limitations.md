@@ -43,7 +43,7 @@ namespace k8s {
 		"values"?: Set < __cedar::String >
 	};
     entity User in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
     // ...

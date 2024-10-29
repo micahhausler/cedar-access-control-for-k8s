@@ -108,7 +108,7 @@ spec:
         resource.apiGroup == "" &&
         resource has labelSelector &&
         resource.labelSelector.containsAny([
-          {"key": "owner","operator": "=", "values": [principal.name]}, 
+          {"key": "owner","operator": "=", "values": [principal.name]},
           {"key": "owner","operator": "==", "values": [principal.name]},
           {"key": "owner","operator": "in", "values": [principal.name]}])
     };
@@ -141,17 +141,19 @@ spec:
         resource is k8s::ServiceAccount
     ) when {
         principal.name == "test-user" &&
+        resource has namespace &&
         resource.namespace == "default" &&
         resource.name == "service-manager"
     };
-    
-    // SA named 'service-manager' can act on services in its own namespace 
+
+    // SA named 'service-manager' can act on services in its own namespace
     permit (
         principal is k8s::ServiceAccount,
         action,
         resource is k8s::Resource
     ) when {
-        principal.name == "service-manager" && // no principal.namespace restriction
+        principal.name == "service-manager" && // no specific principal.namespace restriction
         resource.resource == "services" &&
-        resource.namespace == principal.namespace 
+        resource has namespace &&
+        resource.namespace == principal.namespace
     };

@@ -37,10 +37,10 @@ This project supports the following Principal entities:
     ```
 * `k8s::User`. Users are identified by the user's UID as reported by the authenticator.
     The group list comes in from the Kubernetes authenticator (webhook, serviceaccount, OIDC, etc), so we dynamically build the list of group Entities for a request.
-    Kubernetes authenticators can also includes extra key/value information on a user, and that is encoded in the 'extras' attribute.
+    Kubernetes authenticators can also includes extra key/value information on a user, and that is encoded in the 'extra' attribute.
     ```cedarschema
     entity User in [Group] = {
-        "extras"?: Set < Extra >,
+        "extra"?: Set < Extra >,
         "name": __cedar::String,
     };
 	type Extra = {
@@ -51,7 +51,7 @@ This project supports the following Principal entities:
 * `k8s::ServiceAccount`. When a user's name in a [SubjectAccessReview] starts with `system:serviceaccount:`, the authorizer sets the principal type to `k8s::ServiceAccount` with the following attributes.
     ```cedarschema
     entity ServiceAccount in [Group] = {
-        "extras"?: Set < Extra >,
+        "extra"?: Set < Extra >,
         "name": __cedar::String,
         "namespace": __cedar::String,
     };
@@ -61,7 +61,7 @@ This project supports the following Principal entities:
     Cedar can allow or forbid any of those reqeusts.
     ```cedarschema
     entity Node in [Group] = {
-        "extras"?: Set < Extra >,
+        "extra"?: Set < Extra >,
         "name": __cedar::String,
     };
     ```
@@ -90,7 +90,8 @@ permit (
     action in k8s::Action::"readOnly", // allows any get/list/watch
     resource is k8s::Resource
 ) unless {
-    resource.resource == "secrets"
+    resource.resource == "secrets" &&
+    resource.apiGroup == "" // "" is the core API group in Kubernetes
 };
 ```
 
@@ -168,7 +169,8 @@ We define two primary resource types for this authorizer:
         resource is k8s::Resource
     ) when {
         resource.resource == "deployments" &&
-        resource.apiGroup == "apps"
+        resource.apiGroup == "apps" &&
+        resource has namespace // require a namespace name so cluster-scoped collection requests are not permitted
     } unless {
         // permit doesn't apply under these conditions
         resource has namespace &&
@@ -259,7 +261,6 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
         action == k8s::Action::"impersonate",
         resource is k8s::User
     ) when {
-        principal in k8s::Group::"actors" &&
         principal.name == "markhamill" &&
         resource.name == "lukeskywaker"
     };
@@ -281,7 +282,7 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
    ```cedar
     // On Kubernetes versions 1.29+ with the `ServiceAccountTokenPodNodeInfo` flag enabled,
     // Kubernetes injects a node name into the Service Account token, which gets propagated
-    // into the user's info extras map. We transform the map into a set of key/value
+    // into the user's info extra map. We transform the map into a set of key/value
     // records with key of string and value as a set of strings.
     //
     // This allows a service account to impersonate only the node included in the SA token's
@@ -346,7 +347,7 @@ Resources for Admission policies are derived from the Kubernetes API Group and v
 The resource entity structure matches that of the Kubernetes API structure, with some special cases.
 
 ```cedar
-// Forbid pods with hostNet work in namespaces other than kube-system
+// Forbid pods with hostNetwork in namespaces other than kube-system
 forbid (
     principal,
     action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],

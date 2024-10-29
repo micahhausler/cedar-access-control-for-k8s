@@ -70,13 +70,14 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 			ID:   cedartypes.String(attributes.GetName()),
 		}
 		respAttributes[cedartypes.String("name")] = cedartypes.String(attributes.GetName())
-		// TODO: Once attribute-maps are a thing, add this, or something like it
-		// case "userextras":
-		// 	uid = cedartypes.EntityUID{
-		// 		Type: UIDEntity,
-		// 		ID:   cedartypes.String(attributes.GetSubresource()),
-		// 	}
-		// 	respAttributes[cedartypes.String("userExtras")] = cedartypes.AttributesRecord(attributes.GetName())
+	// TODO: Once attribute-maps are a thing, use that structure instead
+	case "userextras":
+		uid = cedartypes.EntityUID{
+			Type: schema.ExtraValuesEntityType,
+			ID:   cedartypes.String(attributes.GetSubresource()),
+		}
+		respAttributes[cedartypes.String("key")] = cedartypes.String(attributes.GetSubresource())
+		respAttributes[cedartypes.String("values")] = cedartypes.NewSet([]cedartypes.Value{cedartypes.String(attributes.GetName())})
 	}
 	return cedartypes.Entity{
 		UID:        uid,

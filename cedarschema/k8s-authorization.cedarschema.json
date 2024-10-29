@@ -11,7 +11,7 @@
 				"shape": {
 					"type": "Record",
 					"attributes": {
-						"extras": {
+						"extra": {
 							"type": "Set",
 							"required": false,
 							"element": {
@@ -84,7 +84,7 @@
 				"shape": {
 					"type": "Record",
 					"attributes": {
-						"extras": {
+						"extra": {
 							"type": "Set",
 							"required": false,
 							"element": {
@@ -109,7 +109,7 @@
 				"shape": {
 					"type": "Record",
 					"attributes": {
-						"extras": {
+						"extra": {
 							"type": "Set",
 							"required": false,
 							"element": {

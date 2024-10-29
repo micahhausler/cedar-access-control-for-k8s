@@ -107,6 +107,9 @@ func authorizeHandlerFunc(authorizer cedarauthorizer.Authorizer, errorInjector *
 			return
 		}
 
+		sarJson, _ := json.Marshal(sar)
+		klog.V(11).Infof("SubjectAccessReview JSON: %s", string(sarJson))
+
 		attributes := GetAuthorizerAttributes(sar)
 		authorizationDecision, reason, err = errorInjector.InjectIfEnabled(authorizer.Authorize(r.Context(), attributes))
 		writeResponse(w, requestId, err, authorizationDecision, reason)

@@ -57,7 +57,7 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 	klog.V(3).Info("Request entities ", string(entityJson))
 	klog.V(3).Info("Cedar request ", string(requestJson))
 	ok, diagnostic := e.store.PolicySet(ctx).IsAuthorized(entities, request)
-	klog.V(9).Info("Authorize", "ok", ok, "Diagnostic", diagnosticToReason(diagnostic))
+	klog.V(9).InfoS("Authorize", "ok", ok, "Diagnostic", diagnosticToReason(diagnostic))
 	if ok {
 		return authorizer.DecisionAllow, diagnosticToReason(diagnostic), nil
 	} else if !ok && len(diagnostic.Reasons) > 0 {

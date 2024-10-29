@@ -107,7 +107,7 @@ Lets write two policies for our test-user:
 ```cedar
 @description("test-user can get/list/watch pods")
 permit (
-    principal,
+    principal is k8s::User,
     action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
 ) when {
@@ -117,9 +117,9 @@ permit (
     resource.resource == "pods"
 };
 
-@description("forbid test-user to get/list/watch nodes"
+@description("forbid test-user to get/list/watch nodes")
 forbid (
-    principal,
+    principal is k8s::User,
     action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
 ) when {
@@ -178,6 +178,7 @@ permit (
     resource is k8s::Resource
 ) unless {
     resource.resource == "secrets" &&
+    resource has namespace &&
     resource.namespace == "default" &&
     // "" is the core API group in Kubernetes
     resource.apiGroup == ""
@@ -240,7 +241,9 @@ permit (
     resource is k8s::ServiceAccount
 ) when {
     principal.name == "test-user" &&
+    resource has namespace &&
     resource.namespace == "default" &&
+    resource has name &&
     resource.name == "service-manager"
 };
 
@@ -252,6 +255,7 @@ permit (
 ) when {
     principal.name == "service-manager" && // no principal.namespace restriction
     resource.resource == "services" &&
+    resource has namespace &&
     resource.namespace == principal.namespace
 };
 ```

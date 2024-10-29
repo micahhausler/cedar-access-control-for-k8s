@@ -36,8 +36,8 @@ metadata:
 spec:
   content: |
     // On Kubernetes versions 1.29+ with the `ServiceAccountTokenPodNodeInfo` flag enabled,
-    // Kubernetes injects a node name into the Service Account token, which gets propagated 
-    // into the user's info extras map. We transform the map into a set of key/value 
+    // Kubernetes injects a node name into the Service Account token, which gets propagated
+    // into the user's info extra info map. We transform the map into a set of key/value
     // records with key of string and value as a set of strings.
     //
     // This allows a service account to modify the status of a node only for the node included in the SA token's
@@ -47,11 +47,13 @@ spec:
         action in [k8s::Action::"get", k8s::Action::"update", k8s::Action::"patch"],
         resource is k8s::Resource
     ) when {
-        principal.name == "default" && 
+        principal.name == "default" &&
         principal.namespace == "default" &&
         resource.apiGroup == "" &&
         resource.resource == "nodes" &&
+        resource has subresource &&
         resource.subresource == "status" &&
+        resource has name &&
         principal.extra.contains({
             "key": "authentication.kubernetes.io/node-name",
             "values": [resource.name]})
@@ -62,10 +64,11 @@ spec:
         action == k8s::Action::"get",
         resource is k8s::Resource
     ) when {
-        principal.name == "default" && 
+        principal.name == "default" &&
         principal.namespace == "default" &&
         resource.apiGroup == "" &&
         resource.resource == "nodes" &&
+        resource has name &&
         principal.extra.contains({
             "key": "authentication.kubernetes.io/node-name",
             "values": [resource.name]})
@@ -82,8 +85,8 @@ spec:
     permit (
         principal is k8s::User,
         action in [
-            k8s::Action::"create", 
-            k8s::Action::"list", 
+            k8s::Action::"create",
+            k8s::Action::"list",
             k8s::Action::"watch",
             k8s::Action::"update",
             k8s::Action::"patch",
@@ -107,7 +110,7 @@ spec:
     } unless {
         resource has labelSelector &&
         resource.labelSelector.containsAny([
-            {"key": "owner","operator": "=", "values": [principal.name]}, 
+            {"key": "owner","operator": "=", "values": [principal.name]},
             {"key": "owner","operator": "==", "values": [principal.name]},
             {"key": "owner","operator": "in", "values": [principal.name]}])
     };
@@ -125,7 +128,7 @@ spec:
         resource.metadata.labels.contains({"key": "owner", "value": principal.name})
     };
 
-    // admission policy forbidding users in "requires-labels" group from updating or deleting 
+    // admission policy forbidding users in "requires-labels" group from updating or deleting
     // resources that they don't own
     forbid (
         principal is k8s::User,
@@ -134,7 +137,7 @@ spec:
     ) when {
         principal in k8s::Group::"requires-labels"
     } unless {
-        context has oldObject && 
+        context has oldObject &&
         context.oldObject has metadata &&
         context.oldObject.metadata has labels &&
         context.oldObject.metadata.labels.contains({"key": "owner", "value": principal.name})
@@ -146,7 +149,7 @@ spec:
         action == k8s::admission::Action::"update",
         resource
     ) when {
-        principal in k8s::Group::"requires-labels" && 
+        principal in k8s::Group::"requires-labels" &&
         resource has metadata &&
         resource.metadata has labels &&
         resource.metadata.labels.contains({"key": "owner", "value": principal.name}) != true

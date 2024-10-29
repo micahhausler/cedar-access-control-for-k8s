@@ -15,7 +15,7 @@ namespace k8s {
 	};
 	entity Group;
 	entity Node in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
 	entity NonResourceURL = {
@@ -31,12 +31,12 @@ namespace k8s {
 		"subresource"?: __cedar::String
 	};
 	entity ServiceAccount in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
 	entity User in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
 	entity UserUID;

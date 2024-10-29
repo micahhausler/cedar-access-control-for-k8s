@@ -1,27 +1,27 @@
 namespace k8s::admission {
 	action "all" appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
 		context: {}
 	};
 	action "connect" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
 		context: {}
 	};
 	action "create" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
 		context: {}
 	};
 	action "delete" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
 		context: {}
 	};
 	action "update" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, io::cert_manager::acme::v1::Challenge, io::cert_manager::acme::v1::ChallengeList, io::cert_manager::acme::v1::Order, io::cert_manager::acme::v1::OrderList, io::cert_manager::v1::Certificate, io::cert_manager::v1::CertificateList, io::cert_manager::v1::CertificateRequest, io::cert_manager::v1::CertificateRequestList, io::cert_manager::v1::ClusterIssuer, io::cert_manager::v1::ClusterIssuerList, io::cert_manager::v1::Issuer, io::cert_manager::v1::IssuerList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
 		context: {}
 	};
 }
@@ -43,7 +43,7 @@ namespace k8s {
 	};
 	entity Group;
 	entity Node in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
 	entity NonResourceURL = {
@@ -59,12 +59,12 @@ namespace k8s {
 		"subresource"?: __cedar::String
 	};
 	entity ServiceAccount in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
 	entity User in [Group] = {
-		"extras"?: Set < Extra >,
+		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
 	entity UserUID;
@@ -2508,552 +2508,6 @@ namespace flowcontrol::v1 {
 	};
 }
 
-namespace io::cert_manager::v1 {
-	entity Certificate = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ObjectMeta,
-		"spec"?: {
-			"commonName"?: __cedar::String,
-			"dnsNames"?: Set < __cedar::String >,
-			"duration"?: __cedar::String,
-			"emailAddresses"?: Set < __cedar::String >,
-			"encodeUsagesInRequest"?: __cedar::Bool,
-			"ipAddresses"?: Set < __cedar::String >,
-			"isCA"?: __cedar::Bool,
-			"issuerRef"?: {
-				"group"?: __cedar::String,
-				"kind"?: __cedar::String,
-				"name"?: __cedar::String
-			},
-			"keystores"?: {
-				"jks"?: {
-					"alias"?: __cedar::String,
-					"create"?: __cedar::Bool,
-					"passwordSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					}
-				},
-				"pkcs12"?: {
-					"create"?: __cedar::Bool,
-					"passwordSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					},
-					"profile"?: __cedar::String
-				}
-			},
-			"literalSubject"?: __cedar::String,
-			"nameConstraints"?: {
-				"critical"?: __cedar::Bool,
-				"excluded"?: {
-					"dnsDomains"?: Set < __cedar::String >,
-					"emailAddresses"?: Set < __cedar::String >,
-					"ipRanges"?: Set < __cedar::String >,
-					"uriDomains"?: Set < __cedar::String >
-				},
-				"permitted"?: {
-					"dnsDomains"?: Set < __cedar::String >,
-					"emailAddresses"?: Set < __cedar::String >,
-					"ipRanges"?: Set < __cedar::String >,
-					"uriDomains"?: Set < __cedar::String >
-				}
-			},
-			"privateKey"?: {
-				"algorithm"?: __cedar::String,
-				"encoding"?: __cedar::String,
-				"rotationPolicy"?: __cedar::String,
-				"size"?: __cedar::Long
-			},
-			"renewBefore"?: __cedar::String,
-			"renewBeforePercentage"?: __cedar::Long,
-			"revisionHistoryLimit"?: __cedar::Long,
-			"secretName"?: __cedar::String,
-		"secretTemplate"?: {},
-			"subject"?: {
-				"countries"?: Set < __cedar::String >,
-				"localities"?: Set < __cedar::String >,
-				"organizationalUnits"?: Set < __cedar::String >,
-				"organizations"?: Set < __cedar::String >,
-				"postalCodes"?: Set < __cedar::String >,
-				"provinces"?: Set < __cedar::String >,
-				"serialNumber"?: __cedar::String,
-				"streetAddresses"?: Set < __cedar::String >
-			},
-			"uris"?: Set < __cedar::String >,
-			"usages"?: Set < __cedar::String >
-		},
-		"status"?: {
-			"failedIssuanceAttempts"?: __cedar::Long,
-			"lastFailureTime"?: __cedar::String,
-			"nextPrivateKeySecretName"?: __cedar::String,
-			"notAfter"?: __cedar::String,
-			"notBefore"?: __cedar::String,
-			"renewalTime"?: __cedar::String,
-			"revision"?: __cedar::Long
-		}
-	};
-	entity CertificateList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity CertificateRequest = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ObjectMeta,
-		"spec"?: {
-			"duration"?: __cedar::String,
-			"groups"?: Set < __cedar::String >,
-			"isCA"?: __cedar::Bool,
-			"issuerRef"?: {
-				"group"?: __cedar::String,
-				"kind"?: __cedar::String,
-				"name"?: __cedar::String
-			},
-			"request"?: __cedar::String,
-			"uid"?: __cedar::String,
-			"usages"?: Set < __cedar::String >,
-			"username"?: __cedar::String
-		},
-		"status"?: {
-			"ca"?: __cedar::String,
-			"certificate"?: __cedar::String,
-			"failureTime"?: __cedar::String
-		}
-	};
-	entity CertificateRequestList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity ClusterIssuer = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ObjectMeta,
-		"spec": {
-			"acme"?: {
-				"caBundle"?: __cedar::String,
-				"disableAccountKeyGeneration"?: __cedar::Bool,
-				"email"?: __cedar::String,
-				"enableDurationFeature"?: __cedar::Bool,
-				"externalAccountBinding"?: {
-					"keyAlgorithm"?: __cedar::String,
-					"keyID"?: __cedar::String,
-					"keySecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					}
-				},
-				"preferredChain"?: __cedar::String,
-				"privateKeySecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"server"?: __cedar::String,
-				"skipTLSVerify"?: __cedar::Bool
-			},
-			"ca"?: {
-				"crlDistributionPoints"?: Set < __cedar::String >,
-				"issuingCertificateURLs"?: Set < __cedar::String >,
-				"ocspServers"?: Set < __cedar::String >,
-				"secretName"?: __cedar::String
-			},
-			"selfSigned"?: {
-				"crlDistributionPoints"?: Set < __cedar::String >
-			},
-			"vault"?: {
-				"auth"?: {
-					"appRole"?: {
-						"path"?: __cedar::String,
-						"roleId"?: __cedar::String,
-						"secretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"clientCertificate"?: {
-						"mountPath"?: __cedar::String,
-						"name"?: __cedar::String,
-						"secretName"?: __cedar::String
-					},
-					"kubernetes"?: {
-						"mountPath"?: __cedar::String,
-						"role"?: __cedar::String,
-						"secretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"serviceAccountRef"?: {
-							"audiences"?: Set < __cedar::String >,
-							"name"?: __cedar::String
-						}
-					},
-					"tokenSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					}
-				},
-				"caBundle"?: __cedar::String,
-				"caBundleSecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"clientCertSecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"clientKeySecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"namespace"?: __cedar::String,
-				"path"?: __cedar::String,
-				"server"?: __cedar::String
-			},
-			"venafi"?: {
-				"cloud"?: {
-					"apiTokenSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					},
-					"url"?: __cedar::String
-				},
-				"tpp"?: {
-					"caBundle"?: __cedar::String,
-					"caBundleSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					},
-					"credentialsRef"?: {
-						"name"?: __cedar::String
-					},
-					"url"?: __cedar::String
-				},
-				"zone"?: __cedar::String
-			}
-		},
-		"status"?: {
-			"acme"?: {
-				"lastPrivateKeyHash"?: __cedar::String,
-				"lastRegisteredEmail"?: __cedar::String,
-				"uri"?: __cedar::String
-			}
-		}
-	};
-	entity ClusterIssuerList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity Issuer = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ObjectMeta,
-		"spec": {
-			"acme"?: {
-				"caBundle"?: __cedar::String,
-				"disableAccountKeyGeneration"?: __cedar::Bool,
-				"email"?: __cedar::String,
-				"enableDurationFeature"?: __cedar::Bool,
-				"externalAccountBinding"?: {
-					"keyAlgorithm"?: __cedar::String,
-					"keyID"?: __cedar::String,
-					"keySecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					}
-				},
-				"preferredChain"?: __cedar::String,
-				"privateKeySecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"server"?: __cedar::String,
-				"skipTLSVerify"?: __cedar::Bool
-			},
-			"ca"?: {
-				"crlDistributionPoints"?: Set < __cedar::String >,
-				"issuingCertificateURLs"?: Set < __cedar::String >,
-				"ocspServers"?: Set < __cedar::String >,
-				"secretName"?: __cedar::String
-			},
-			"selfSigned"?: {
-				"crlDistributionPoints"?: Set < __cedar::String >
-			},
-			"vault"?: {
-				"auth"?: {
-					"appRole"?: {
-						"path"?: __cedar::String,
-						"roleId"?: __cedar::String,
-						"secretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"clientCertificate"?: {
-						"mountPath"?: __cedar::String,
-						"name"?: __cedar::String,
-						"secretName"?: __cedar::String
-					},
-					"kubernetes"?: {
-						"mountPath"?: __cedar::String,
-						"role"?: __cedar::String,
-						"secretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"serviceAccountRef"?: {
-							"audiences"?: Set < __cedar::String >,
-							"name"?: __cedar::String
-						}
-					},
-					"tokenSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					}
-				},
-				"caBundle"?: __cedar::String,
-				"caBundleSecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"clientCertSecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"clientKeySecretRef"?: {
-					"key"?: __cedar::String,
-					"name"?: __cedar::String
-				},
-				"namespace"?: __cedar::String,
-				"path"?: __cedar::String,
-				"server"?: __cedar::String
-			},
-			"venafi"?: {
-				"cloud"?: {
-					"apiTokenSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					},
-					"url"?: __cedar::String
-				},
-				"tpp"?: {
-					"caBundle"?: __cedar::String,
-					"caBundleSecretRef"?: {
-						"key"?: __cedar::String,
-						"name"?: __cedar::String
-					},
-					"credentialsRef"?: {
-						"name"?: __cedar::String
-					},
-					"url"?: __cedar::String
-				},
-				"zone"?: __cedar::String
-			}
-		},
-		"status"?: {
-			"acme"?: {
-				"lastPrivateKeyHash"?: __cedar::String,
-				"lastRegisteredEmail"?: __cedar::String,
-				"uri"?: __cedar::String
-			}
-		}
-	};
-	entity IssuerList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-}
-
-namespace io::cert_manager::acme::v1 {
-	entity Challenge = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata": meta::v1::ObjectMeta,
-		"spec": {
-			"authorizationURL"?: __cedar::String,
-			"dnsName"?: __cedar::String,
-			"issuerRef"?: {
-				"group"?: __cedar::String,
-				"kind"?: __cedar::String,
-				"name"?: __cedar::String
-			},
-			"key"?: __cedar::String,
-			"solver"?: {
-				"dns01"?: {
-					"acmeDNS"?: {
-						"accountSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"host"?: __cedar::String
-					},
-					"akamai"?: {
-						"accessTokenSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"clientSecretSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"clientTokenSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"serviceConsumerDomain"?: __cedar::String
-					},
-					"azureDNS"?: {
-						"clientID"?: __cedar::String,
-						"clientSecretSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"environment"?: __cedar::String,
-						"hostedZoneName"?: __cedar::String,
-						"managedIdentity"?: {
-							"clientID"?: __cedar::String,
-							"resourceID"?: __cedar::String
-						},
-						"resourceGroupName"?: __cedar::String,
-						"subscriptionID"?: __cedar::String,
-						"tenantID"?: __cedar::String
-					},
-					"cloudDNS"?: {
-						"hostedZoneName"?: __cedar::String,
-						"project"?: __cedar::String,
-						"serviceAccountSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"cloudflare"?: {
-						"apiKeySecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"apiTokenSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"email"?: __cedar::String
-					},
-					"cnameStrategy"?: __cedar::String,
-					"digitalocean"?: {
-						"tokenSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"rfc2136"?: {
-						"nameserver"?: __cedar::String,
-						"tsigAlgorithm"?: __cedar::String,
-						"tsigKeyName"?: __cedar::String,
-						"tsigSecretSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"route53"?: {
-						"accessKeyID"?: __cedar::String,
-						"accessKeyIDSecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						},
-						"auth"?: {
-							"kubernetes"?: {
-								"serviceAccountRef"?: {
-									"audiences"?: Set < __cedar::String >,
-									"name"?: __cedar::String
-								}
-							}
-						},
-						"hostedZoneID"?: __cedar::String,
-						"region"?: __cedar::String,
-						"role"?: __cedar::String,
-						"secretAccessKeySecretRef"?: {
-							"key"?: __cedar::String,
-							"name"?: __cedar::String
-						}
-					},
-					"webhook"?: {
-						"groupName"?: __cedar::String,
-						"solverName"?: __cedar::String
-					}
-				},
-				"http01"?: {
-					"gatewayHTTPRoute"?: {
-						"podTemplate"?: core::v1::PodTemplate,
-						"serviceType"?: __cedar::String
-					},
-					"ingress"?: {
-						"class"?: __cedar::String,
-						"ingressClassName"?: __cedar::String,
-						"ingressTemplate"?: {
-							"metadata"?: {}
-						},
-						"name"?: __cedar::String,
-						"podTemplate"?: core::v1::PodTemplate,
-						"serviceType"?: __cedar::String
-					}
-				},
-				"selector"?: {
-					"dnsNames"?: Set < __cedar::String >,
-					"dnsZones"?: Set < __cedar::String >
-				}
-			},
-			"token"?: __cedar::String,
-			"type"?: __cedar::String,
-			"url"?: __cedar::String,
-			"wildcard"?: __cedar::Bool
-		},
-		"status"?: {
-			"presented"?: __cedar::Bool,
-			"processing"?: __cedar::Bool,
-			"reason"?: __cedar::String,
-			"state"?: __cedar::String
-		}
-	};
-	entity ChallengeList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity Order = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata": meta::v1::ObjectMeta,
-		"spec": {
-			"commonName"?: __cedar::String,
-			"dnsNames"?: Set < __cedar::String >,
-			"duration"?: __cedar::String,
-			"ipAddresses"?: Set < __cedar::String >,
-			"issuerRef"?: {
-				"group"?: __cedar::String,
-				"kind"?: __cedar::String,
-				"name"?: __cedar::String
-			},
-			"request"?: __cedar::String
-		},
-		"status"?: {
-			"certificate"?: __cedar::String,
-			"failureTime"?: __cedar::String,
-			"finalizeURL"?: __cedar::String,
-			"reason"?: __cedar::String,
-			"state"?: __cedar::String,
-			"url"?: __cedar::String
-		}
-	};
-	entity OrderList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-}
-
 namespace meta::v1 {
 	type KeyValue = {
 		"key": __cedar::String,
@@ -3592,7 +3046,7 @@ namespace aws::k8s::cedar::v1alpha1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
-		"spec"?: {
+		"spec": {
 			"content"?: __cedar::String
 		}
 	};
