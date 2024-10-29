@@ -36,7 +36,7 @@ finch vm start
     make build
     ```
 2. Start the Kind cluster
-    This will build the webhook image, the Kind image, and create the Kind cluster. 
+    This will build the webhook image, the Kind image, and create the Kind cluster.
     This cluster is configured to authorize and validate requests via the Cedar webhook:
    ```bash
    make kind
@@ -69,8 +69,9 @@ finch vm start
 5. Try out admission policies:
     ```bash
     # (Optional) Update the validating webhook API groups/versions/resources you want validated
-    # by edting manifests/admission-webhook.yaml and then re-applying the webhook
-    # $ make admission-webhook
+    # by edting manifests/admission-webhook.yaml before applying the webhook
+
+    make admission-webhook
 
     # Apply an example admission policy
     kubectl apply -f demo/admission-policy.yaml

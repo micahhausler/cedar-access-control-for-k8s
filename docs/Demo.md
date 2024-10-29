@@ -112,6 +112,7 @@ permit (
     resource is k8s::Resource
 ) when {
     principal.name == "test-user" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
     resource.resource == "pods"
 };
@@ -123,6 +124,7 @@ forbid (
     resource is k8s::Resource
 ) when {
     principal.name == "test-user" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
     resource.resource == "nodes"
 };
@@ -177,6 +179,7 @@ permit (
 ) unless {
     resource.resource == "secrets" &&
     resource.namespace == "default" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == ""
 };
 ```
@@ -194,7 +197,7 @@ Lets try it out!
 
 ```cedar
 // We allow users to list and watch secrets when the request
-// includes the label selector owner=={request.user.name}
+// includes the label selector owner={request.user.name}
 permit (
     principal is k8s::User,
     action in [k8s::Action::"list", k8s::Action::"watch"],
@@ -203,10 +206,11 @@ permit (
     resource.resource == "secrets" &&
     resource.apiGroup == "" &&
     resource has labelSelector &&
-    resource.labelSelector.containsAny([
-        {"key": "owner","operator": "=", "values": [principal.name]},
-        {"key": "owner","operator": "==", "values": [principal.name]},
-        {"key": "owner","operator": "in", "values": [principal.name]}])
+    resource.labelSelector.contains({
+      "key": "owner",
+      "operator": "=",
+      "values": [principal.name]
+    })
 };
 ```
 
@@ -307,6 +311,7 @@ permit (
 ) when {
     principal.name == "test-user" &&
     resource.namespace == "default" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
     resource.resource == "configmaps"
 };
@@ -358,6 +363,7 @@ permit (
     principal.name == "sample-user" &&
     resource has namespace &&
     resource.namespace == "default" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
     resource.resource == "configmaps"
 };
@@ -372,8 +378,11 @@ forbid (
     principal in k8s::Group::"requires-labels"
 } unless {
     resource has labelSelector &&
-    resource.labelSelector.contains(
-        {"key": "owner","operator": "=", "values": [principal.name]})
+    resource.labelSelector.contains({
+      "key": "owner",
+      "operator": "=",
+      "values": [principal.name]
+    })
 };
 
 // admission policy to forbid resource creation without an owner key

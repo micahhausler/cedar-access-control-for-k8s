@@ -150,21 +150,29 @@ We define two primary resource types for this authorizer:
         resource is k8s::Resource
     ) unless {
         resource.resource == "secrets" &&
+        // "" is the core API group in Kubernetes
         resource.apiGroup == ""
         // any/all namespaces
     };
 
-    // Allow viewer only in one of several namespaces
+    // Allow developers to manage deployments in any namespace other than kube-system or kube-public
     permit (
-        principal in Group::"viewers",
-        action in [ k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+        principal in Group::"developers",
+        action in [
+            k8s::Action::"get",
+            k8s::Action::"list",
+            k8s::Action::"watch",
+            k8s::Action::"create",
+            k8s::Action::"update",
+            k8s::Action::"delete"],
         resource is k8s::Resource
     ) when {
-        resource has namespace &&
-        ["kube-system", "default" ].contains(resource.namespace)
+        resource.resource == "deployments" &&
+        resource.apiGroup == "apps"
     } unless {
-        resource.resource == "secrets" &&
-        resource.apiGroup == "" &&
+        // permit doesn't apply under these conditions
+        resource has namespace &&
+        ["kube-system", "kube-public" ].contains(resource.namespace)
     };
     ```
 
@@ -193,8 +201,9 @@ permit (
     action in [k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
 ) when {
-    resource.resource == "secrets" &&
+    // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
+    resource.resource == "configmaps" &&
     resource has labelSelector &&
     resource.labelSelector.containsAny([
         {"key": "owner","operator": "=", "values": [principal.name]},

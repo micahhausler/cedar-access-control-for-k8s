@@ -55,9 +55,6 @@ kind: kind-image ## Start a kind cluster configured to use the local authorizati
 		--org system:authorizers \
 		--client-name system:authorizer:cedar-authorizer \
 		--validity-period 744h > /cedar-authorizer/policies/cedar-kubeconfig.yaml'
-	cat manifests/admission-webhook.yaml | \
-		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
-		kubectl apply -f -
 
 .PHONY: clean-kind
 clean-kind: ## Delete the kind cluster and clean up genereated files
