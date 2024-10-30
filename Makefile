@@ -93,7 +93,7 @@ test-user-kubeconfig: ## Create a user 'test-user' in the groups 'test-group' an
 .PHONY: admission-webhook
 admission-webhook: ## Install the Cedar validatingwebhookconfiguration
 	cat manifests/admission-webhook.yaml | \
-		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64)/" | \
+		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64 -w 0)/" | \
 		kubectl apply -f -
 
 ##@ Cedar Schema
