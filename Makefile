@@ -129,7 +129,7 @@ authz-cedarschema: $(SCHEMA_DIR) ## Create authorization cedarschema in both ced
 	rm $(RAW_CEDAR_SCHEMA)
 
 .PHONY: cedarschemas
-cedarschemas: authz-cedarschema full-cedarschema ## Create all schemas
+cedarschemas: build authz-cedarschema full-cedarschema ## Create all schemas
 
 ##@ Cedar policies
 
@@ -270,7 +270,7 @@ cert-manager: ## Install cert-manager in the cluster
 	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.0/cert-manager.yaml
 
 .PHONY: deploy
-deploy: manifests kustomize load-webhook-image  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	cd config/webhook && $(KUSTOMIZE) edit set image webhook=${IMG}
 	$(KUSTOMIZE) build config/default  | $(KUBECTL) apply -f -
 
