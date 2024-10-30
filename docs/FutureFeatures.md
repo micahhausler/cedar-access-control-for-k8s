@@ -2,14 +2,6 @@
 
 The following list of feature ideas are not yet built, but potential candidates for addition.
 
-- [Potential Future Feature Ideas](#potential-future-feature-ideas)
-  - [Multiple tiered policy stores](#multiple-tiered-policy-stores)
-  - [Amazon Verified Permissions integration](#amazon-verified-permissions-integration)
-  - [Cluster metadata](#cluster-metadata)
-  - [Service Control Policies](#service-control-policies)
-  - [Network Policy integration](#network-policy-integration)
-
-
 ## Multiple tiered policy stores
 
 For this prototype, policies are all defined in as Policy custom resources.

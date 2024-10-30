@@ -1,10 +1,5 @@
 # Setup
 
-- [Setup](#setup)
-  - [Local Setup with Kind](#local-setup-with-kind)
-  - [Local Quickstart](#local-quickstart)
-  - [Convert RBAC policies](#convert-rbac-policies)
-
 ## Local Setup with Kind
 
 To run this project locally, you'll need to install [finch][finch], [Go][go], [kubectl][kubectl], [kind][kind], and [kubebuilder][kubebuilder] (if creating/modifying CRDs).

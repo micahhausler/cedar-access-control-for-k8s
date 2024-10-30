@@ -1,17 +1,5 @@
 # Cedar access controls for Kubernetes Demo
 
-- [Cedar access controls for Kubernetes Demo](#cedar-access-controls-for-kubernetes-demo)
-  - [Motivation](#motivation)
-  - [Setup](#setup)
-  - [Authorization](#authorization)
-    - [Basic access](#basic-access)
-    - [Group access](#group-access)
-    - [Attribute-based access control](#attribute-based-access-control)
-    - [Impersonation](#impersonation)
-  - [Admission](#admission)
-    - [Name selection](#name-selection)
-    - [Key/Value maps](#keyvalue-maps)
-
 ## Motivation
 
 Administrators who want to secure their Kubernetes clusters today have to learn and use multiple different policy languages, and ensure those policies are individually applied on all their clusters.
@@ -295,8 +283,7 @@ permit (
     k8s::admission::Action::"create",
     k8s::admission::Action::"update",
     k8s::admission::Action::"delete",
-    k8s::admission::Action::"connect",
-  ],
+    k8s::admission::Action::"connect"],
   resource
 );
 ```
@@ -314,6 +301,7 @@ permit (
     resource is k8s::Resource
 ) when {
     principal.name == "test-user" &&
+    resource has namespace &&
     resource.namespace == "default" &&
     // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
@@ -327,6 +315,8 @@ forbid (
     resource is core::v1::ConfigMap
 ) when {
     principal.name == "test-user" &&
+    resource has metadata &&
+    resource.metadata has name &&
     resource.metadata.name like "prod*"
 };
 ```

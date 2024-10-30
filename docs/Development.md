@@ -1,16 +1,5 @@
 # Development
 
-- [Development](#development)
-  - [Contributing Guidelines](#contributing-guidelines)
-  - [Reporting Bugs/Feature Requests](#reporting-bugsfeature-requests)
-  - [Contributing via Pull Requests](#contributing-via-pull-requests)
-  - [Finding contributions to work on](#finding-contributions-to-work-on)
-  - [Code of Conduct](#code-of-conduct)
-  - [Security issue notifications](#security-issue-notifications)
-  - [Licensing](#licensing)
-  - [TODOs](#todos)
-  - [Converter testing](#converter-testing)
-
 ## Contributing Guidelines
 
 Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional

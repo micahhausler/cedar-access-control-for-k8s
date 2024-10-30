@@ -1,14 +1,5 @@
 # Limitations
 
-- [Limitations](#limitations)
-  - [Entity Tags (key/value maps)](#entity-tags-keyvalue-maps)
-  - [Expressiveness limitations](#expressiveness-limitations)
-  - [Policy store updates and race conditions](#policy-store-updates-and-race-conditions)
-  - [Policy store tiers](#policy-store-tiers)
-  - [No permission enumeration](#no-permission-enumeration)
-  - [No privilege escalation prevention](#no-privilege-escalation-prevention)
-
-
 ## Entity Tags (key/value maps)
 
 Cedar's Rust implementation and CLI gained support for entity tags (key/value maps) in [Cedar v4.2.0][4.2].

@@ -16,6 +16,7 @@ permit (
     action == k8s::Action::"create",
     resource is k8s::Resource
 ) when {
+    resource.apiGroup == "" && // "" is the core API group in Kubernetes
     resource.resource == "secret"
 };
 
@@ -27,18 +28,21 @@ permit (
 ) when {
     principal in k8s::Group::"personal-secret-creators" &&
     resource.resource == "secret" &&
+    resource.apiGroup == "" &&
+    resource has name &&
     resource.name == principal.name
 };
 
 // Admission policy enforcing that a secret name in create requests match the user's name
 forbid (
     principal is k8s::User,
-    action in k8s::admission::Action::"create",
+    action == k8s::admission::Action::"create",
     resource is core::v1::Secret
 ) when {
     principal in k8s::Group::"personal-secret-creators"
 } unless {
-    resource.name == principal.name
+    // forbid doesn't apply under these conditions
+    resource.metadata.name == principal.name
 };
 ```
 

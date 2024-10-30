@@ -2,13 +2,8 @@
 
 This guide provides an introduction to Cedar
 
-- [Introduction to Cedar](#introduction-to-cedar)
-  - [Policy](#policy)
-  - [Request Evaluation](#request-evaluation)
-  - [Schema](#schema)
-
 ## Policy
-If you're not familiar with Cedar, what you need to know is that [Cedar policies] are structured with a Principal, Action, Resource, and optional Condition (PARC). Denials are implicit, but explicit `forbid`s have priority over `permit`s.
+If you're not familiar with Cedar, [Cedar policies] are structured with a Principal, Action, Resource, and optional Condition (PARC). Denials are implicit, but explicit `forbid`s have priority over `permit`s.
 
 [Cedar policies]: https://docs.cedarpolicy.com/policies/syntax-policy.html
 
@@ -17,16 +12,16 @@ permit (
     principal == MyPrincipalType::"some-uuid",
     action == Action::"some-action-name",
     resource == MyResourceType::"some-uuid"
-)
+);
 
 forbid (
     principal == MyPrincipalType::"some-uuid",
     action == Action::"some-other-action-name",
     resource == MyResourceType::"some-uuid"
-)
+);
 ```
 
-Every principal and resource is an [_entity_][entity], and actions are valid for various principal and resource entity types.
+Every principal and resource is an [_entity_][entity], and actions are valid for specific principal and resource entity types.
 Entities can also be contained by other entities.
 Below is an example of a policy referencing a principal _entity_ group type.
 In this example, a principal must be in the specified group, the action must be a "get" or "list", the resource must have an attribute titled `some_attribute_value` with the value `cool_value`, but the resource attribute `my_kind_attribute` must not be `secrets`.
@@ -39,11 +34,11 @@ permit (
     action in [Action::"get", Action::"list"], // match multiple actions
     resource is MyResourceType
 )
-// optional positive condition clause
+// optional condition clause that applies the effect when true
 when {
     resource.some_attribute_name == "cool_value"
 }
-// optional negating condition clause
+// optional negating condition clause, effect does not apply when true
 unless {
     resource.my_kind_attribute == "secrets"
 };
@@ -57,17 +52,18 @@ In this example, there is a `k8s` namespace with a `User` entity, a `k8s::admiss
 ```cedar
 forbid (
     principal is k8s::User,
-    action is k8s::admission::Action::"create",
+    action == k8s::admission::Action::"create",
     resource is core::v1::ConfigMap
 ) when {
-    principal.name == "test-user"
+    principal.metadata.name == "test-user"
 };
 ```
 
 
 ## Request Evaluation
 
-How does Cedar know if a principal is in a group? When evaluating a request, cedar has several inputs.
+How does Cedar know if a principal is in a group? 
+When evaluating a request, Cedar has several inputs.
 (You can play with some examples in the [Cedar Playground](https://www.cedarpolicy.com/en/playground)):
 
 * A JSON list of entity structures to be considered
@@ -143,9 +139,12 @@ make build
 ./bin/converter clusterrolebindings > all-crbs.cedar
 ./bin/converter rolebindings > all-rbs.cedar
 
+# Install cedar
+cargo install cedar-policy-cli
+
 # Validate the policies against the schema
-cedar validate -s ./k8s-authz-admission.cedarschema.json --schema-format json -p all-crbs.cedar
-cedar validate -s ./k8s-authz-admission.cedarschema.json --schema-format json -p all-rbs.cedar
+cedar validate -s ./cedarschema/k8s-full.cedarschema --schema-format cedar -p all-crbs.cedar
+cedar validate -s ./cedarschema/k8s-full.cedarschema --schema-format cedar -p all-rbs.cedar
 ```
 
 [cedar_go]: https://pkg.go.dev/github.com/cedar-policy/cedar-go

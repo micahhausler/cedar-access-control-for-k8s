@@ -18,6 +18,8 @@ forbid (
     action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
     resource is core::v1::Pod
 ) when {
+    resource has metadata &&
+    resource.metadata has namespace &&
     resource.metadata.namespace == "default"
 } unless {
     context has allContainersInRegistry &&

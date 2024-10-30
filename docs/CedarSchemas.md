@@ -10,17 +10,6 @@ The referenced schemas are primarily created to document the entity shapes and a
 [cedar-go]: https://github.com/cedar-policy/cedar-go
 [cedar-go-schema]: https://github.com/cedar-policy/cedar-go/issues/2
 
-- [Cedar Schemas](#cedar-schemas)
-  - [Authorizer cedarschema](#authorizer-cedarschema)
-    - [Principals](#principals)
-    - [Actions](#actions)
-    - [Resources](#resources)
-      - [Impersonated resources](#impersonated-resources)
-    - [Principals](#principals-1)
-    - [Actions](#actions-1)
-    - [Resources](#resources-1)
-
-
 ## Authorizer cedarschema
 
 For the full authorization schema, see [cedarschema/k8s-authorization.cedarschema](../cedarschema/k8s-authorization.cedarschema).
@@ -29,11 +18,9 @@ For the full authorization schema, see [cedarschema/k8s-authorization.cedarschem
 
 This project supports the following Principal entities:
 
-* `k8s::Group`. Groups are identified by the group name.
+* `k8s::Group`. Groups are identified by the group name in policy.
     ```cedarschema
-    entity Group = {
-         "name": __cedar::String,
-    };
+    entity Group;
     ```
 * `k8s::User`. Users are identified by the user's UID as reported by the authenticator.
     The group list comes in from the Kubernetes authenticator (webhook, serviceaccount, OIDC, etc), so we dynamically build the list of group Entities for a request.
@@ -41,7 +28,7 @@ This project supports the following Principal entities:
     ```cedarschema
     entity User in [Group] = {
         "extra"?: Set < Extra >,
-        "name": __cedar::String,
+        "name": __cedar::String
     };
 	type Extra = {
 		"key": __cedar::String,
@@ -53,7 +40,7 @@ This project supports the following Principal entities:
     entity ServiceAccount in [Group] = {
         "extra"?: Set < Extra >,
         "name": __cedar::String,
-        "namespace": __cedar::String,
+        "namespace": __cedar::String
     };
     ```
 * `k8s::Node`. When a user's name in a [SubjectAccessReview] starts with `system:node:`, the authorizer sets the principal type to `k8s::Node` with the following attributes.
@@ -62,7 +49,7 @@ This project supports the following Principal entities:
     ```cedarschema
     entity Node in [Group] = {
         "extra"?: Set < Extra >,
-        "name": __cedar::String,
+        "name": __cedar::String
     };
     ```
 
@@ -75,10 +62,11 @@ Authorization actions are pretty simple, just the `verb` name from the Kubernete
 ```cedar
 permit (
     principal in k8s::Group::"viewers",
-    action in [k8s::Action::"get", k8s::Action::"list", k8s::Action:"watch"],
+    action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
 ) unless {
-    resource.resource == "secrets"
+    resource.resource == "secrets" &&
+    resource.apiGroup == "" // "" is the core API group in Kubernetes
 };
 ```
 
@@ -113,19 +101,18 @@ We define two primary resource types for this authorizer:
     ```
     Examples:
     ```cedar
+    // allow multiple URLs
     permit (
-        principal in Group::"system:authenticated",
+        principal in k8s::Group::"system:authenticated",
         action == k8s::Action::"get",
         resource is k8s::NonResourceURL
     ) when {
         ["/version", "/healthz"].contains(resource.path) ||
         resource.path like "/healthz/*"
     };
-    ```
-    ```cedar
     // explicitly list one path
     permit (
-        principal in Group::"version-getter",
+        principal in k8s::Group::"version-getter",
         action == k8s::Action::"get",
         resource == k8s::NonResourceURL::"/version"
     );
@@ -146,7 +133,7 @@ We define two primary resource types for this authorizer:
     ```cedar
     // "viewers" group members can get/list/watch any Namespaced other than secrets
     permit (
-        principal in Group::"viewers",
+        principal in k8s::Group::"viewers",
         action in [ k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
         resource is k8s::Resource
     ) unless {
@@ -158,7 +145,7 @@ We define two primary resource types for this authorizer:
 
     // Allow developers to manage deployments in any namespace other than kube-system or kube-public
     permit (
-        principal in Group::"developers",
+        principal in k8s::Group::"developers",
         action in [
             k8s::Action::"get",
             k8s::Action::"list",
@@ -170,9 +157,10 @@ We define two primary resource types for this authorizer:
     ) when {
         resource.resource == "deployments" &&
         resource.apiGroup == "apps" &&
-        resource has namespace // require a namespace name so cluster-scoped collection requests are not permitted
+        // require a namespace name so cluster-scoped collection requests are not permitted
+        resource has namespace 
     } unless {
-        // permit doesn't apply under these conditions
+        // permit does not apply under these conditions
         resource has namespace &&
         ["kube-system", "kube-public" ].contains(resource.namespace)
     };
@@ -227,7 +215,7 @@ example-secret   Opaque   1      2d20h
 $ kubectl get secrets --show-labels
 NAME                   TYPE     DATA   AGE     LABELS
 example-secret         Opaque   1      2d20h   owner=test-user
-other-example-secret   Opaque   1      2d20h   owner=test-user-2
+other-example-secret   Opaque   1      2d20h   owner=prod-user
 ```
 
 #### Impersonated resources
@@ -294,6 +282,7 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     ) when {
         principal.name == "default" &&
         principal.namespace == "default" &&
+        principal has extra &&
         principal.extra.contains({
             "key": "authentication.kubernetes.io/node-name",
             "values": [resource.name]})
@@ -331,7 +320,10 @@ Admission actions exist in a different Cedar namespace than Authorization, and a
 // largely redundant policy, as authorization already only allows non-mutating verbs on resources
 forbid (
     principal in k8s::Group::"system:viewers",
-    action in [k8s::admission::Action::"create", k8s::admission::Action::"update", k8s::admission::Action::"delete"],
+    action in [
+        k8s::admission::Action::"create", 
+        k8s::admission::Action::"update", 
+        k8s::admission::Action::"delete"],
     resource
 );
 ```
@@ -353,8 +345,12 @@ forbid (
     action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
     resource is core::v1::Pod
 ) when {
-    resource.spec.hostNetwork
+    resource has spec &&
+    resource.spec has hostNetwork &&
+    resource.spec.hostNetwork == true
 } unless {
+    resource has metadata &&
+    resource.metadata has namespace &&
     resource.metadata.namespace == "kube-system"
 };
 ```
