@@ -85,7 +85,7 @@ forbid (
 
 3. **Do I need to have an AWS account to use this?**
 
-    No, you can try this out with locally with [kind] today, and even run it on a cloud cluster that you manage.
+    No, you can try this out locally with [kind] today, and even run it on a cloud cluster that you manage.
 
 4. **Can I use this in production?**
 
