@@ -1,10 +1,13 @@
 # Cedar Access Control for Kubernetes
 
+<img src="docs/img/cedar-for-k8s.png#gh-light-mode-only" alt="logo" width="300"/>
+<img src="docs/img/cedar-for-k8s-dark.png#gh-dark-mode-only" alt="logo" width="300"/>
+
 [![Go Reference](https://pkg.go.dev/badge/github.com/awslabs/cedar-access-control-for-k8s.svg)](https://pkg.go.dev/github.com/awslabs/cedar-access-control-for-k8s)
 
 ## Overview
 
-This project allows users to enforce access control on Kubernetes API requests using [Cedar policies](https://www.cedarpolicy.com/).
+This project allows users to enforce access control on Kubernetes API requests using [Cedar policies](https://cedarpolicy.com/en).
 Users can dynamically create authorization policies for Kubernetes that support features like request or user attribute based rules, label-based access controls, conditions, and enforce denial policies.
 Users can also create admission policies in the same file as authorization policy, giving policy authors a single language to write and reason about.
 
