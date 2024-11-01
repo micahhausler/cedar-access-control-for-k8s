@@ -1,0 +1,28 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kustomization-fields.vap-library.com"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: vap-library.com/v1beta1
+    kind: VAPLibKustomizationFieldsParam
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["kustomize.toolkit.fluxcd.io"]
+      apiVersions: ["v1", "v1beta2", "v1beta1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["kustomizations"]
+  validations:
+    - expression: >
+        !(has(params.spec.targetNamespace)) ||
+        (has(object.spec.targetNamespace) && object.spec.targetNamespace == params.spec.targetNamespace)
+      messageExpression: "'spec.targetNamespace must be set to ' + string(params.spec.targetNamespace) + '. It is: ' + string(object.spec.targetNamespace)"
+      message: "spec.targetNamespace must be set to the namespace specified in the Validating Admission Policy parameter"
+      reason: Invalid
+    - expression: >
+        !(has(params.spec.serviceAccountName)) ||
+        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName == params.spec.serviceAccountName)
+      messageExpression: "'spec.serviceAccountName must be set to ' + string(params.spec.serviceAccountName) + '. It is: ' + string(object.spec.serviceAccountName)"
+      message: "spec.serviceAccountName must be set to the service account specified in the Validating Admission Policy parameter"
+      reason: Invalid
