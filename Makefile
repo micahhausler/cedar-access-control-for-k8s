@@ -204,6 +204,7 @@ lint-fix: golangci-lint ## Run golangci-lint linter and perform fixes
 
 .PHONY: build
 build: manifests generate fmt vet ## Build binaries.
+	go build -o bin/vap-converter cmd/vap-converter/main.go
 	go build -o bin/cedar-webhook cmd/cedar-webhook/main.go
 	go build -o bin/converter cmd/converter/main.go
 	go build -o bin/schema-generator cmd/schema-generator/main.go
