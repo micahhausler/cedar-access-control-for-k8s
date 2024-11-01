@@ -1,7 +1,7 @@
 # Cedar Access Control for Kubernetes
 
-<img src="docs/img/cedar-for-k8s.png#gh-light-mode-only" alt="logo" width="300"/>
-<img src="docs/img/cedar-for-k8s-dark.png#gh-dark-mode-only" alt="logo" width="300"/>
+<img src="docs/img/cedar-for-k8s.png#gh-light-mode-only" alt="logo" width="600"/>
+<img src="docs/img/cedar-for-k8s-dark.png#gh-dark-mode-only" alt="logo" width="600"/>
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/awslabs/cedar-access-control-for-k8s.svg)](https://pkg.go.dev/github.com/awslabs/cedar-access-control-for-k8s)
 

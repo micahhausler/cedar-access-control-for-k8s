@@ -5,6 +5,7 @@
 *.so
 *.dylib
 bin/*
+.DS_Store
 # Ignore transient kind/cert files
 mount/logs/*
 mount/policies/cedar-kubeconfig.yaml
