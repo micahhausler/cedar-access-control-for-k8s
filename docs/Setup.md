@@ -41,11 +41,16 @@ finch vm start
    # edit demo/authorization-policy.yaml
    kubectl apply -f demo/authorization-policy.yaml
    ```
-4. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in step 6. The user has the name `test-user` with the group `test-group`. Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
+4. Generate a kubeconfig for a test user.
+    The user has the name `test-user` with the group `test-group`. 
     ```bash
-    # Lookup the username you are testing
+    make test-user-kubeconfig
+    # Lookup the username of the test user
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl auth whoami
-
+    ```
+5. Now you can make requests! You'll need use the generated kubeconfig `./mount/test-user-kubeconfig.yam` created in the previous step. 
+    Your default kubeconfig (`~/.kube/config`) will be auto-configured by kind with a cluster administrator identity, so `kubectl` without specifying a kubeconfig should always just work.
+    ```bash
     # Try getting resources
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl get pods --all-namespaces # allowed
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl get nodes # denied
@@ -61,7 +66,7 @@ finch vm start
     KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl get service \
         --as system:serviceaccount:default:service-manager
     ```
-5. Try out admission policies:
+6. Try out admission policies:
     ```bash
     # (Optional) Update the validating webhook API groups/versions/resources you want validated
     # by edting manifests/admission-webhook.yaml before applying the webhook
