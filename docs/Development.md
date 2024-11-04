@@ -76,6 +76,7 @@ Initial development needed:
 * [Enum Entity Types](https://github.com/cedar-policy/rfcs/blob/main/text/0053-enum-entities.md): for Kubernetes API string fields that have limited options
 * [Cedar schema annotations](https://github.com/cedar-policy/rfcs/pull/48): To facilitate documentation of schema fields and types
 * Cedar schema HTML/Markdown documentation generation
+* [Support comparison of records with optional fields](https://github.com/cedar-policy/cedar/issues/1303)
 
 ## Converter testing
 
