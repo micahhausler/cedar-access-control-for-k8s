@@ -68,6 +68,15 @@ Initial development needed:
   - [ ] Migrate custom policies in tests to YAML testcase files
 - [x] Merge authorization and admission webhook into one server with multiple handlers
 
+
+## Cedar enhancements that would benefit this project
+
+* [Extended has](https://github.com/cedar-policy/rfcs/blob/main/text/0062-extended-has.md): This will simplify `resource has meta && resource.meta has labels && ...` into just `resource.meta.labels has myKey`
+* [Datetime extension](https://github.com/cedar-policy/rfcs/blob/main/text/0080-datetime-extension.md): So Cedar can make decisions on timestamp fields like, `authentication::v1::TokenRequest.expirationTimestamp`
+* [Enum Entity Types](https://github.com/cedar-policy/rfcs/blob/main/text/0053-enum-entities.md): for Kubernetes API string fields that have limited options
+* [Cedar schema annotations](https://github.com/cedar-policy/rfcs/pull/48): To facilitate documentation of schema fields and types
+* Cedar schema HTML/Markdown documentation generation
+
 ## Converter testing
 
 To run the converter tests, run:
