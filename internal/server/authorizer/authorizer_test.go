@@ -550,7 +550,7 @@ permit (
 permit (
 	principal,
 	action == k8s::Action::"impersonate",
-	resource == k8s::UserUID::"1234"
+	resource == k8s::PrincipalUID::"1234"
 ) when {
 	principal.name == "test-user"
 };`,

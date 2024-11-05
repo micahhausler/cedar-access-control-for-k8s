@@ -222,18 +222,6 @@ other-example-secret   Opaque   1      2d20h   owner=prod-user
 
 To make an impersonated request as another user, Kubernetes sends multiple authorization requests to an authorizer: one for each attribute being impersonated: The user's name, the UID (if set), the groups (if set), and the userInfo extra key/value map (entity tags are [not yet supported in cedar-go](https://github.com/cedar-policy/cedar-go/issues/47)). To support this, we define a few types:
 
-* `UserUID`: To allow impersonating a user's UID, the policy's resource type must be `UserUID`. This only functions if the user can also impersonate the requested username.
-    ```cedarschema
-    entity UserUID;
-    ```
-    Examples:
-    ```cedar
-    permit (
-        principal in k8s::Group::"actors",
-        action == k8s::Action::"impersonate",
-        resource == k8s::UserUID::"26A82C8D-CC8B-49BB-B2CF-070B9CF1A4F8"
-    );
-    ```
 * `Group`. This structure is the same from the principal type. This only functions if the user can also impersonate the requested username.:
     ```cedar
     permit (
@@ -251,6 +239,34 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     ) when {
         principal.name == "markhamill" &&
         resource.name == "lukeskywaker"
+    };
+    ```
+* `PrincipalUID`: To allow impersonating a Principal's UID, the policy's resource type must be `PrincipalUID`. This only functions if the user can also impersonate the requested username.
+    ```cedarschema
+    entity PrincipalUID;
+    ```
+    Examples:
+    ```cedar
+    permit (
+        principal in k8s::Group::"actors",
+        action == k8s::Action::"impersonate",
+        resource == k8s::PrincipalUID::"26A82C8D-CC8B-49BB-B2CF-070B9CF1A4F8"
+    );
+    ```
+* `Extra`: To allow impersonating a principal's key/values extra info, the policy's resource type must be `Extra`. This only functions if the user can also impersonate the requested username.
+    ```cedarschema
+    entity PrincipalUID;
+    ```
+    Examples:
+    ```cedar
+    permit (
+        principal in k8s::Group::"actors",
+        action == k8s::Action::"impersonate",
+        resource is k8s::Extra
+    ) when {
+        resource.key == "order" &&
+        resource has values &&
+        ["jedi"].containsAll(resource.values)
     };
     ```
 * `ServiceAccount` This structure is the same from the principal type:

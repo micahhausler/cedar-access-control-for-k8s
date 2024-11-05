@@ -67,12 +67,15 @@ func NodeEntity() Entity {
 	}
 }
 
-func ExtrasEntityShape() EntityShape {
-	return EntityShape{
-		Type: "Record",
-		Attributes: map[string]EntityAttribute{
-			"key":    {Type: "String", Required: true},
-			"values": {Type: "Set", Element: &EntityAttributeElement{Type: "String"}},
+func ExtrasEntity() Entity {
+	return Entity{
+		MemberOfTypes: []string{},
+		Shape: EntityShape{
+			Type: "Record",
+			Attributes: map[string]EntityAttribute{
+				"key":    {Type: "String", Required: true},
+				"values": {Type: "Set", Element: &EntityAttributeElement{Type: "String"}},
+			},
 		},
 	}
 }
@@ -90,7 +93,7 @@ func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
 	schema[namespace].EntityTypes[GroupPrincipalType] = GroupEntity()
 	schema[namespace].EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
 	schema[namespace].EntityTypes[NodePrincipalType] = NodeEntity()
-	schema[namespace].CommonTypes[ExtraValuesType] = ExtrasEntityShape()
+	schema[namespace].EntityTypes[ExtraValuesType] = ExtrasEntity()
 }
 
 // AdmissionPrincipalTypes returns the list of principal types from the

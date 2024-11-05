@@ -1,8 +1,4 @@
 namespace k8s {
-	type Extra = {
-		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
-	};
 	type FieldRequirement = {
 		"key": __cedar::String,
 		"op": __cedar::String,
@@ -13,6 +9,10 @@ namespace k8s {
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
+	entity Extra = {
+		"key": __cedar::String,
+		"values"?: Set < __cedar::String >
+	};
 	entity Group;
 	entity Node in [Group] = {
 		"extra"?: Set < Extra >,
@@ -21,6 +21,7 @@ namespace k8s {
 	entity NonResourceURL = {
 		"path": __cedar::String
 	};
+	entity PrincipalUID;
 	entity Resource = {
 		"apiGroup": __cedar::String,
 		"fieldSelector"?: Set < FieldRequirement >,
@@ -39,7 +40,6 @@ namespace k8s {
 		"extra"?: Set < Extra >,
 		"name": __cedar::String
 	};
-	entity UserUID;
 	action "approve" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
 		resource: [Resource],
@@ -87,7 +87,7 @@ namespace k8s {
 	};
 	action "impersonate" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
-		resource: [Group, Node, ServiceAccount, User, UserUID],
+		resource: [Extra, Group, Node, PrincipalUID, ServiceAccount, User],
 		context: {}
 	};
 	action "list" in [Action::"readOnly"] appliesTo {

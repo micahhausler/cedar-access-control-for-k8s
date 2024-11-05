@@ -46,7 +46,7 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 		respAttributes[cedartypes.String("namespace")] = cedartypes.String(attributes.GetNamespace())
 	case "uids":
 		uid = cedartypes.EntityUID{
-			Type: schema.UserUIDEntityType,
+			Type: schema.PrincipalUIDEntityType,
 			ID:   cedartypes.String(attributes.GetName()),
 		}
 	case "users":

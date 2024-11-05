@@ -10670,6 +10670,24 @@
 	},
 	"k8s": {
 		"entityTypes": {
+			"Extra": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"key": {
+							"type": "String",
+							"required": true
+						},
+						"values": {
+							"type": "Set",
+							"required": false,
+							"element": {
+								"type": "String"
+							}
+						}
+					}
+				}
+			},
 			"Group": {
 				"shape": {
 					"type": "Record",
@@ -10706,6 +10724,12 @@
 							"required": true
 						}
 					}
+				}
+			},
+			"PrincipalUID": {
+				"shape": {
+					"type": "Record",
+					"attributes": {}
 				}
 			},
 			"Resource": {
@@ -10794,12 +10818,6 @@
 				"memberOfTypes": [
 					"Group"
 				]
-			},
-			"UserUID": {
-				"shape": {
-					"type": "Record",
-					"attributes": {}
-				}
 			}
 		},
 		"actions": {
@@ -10936,11 +10954,12 @@
 						"User"
 					],
 					"resourceTypes": [
+						"Extra",
 						"Group",
 						"Node",
+						"PrincipalUID",
 						"ServiceAccount",
-						"User",
-						"UserUID"
+						"User"
 					]
 				}
 			},
@@ -11087,22 +11106,6 @@
 			}
 		},
 		"commonTypes": {
-			"Extra": {
-				"type": "Record",
-				"attributes": {
-					"key": {
-						"type": "String",
-						"required": true
-					},
-					"values": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "String"
-						}
-					}
-				}
-			},
 			"FieldRequirement": {
 				"type": "Record",
 				"attributes": {

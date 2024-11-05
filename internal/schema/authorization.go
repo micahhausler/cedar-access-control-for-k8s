@@ -7,20 +7,20 @@ import (
 )
 
 const (
-	UserUIDEntityName        = "UserUID"
+	PrincipalUIDEntityName   = "PrincipalUID"
 	NonResourceURLEntityName = "NonResourceURL"
 	ResourceEntityName       = "Resource"
 	FieldRequirementName     = "FieldRequirement"
 	LabelRequirementName     = "LabelRequirement"
 
 	AuthorizationActionEntityType = cedartypes.EntityType("k8s::Action")
-	UserUIDEntityType             = cedartypes.EntityType("k8s::" + UserUIDEntityName)
+	PrincipalUIDEntityType        = cedartypes.EntityType("k8s::" + PrincipalUIDEntityName)
 	NonResourceURLEntityType      = cedartypes.EntityType("k8s::" + NonResourceURLEntityName)
 	ResourceEntityType            = cedartypes.EntityType("k8s::" + ResourceEntityName)
 )
 
-// UserUIDEntity returns a Cedar Entity for a UserUID
-func UserUIDEntity() Entity {
+// PrincipalUIDEntity returns a Cedar Entity for a PrincipalUID
+func PrincipalUIDEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
@@ -218,12 +218,12 @@ func GetAuthorizationActions(principalNs, entityNs, actionNs string) map[string]
 		AppliesTo: ActionAppliesTo{
 			PrincipalTypes: AuthorizationPrincipalTypes(principalNs),
 			ResourceTypes: []string{
-				principalPrefix + UserUIDEntityName,
+				principalPrefix + PrincipalUIDEntityName,
 				principalPrefix + UserPrincipalType,
 				principalPrefix + GroupPrincipalType,
 				principalPrefix + ServiceAccountPrincipalType,
 				principalPrefix + NodePrincipalType,
-				// TODO ExtraInfo
+				principalPrefix + ExtraValuesType,
 			},
 		},
 	}
@@ -240,18 +240,18 @@ func GetAuthorizationNamespace(principalNs, entityNs, actionNs string) CedarSche
 	return CedarSchemaNamespace{
 		Actions: GetAuthorizationActions(principalNs, entityNs, actionNs),
 		EntityTypes: map[string]Entity{
-			UserUIDEntityName:           UserUIDEntity(),
+			PrincipalUIDEntityName:      PrincipalUIDEntity(),
 			UserPrincipalType:           UserEntity(),
 			GroupPrincipalType:          GroupEntity(),
 			ServiceAccountPrincipalType: ServiceAccountEntity(),
 			NodePrincipalType:           NodeEntity(),
 			NonResourceURLEntityName:    NonResourceURLEntity(),
 			ResourceEntityName:          ResourceEntity(),
+			ExtraValuesType:             ExtrasEntity(),
 		},
 		CommonTypes: map[string]EntityShape{
 			FieldRequirementName: FieldRequirementEntityShape(),
 			LabelRequirementName: LabelRequirementEntityShape(),
-			ExtraValuesType:      ExtrasEntityShape(),
 		},
 	}
 }
