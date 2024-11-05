@@ -106,7 +106,7 @@ forbid (
 6. **Will this be built into Amazon Elasitc Kubernetes Service (EKS)?**
 
     This project is a public experiment, and not currently integrated into Amazon EKS.
-    We welcome your feedback, want to know what does or doesn't work for your use cases, and whether you'd like to see this integrated into Amazon EKS.
+    We welcome your feedback, want to know what does or doesn't work for your use cases, and whether [you'd like to see this integrated into Amazon EKS][containers-roadmap].
 
 [kind]: https://kind.sigs.k8s.io/
 [rbac]: https://kubernetes.io/docs/reference/access-authn-authz/rbac/
@@ -114,6 +114,7 @@ forbid (
 [SMT solver]: https://en.wikipedia.org/wiki/Satisfiability_modulo_theories
 [gatekeeper]: https://open-policy-agent.github.io/gatekeeper/website/
 [kyverno]: https://kyverno.io/
+[containers-roadmap]: https://github.com/aws/containers-roadmap/issues/2463
 
 ## Community Participation
 
