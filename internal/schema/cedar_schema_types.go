@@ -18,7 +18,6 @@ func (cs *CedarSchema) SortActionEntities() {
 	for _, ns := range *cs {
 		if ns.Actions != nil {
 			for _, action := range ns.Actions {
-				// slices.Sort(*cs[nsName].Actions[actionName].AppliesTo.PrincipalTypes)
 				slices.Sort(action.AppliesTo.PrincipalTypes)
 				slices.Sort(action.AppliesTo.ResourceTypes)
 			}
@@ -84,6 +83,7 @@ type EntityShape struct {
 // Element may on be used when the Type is "Set"
 type EntityAttribute struct {
 	Type       string                     `json:"type"`
+	Name       string                     `json:"name,omitempty"`
 	Required   bool                       `json:"required"` // omitempty is not used because cedar assumes its required
 	Element    *EntityAttributeElement    `json:"element,omitempty"`
 	Attributes map[string]EntityAttribute `json:"attributes,omitempty"`
@@ -92,6 +92,7 @@ type EntityAttribute struct {
 // this is a gross hack to work around the fact that cedar assumes that the attributes field is always present if the type is
 // "Record"
 type recordEntityAttribute struct {
+	Name       string                     `json:"name,omitempty"`
 	Type       string                     `json:"type"`
 	Required   bool                       `json:"required"` // omitempty is not used because cedar assumes its required
 	Element    *EntityAttributeElement    `json:"element,omitempty"`
@@ -99,6 +100,7 @@ type recordEntityAttribute struct {
 }
 
 type nonRecordEntityAttribute struct {
+	Name       string                     `json:"name,omitempty"`
 	Type       string                     `json:"type"`
 	Required   bool                       `json:"required"` // omitempty is not used because cedar assumes its required
 	Element    *EntityAttributeElement    `json:"element,omitempty"`
@@ -111,6 +113,7 @@ func (ea *EntityAttribute) toRecordEA() *recordEntityAttribute {
 		Required:   ea.Required,
 		Element:    ea.Element,
 		Attributes: ea.Attributes,
+		Name:       ea.Name,
 	}
 }
 
@@ -120,6 +123,7 @@ func (ea *EntityAttribute) toNonRecordEA() *nonRecordEntityAttribute {
 		Required:   ea.Required,
 		Element:    ea.Element,
 		Attributes: ea.Attributes,
+		Name:       ea.Name,
 	}
 }
 
@@ -136,6 +140,7 @@ func (ea EntityAttribute) MarshalJSON() ([]byte, error) {
 // EntityAttributeElement represents an element of a Cedar entity attribute
 type EntityAttributeElement struct {
 	Type string `json:"type"`
+	Name string `json:"name,omitempty"`
 }
 
 // ActionShape represents the shape of a Cedar action

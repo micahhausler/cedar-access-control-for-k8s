@@ -10,10 +10,11 @@ const (
 	ServiceAccountPrincipalType = "ServiceAccount"
 	NodePrincipalType           = "Node"
 	ExtraValuesType             = "Extra"
+	ExtraValuesAttributeType    = "ExtraAttribute"
 
 	UserEntityType           = cedartypes.EntityType("k8s::" + UserPrincipalType)
 	GroupEntityType          = cedartypes.EntityType("k8s::" + GroupPrincipalType)
-	ExtraValuesEntityType    = cedartypes.EntityType("k8s::" + ExtraValuesType)
+	ExtraValuesEntityType    = cedartypes.EntityType("k8s::" + ExtraValuesAttributeType)
 	ServiceAccountEntityType = cedartypes.EntityType("k8s::" + ServiceAccountPrincipalType)
 	NodeEntityType           = cedartypes.EntityType("k8s::" + NodePrincipalType)
 )
@@ -25,8 +26,11 @@ func UserEntity() Entity {
 		Shape: EntityShape{
 			Type: "Record",
 			Attributes: map[string]EntityAttribute{
-				"name":  {Type: "String", Required: true},
-				"extra": {Type: "Set", Element: &EntityAttributeElement{Type: ExtraValuesType}},
+				"name": {Type: "String", Required: true},
+				"extra": {Type: "Set", Element: &EntityAttributeElement{
+					Name: ExtraValuesType,
+					Type: "Entity",
+				}},
 			},
 		},
 	}
@@ -48,7 +52,10 @@ func ServiceAccountEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name":      {Type: "String", Required: true},
 				"namespace": {Type: "String", Required: true},
-				"extra":     {Type: "Set", Element: &EntityAttributeElement{Type: ExtraValuesType}},
+				"extra": {Type: "Set", Element: &EntityAttributeElement{
+					Name: ExtraValuesType,
+					Type: "Entity",
+				}},
 			},
 		},
 	}
@@ -60,8 +67,11 @@ func NodeEntity() Entity {
 		Shape: EntityShape{
 			Type: "Record",
 			Attributes: map[string]EntityAttribute{
-				"name":  {Type: "String", Required: true},
-				"extra": {Type: "Set", Element: &EntityAttributeElement{Type: ExtraValuesType}},
+				"name": {Type: "String", Required: true},
+				"extra": {Type: "Set", Element: &EntityAttributeElement{
+					Name: ExtraValuesType,
+					Type: "Entity",
+				}},
 			},
 		},
 	}

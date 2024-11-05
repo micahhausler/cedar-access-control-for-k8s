@@ -33,7 +33,8 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Extra"
+								"type": "Entity",
+								"name": "Extra"
 							}
 						},
 						"name": {
@@ -112,7 +113,8 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Extra"
+								"type": "Entity",
+								"name": "Extra"
 							}
 						},
 						"name": {
@@ -137,7 +139,8 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Extra"
+								"type": "Entity",
+								"name": "Extra"
 							}
 						},
 						"name": {

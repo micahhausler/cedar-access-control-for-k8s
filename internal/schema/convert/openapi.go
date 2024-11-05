@@ -162,7 +162,7 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 			continue
 		}
 		metadataAttr, ok := entity.Shape.Attributes["metadata"]
-		if !ok || (metadataAttr.Type != "meta::v1::ListMeta" && metadataAttr.Type != "meta::v1::ObjectMeta") {
+		if !ok || (metadataAttr.Name != "meta::v1::ListMeta" && metadataAttr.Name != "meta::v1::ObjectMeta") {
 			continue
 		}
 
@@ -302,9 +302,19 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 						typeName = "String"
 					}
 
+					element := &schema.EntityAttributeElement{
+						Type: typeName,
+					}
+					if typeName != "String" && typeName != "" {
+						element = &schema.EntityAttributeElement{
+							Name: typeName,
+							Type: "Entity",
+						}
+					}
+
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
 						Type:     "Set",
-						Element:  &schema.EntityAttributeElement{Type: typeName},
+						Element:  element,
 						Required: slices.Contains(schemaDefinition.Required, attrName),
 					}
 				}
@@ -347,10 +357,22 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 						typeName = "String"
 					}
 
-					entityShape.Attributes[attrName] = schema.EntityAttribute{
+					attr := schema.EntityAttribute{
 						Type:     typeName,
 						Required: slices.Contains(schemaDefinition.Required, attrName),
 					}
+					if !slices.Contains(
+						[]string{"Bool", "Boolean", "Long", "String", "Extension"},
+						typeName,
+					) && typeName != "" {
+						attr = schema.EntityAttribute{
+							Type:     "Entity",
+							Name:     typeName,
+							Required: slices.Contains(schemaDefinition.Required, attrName),
+						}
+					}
+
+					entityShape.Attributes[attrName] = attr
 					continue
 				}
 
@@ -378,8 +400,10 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					slices.Contains(attrs, attrName) &&
 					len(attrDef.AdditionalProperties.Schema.Type) > 0 && attrDef.AdditionalProperties.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type:    "Set",
-						Element: &schema.EntityAttributeElement{Type: "meta::v1::KeyValue"},
+						Type: "Set",
+						Element: &schema.EntityAttributeElement{
+							Type: "meta::v1::KeyValue",
+						},
 					}
 					continue
 				}
@@ -398,8 +422,10 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					len(attrDef.AdditionalProperties.Schema.Items.Schema.Type) > 0 &&
 					attrDef.AdditionalProperties.Schema.Items.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type:    "Set",
-						Element: &schema.EntityAttributeElement{Type: "meta::v1::KeyValueStringSlice"},
+						Type: "Set",
+						Element: &schema.EntityAttributeElement{
+							Type: "meta::v1::KeyValueStringSlice",
+						},
 					}
 					continue
 				}
@@ -429,11 +455,20 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 				typeName = "String"
 			}
 
-			entityShape.Attributes[attrName] = schema.EntityAttribute{
+			attrDef := schema.EntityAttribute{
 				Type:     typeName,
 				Required: slices.Contains(schemaDefinition.Required, attrName),
 			}
-
+			if !slices.Contains(
+				[]string{"Bool", "Boolean", "Long", "String", "Extension"},
+				typeName) && typeName != "" {
+				attrDef = schema.EntityAttribute{
+					Type:     "Entity",
+					Name:     typeName,
+					Required: slices.Contains(schemaDefinition.Required, attrName),
+				}
+			}
+			entityShape.Attributes[attrName] = attrDef
 		} else {
 			// TODO type:
 			// io.k8s.api.core.v1.NamespaceCondition.lastTransitionTime
