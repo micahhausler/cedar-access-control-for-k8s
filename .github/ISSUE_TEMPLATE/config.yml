@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suggest an idea for this project
+    url: https://github.com/awslabs/cedar-access-control-for-k8s/discussions/new?category=ideas
+    about: Suggest new functionality in a GitHub Discussion
+  - name: Ask a Question
+    url: https://github.com/awslabs/cedar-access-control-for-k8s/discussions/new?category=q-a
+    about: | 
+      Have a question about Cedar access controls for Kubernetes? Ask here!
