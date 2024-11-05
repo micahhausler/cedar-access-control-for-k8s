@@ -10,11 +10,10 @@ const (
 	ServiceAccountPrincipalType = "ServiceAccount"
 	NodePrincipalType           = "Node"
 	ExtraValuesType             = "Extra"
-	ExtraValuesAttributeType    = "ExtraAttribute"
 
 	UserEntityType           = cedartypes.EntityType("k8s::" + UserPrincipalType)
 	GroupEntityType          = cedartypes.EntityType("k8s::" + GroupPrincipalType)
-	ExtraValuesEntityType    = cedartypes.EntityType("k8s::" + ExtraValuesAttributeType)
+	ExtraValuesEntityType    = cedartypes.EntityType("k8s::" + ExtraValuesType)
 	ServiceAccountEntityType = cedartypes.EntityType("k8s::" + ServiceAccountPrincipalType)
 	NodeEntityType           = cedartypes.EntityType("k8s::" + NodePrincipalType)
 )
@@ -77,7 +76,7 @@ func NodeEntity() Entity {
 	}
 }
 
-func ExtrasEntity() Entity {
+func ExtraEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
@@ -103,7 +102,7 @@ func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
 	schema[namespace].EntityTypes[GroupPrincipalType] = GroupEntity()
 	schema[namespace].EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
 	schema[namespace].EntityTypes[NodePrincipalType] = NodeEntity()
-	schema[namespace].EntityTypes[ExtraValuesType] = ExtrasEntity()
+	schema[namespace].EntityTypes[ExtraValuesType] = ExtraEntity()
 }
 
 // AdmissionPrincipalTypes returns the list of principal types from the

@@ -74,13 +74,13 @@ func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.Entitie
 	// TODO: use key/value maps once supported
 	extraValues := []cedartypes.Value{}
 	for k, v := range user.GetExtra() {
-		extrasVV := []cedartypes.Value{}
+		extraVV := []cedartypes.Value{}
 		for _, vv := range v {
-			extrasVV = append(extrasVV, cedartypes.String(vv))
+			extraVV = append(extraVV, cedartypes.String(vv))
 		}
 		extraValues = append(extraValues, cedartypes.NewRecord(cedartypes.RecordMap{
 			"key":    cedartypes.String(k),
-			"values": cedartypes.NewSet(extrasVV),
+			"values": cedartypes.NewSet(extraVV),
 		}))
 	}
 	if len(extraValues) > 0 {
