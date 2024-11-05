@@ -27,7 +27,7 @@ This project supports the following Principal entities:
     Kubernetes authenticators can also includes extra key/value information on a user, and that is encoded in the 'extra' attribute.
     ```cedarschema
     entity User in [Group] = {
-        "extra"?: Set < Extra >,
+        "extra"?: Set < ExtraAttribute >,
         "name": __cedar::String
     };
 	type Extra = {
@@ -38,7 +38,7 @@ This project supports the following Principal entities:
 * `k8s::ServiceAccount`. When a user's name in a [SubjectAccessReview] starts with `system:serviceaccount:`, the authorizer sets the principal type to `k8s::ServiceAccount` with the following attributes.
     ```cedarschema
     entity ServiceAccount in [Group] = {
-        "extra"?: Set < Extra >,
+        "extra"?: Set < ExtraAttribute >,
         "name": __cedar::String,
         "namespace": __cedar::String
     };
@@ -48,7 +48,7 @@ This project supports the following Principal entities:
     Cedar can allow or forbid any of those reqeusts.
     ```cedarschema
     entity Node in [Group] = {
-        "extra"?: Set < Extra >,
+        "extra"?: Set < ExtraAttribute >,
         "name": __cedar::String
     };
     ```

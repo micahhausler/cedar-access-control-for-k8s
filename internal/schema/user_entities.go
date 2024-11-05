@@ -10,6 +10,7 @@ const (
 	ServiceAccountPrincipalType = "ServiceAccount"
 	NodePrincipalType           = "Node"
 	ExtraValuesType             = "Extra"
+	ExtraValuesAttributeType    = "ExtraAttribute"
 
 	UserEntityType           = cedartypes.EntityType("k8s::" + UserPrincipalType)
 	GroupEntityType          = cedartypes.EntityType("k8s::" + GroupPrincipalType)
@@ -27,8 +28,7 @@ func UserEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: "String", Required: true},
 				"extra": {Type: "Set", Element: &EntityAttributeElement{
-					Name: ExtraValuesType,
-					Type: "Entity",
+					Type: ExtraValuesAttributeType,
 				}},
 			},
 		},
@@ -52,8 +52,7 @@ func ServiceAccountEntity() Entity {
 				"name":      {Type: "String", Required: true},
 				"namespace": {Type: "String", Required: true},
 				"extra": {Type: "Set", Element: &EntityAttributeElement{
-					Name: ExtraValuesType,
-					Type: "Entity",
+					Type: ExtraValuesAttributeType,
 				}},
 			},
 		},
@@ -68,10 +67,19 @@ func NodeEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: "String", Required: true},
 				"extra": {Type: "Set", Element: &EntityAttributeElement{
-					Name: ExtraValuesType,
-					Type: "Entity",
+					Type: ExtraValuesAttributeType,
 				}},
 			},
+		},
+	}
+}
+
+func ExtraEntityShape() EntityShape {
+	return EntityShape{
+		Type: "Record",
+		Attributes: map[string]EntityAttribute{
+			"key":    {Type: "String", Required: true},
+			"values": {Type: "Set", Element: &EntityAttributeElement{Type: "String"}},
 		},
 	}
 }
@@ -79,13 +87,7 @@ func NodeEntity() Entity {
 func ExtraEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{},
-		Shape: EntityShape{
-			Type: "Record",
-			Attributes: map[string]EntityAttribute{
-				"key":    {Type: "String", Required: true},
-				"values": {Type: "Set", Element: &EntityAttributeElement{Type: "String"}},
-			},
-		},
+		Shape:         ExtraEntityShape(),
 	}
 }
 
@@ -103,6 +105,7 @@ func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
 	schema[namespace].EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
 	schema[namespace].EntityTypes[NodePrincipalType] = NodeEntity()
 	schema[namespace].EntityTypes[ExtraValuesType] = ExtraEntity()
+	schema[namespace].CommonTypes[ExtraValuesAttributeType] = ExtraEntityShape()
 }
 
 // AdmissionPrincipalTypes returns the list of principal types from the

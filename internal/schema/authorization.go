@@ -250,8 +250,9 @@ func GetAuthorizationNamespace(principalNs, entityNs, actionNs string) CedarSche
 			ExtraValuesType:             ExtraEntity(),
 		},
 		CommonTypes: map[string]EntityShape{
-			FieldRequirementName: FieldRequirementEntityShape(),
-			LabelRequirementName: LabelRequirementEntityShape(),
+			FieldRequirementName:     FieldRequirementEntityShape(),
+			LabelRequirementName:     LabelRequirementEntityShape(),
+			ExtraValuesAttributeType: ExtraEntityShape(),
 		},
 	}
 }

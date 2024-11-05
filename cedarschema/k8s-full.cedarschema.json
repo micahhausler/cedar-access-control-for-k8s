@@ -11292,8 +11292,7 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Entity",
-								"name": "Extra"
+								"type": "ExtraAttribute"
 							}
 						},
 						"name": {
@@ -11372,8 +11371,7 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Entity",
-								"name": "Extra"
+								"type": "ExtraAttribute"
 							}
 						},
 						"name": {
@@ -11398,8 +11396,7 @@
 							"type": "Set",
 							"required": false,
 							"element": {
-								"type": "Entity",
-								"name": "Extra"
+								"type": "ExtraAttribute"
 							}
 						},
 						"name": {
@@ -11699,6 +11696,22 @@
 			}
 		},
 		"commonTypes": {
+			"ExtraAttribute": {
+				"type": "Record",
+				"attributes": {
+					"key": {
+						"type": "String",
+						"required": true
+					},
+					"values": {
+						"type": "Set",
+						"required": false,
+						"element": {
+							"type": "String"
+						}
+					}
+				}
+			},
 			"FieldRequirement": {
 				"type": "Record",
 				"attributes": {
