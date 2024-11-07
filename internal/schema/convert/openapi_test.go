@@ -65,7 +65,7 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 			wantFunc: func(t *testing.T, got schema.CedarSchema) {
 				// StatefulSet.spec.volumeClaimTemplates are the one in-tree API that has an entity as an attribute
 				// Validate that we set it correctly
-				if got["apps::v1"].CommonTypes["StatefulSetSpec"].Attributes["volumeClaimTemplates"].Element.Type != "Entity" {
+				if got["apps::v1"].CommonTypes["StatefulSetSpec"].Attributes["volumeClaimTemplates"].Element.Type != schema.EntityType {
 					t.Fatalf("volumeClaimTemplates should be an entity not a common type")
 				}
 

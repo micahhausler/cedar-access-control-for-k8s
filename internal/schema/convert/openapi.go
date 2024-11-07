@@ -137,13 +137,10 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 			if schemaDefinition.Properties == nil {
 				entity.Shape.Attributes = map[string]schema.EntityAttribute{}
 			}
-
-			// ns.EntityTypes[sKind] = entity
-
 		case "string":
 			entity = schema.Entity{
 				Shape: schema.EntityShape{
-					Type:       "String",
+					Type:       schema.StringType,
 					Attributes: map[string]schema.EntityAttribute{},
 				},
 			}
@@ -173,11 +170,11 @@ func isEntity(shape schema.EntityShape) bool {
 	if shape.Attributes == nil {
 		return false
 	}
-	if apiVersionAttr, ok := shape.Attributes["apiVersion"]; !ok || apiVersionAttr.Type != "String" {
+	if apiVersionAttr, ok := shape.Attributes["apiVersion"]; !ok || apiVersionAttr.Type != schema.StringType {
 		return false
 	}
 
-	if kindAttr, ok := shape.Attributes["kind"]; !ok || kindAttr.Type != "String" {
+	if kindAttr, ok := shape.Attributes["kind"]; !ok || kindAttr.Type != schema.StringType {
 		return false
 	}
 
@@ -245,7 +242,7 @@ func GetSchemasForAdmissionActions(api *spec3.OpenAPI) []string {
 
 func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape, error) {
 	entityShape := schema.EntityShape{
-		Type:       "Record",
+		Type:       schema.RecordType,
 		Attributes: map[string]schema.EntityAttribute{},
 	}
 	schemaDefinition, ok := api.Components.Schemas[schemaKind]
@@ -259,18 +256,18 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 			switch attrDef.Type[0] {
 			case "string":
 				entityShape.Attributes[attrName] = schema.EntityAttribute{
-					Type:     "String",
+					Type:     schema.StringType,
 					Required: slices.Contains(schemaDefinition.Required, attrName),
 				}
 
 			case "integer":
 				entityShape.Attributes[attrName] = schema.EntityAttribute{
-					Type:     "Long",
+					Type:     schema.LongType,
 					Required: slices.Contains(schemaDefinition.Required, attrName),
 				}
 			case "boolean":
 				entityShape.Attributes[attrName] = schema.EntityAttribute{
-					Type:     "Boolean",
+					Type:     schema.BoolType,
 					Required: slices.Contains(schemaDefinition.Required, attrName),
 				}
 			case "array":
@@ -278,20 +275,20 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					switch attrDef.Items.Schema.Type[0] {
 					case "string":
 						entityShape.Attributes[attrName] = schema.EntityAttribute{
-							Type:     "Set",
-							Element:  &schema.EntityAttributeElement{Type: "String"},
+							Type:     schema.SetType,
+							Element:  &schema.EntityAttributeElement{Type: schema.StringType},
 							Required: slices.Contains(schemaDefinition.Required, attrName),
 						}
 					case "integer":
 						entityShape.Attributes[attrName] = schema.EntityAttribute{
-							Type:     "Set",
-							Element:  &schema.EntityAttributeElement{Type: "Long"},
+							Type:     schema.SetType,
+							Element:  &schema.EntityAttributeElement{Type: schema.LongType},
 							Required: slices.Contains(schemaDefinition.Required, attrName),
 						}
 					case "boolean":
 						entityShape.Attributes[attrName] = schema.EntityAttribute{
-							Type:     "Set",
-							Element:  &schema.EntityAttributeElement{Type: "Boolean"},
+							Type:     schema.SetType,
+							Element:  &schema.EntityAttributeElement{Type: schema.BoolType},
 							Required: slices.Contains(schemaDefinition.Required, attrName),
 						}
 					default:
@@ -308,12 +305,12 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 
 					element := &schema.EntityAttributeElement{Type: typeName}
 					if strings.HasSuffix(schemaKind, "."+typeName+"List") || isEntity(attrShape) {
-						element.Type = "Entity"
+						element.Type = schema.EntityType
 						element.Name = typeName
 					}
 
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type:     "Set",
+						Type:     schema.SetType,
 						Element:  element,
 						Required: slices.Contains(schemaDefinition.Required, attrName),
 					}
@@ -326,7 +323,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 						continue
 					}
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type:       "Record",
+						Type:       schema.RecordType,
 						Attributes: attrs,
 						Required:   slices.Contains(schemaDefinition.Required, attrName),
 					}
@@ -355,7 +352,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 						Required: slices.Contains(schemaDefinition.Required, attrName),
 					}
 					if isEntity(attrShape) {
-						element.Type = "Entity"
+						element.Type = schema.EntityType
 						element.Name = typeName
 					}
 
@@ -387,7 +384,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					slices.Contains(attrs, attrName) &&
 					len(attrDef.AdditionalProperties.Schema.Type) > 0 && attrDef.AdditionalProperties.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type: "Set",
+						Type: schema.SetType,
 						Element: &schema.EntityAttributeElement{
 							Type: "meta::v1::KeyValue",
 						},
@@ -409,7 +406,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					len(attrDef.AdditionalProperties.Schema.Items.Schema.Type) > 0 &&
 					attrDef.AdditionalProperties.Schema.Items.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type: "Set",
+						Type: schema.SetType,
 						Element: &schema.EntityAttributeElement{
 							Type: "meta::v1::KeyValueStringSlice",
 						},
@@ -440,7 +437,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 				return entityShape, err
 			}
 			if isEntity(attrShape) {
-				aea.Type = "Entity"
+				aea.Type = schema.EntityType
 				aea.Name = typeName
 			}
 			entityShape.Attributes[attrName] = aea
@@ -469,30 +466,30 @@ func parseCRDProperties(depth int, properties map[string]spec.Schema) (map[strin
 		// TODO: validate length
 		switch v.Type[0] {
 		case "string":
-			attrMap[k] = schema.EntityAttribute{Type: "String", Required: slices.Contains(v.Required, k)}
+			attrMap[k] = schema.EntityAttribute{Type: schema.StringType, Required: slices.Contains(v.Required, k)}
 		case "integer":
-			attrMap[k] = schema.EntityAttribute{Type: "Long", Required: slices.Contains(v.Required, k)}
+			attrMap[k] = schema.EntityAttribute{Type: schema.LongType, Required: slices.Contains(v.Required, k)}
 		case "boolean":
-			attrMap[k] = schema.EntityAttribute{Type: "Boolean", Required: slices.Contains(v.Required, k)}
+			attrMap[k] = schema.EntityAttribute{Type: schema.BoolType, Required: slices.Contains(v.Required, k)}
 		case "array":
 			if v.Items != nil && len(v.Items.Schema.Type) > 0 {
 				switch v.Items.Schema.Type[0] {
 				case "string":
 					attrMap[k] = schema.EntityAttribute{
-						Type:     "Set",
-						Element:  &schema.EntityAttributeElement{Type: "String"},
+						Type:     schema.SetType,
+						Element:  &schema.EntityAttributeElement{Type: schema.StringType},
 						Required: slices.Contains(v.Required, k),
 					}
 				case "integer":
 					attrMap[k] = schema.EntityAttribute{
-						Type:     "Set",
-						Element:  &schema.EntityAttributeElement{Type: "Long"},
+						Type:     schema.SetType,
+						Element:  &schema.EntityAttributeElement{Type: schema.LongType},
 						Required: slices.Contains(v.Required, k),
 					}
 				case "boolean":
 					attrMap[k] = schema.EntityAttribute{
-						Type:     "Set",
-						Element:  &schema.EntityAttributeElement{Type: "Boolean"},
+						Type:     schema.SetType,
+						Element:  &schema.EntityAttributeElement{Type: schema.BoolType},
 						Required: slices.Contains(v.Required, k),
 					}
 				default:
@@ -516,7 +513,7 @@ func parseCRDProperties(depth int, properties map[string]spec.Schema) (map[strin
 				if err != nil {
 					return nil, err
 				}
-				attrMap[k] = schema.EntityAttribute{Type: "Record", Attributes: attrs}
+				attrMap[k] = schema.EntityAttribute{Type: schema.RecordType, Attributes: attrs}
 			}
 		default:
 			klog.V(2).Infof("Skipping attr %s type %s", k, v.Type[0])

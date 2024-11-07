@@ -3,6 +3,8 @@ package convert
 import (
 	"slices"
 	"strings"
+
+	schema "github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
 )
 
 func ParseSchemaName(schemaName string) (ns, apiGroup, version, kind string) {
@@ -57,7 +59,7 @@ func refToRelativeTypeName(current, ref string) string {
 		(refNs == "io::k8s::apimachinery::pkg::util::intstr" && refType == "IntOrString") ||
 		(refNs == "io::k8s::apimachinery::pkg::api::resource" && refType == "Quantity") ||
 		(refNs == "io::k8s::apimachinery::pkg::runtime" && refType == "RawExtension") {
-		return "String"
+		return schema.StringType
 	}
 
 	if currentNs == refNs {

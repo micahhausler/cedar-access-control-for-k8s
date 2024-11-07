@@ -2,6 +2,8 @@ package convert
 
 import (
 	"testing"
+
+	schema "github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
 )
 
 func TestParseSchemaName(t *testing.T) {
@@ -176,22 +178,22 @@ func TestRefToRelativeTypeName(t *testing.T) {
 		{
 			name:  "Time to string",
 			input: `#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Time`,
-			want:  "String",
+			want:  schema.StringType,
 		},
 		{
 			name:  "MicroTime to string",
 			input: `#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.MicroTime`,
-			want:  "String",
+			want:  schema.StringType,
 		},
 		{
 			name:  "Quantity to string",
 			input: `#/components/schemas/io.k8s.apimachinery.pkg.api.resource.Quantity`,
-			want:  "String",
+			want:  schema.StringType,
 		},
 		{
 			name:  "RawExtension to String",
 			input: `#/components/schemas/io.k8s.apimachinery.pkg.runtime.RawExtension`,
-			want:  "String",
+			want:  schema.StringType,
 		},
 	}
 	for _, tc := range cases {
