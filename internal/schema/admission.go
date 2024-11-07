@@ -2,7 +2,7 @@ package schema
 
 // ModifyObjectMetaMaps modifies the ObjectMeta maps in the schema
 //
-// This is a hack until Cedar supports maps in the schema
+// TODO: ENTITY TAGS: This is a hack until Cedar supports maps in the schema
 func ModifyObjectMetaMaps(schema CedarSchema) {
 	ns, ok := schema["meta::v1"]
 	if !ok {

@@ -96,7 +96,6 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 			continue
 		}
 
-		// TODO: make special case for in-tree K8s API types namespace name?
 		nsName, _ := SchemaNameToCedar(schemaKind)
 		klog.V(2).Infof("Processing %s", schemaKind)
 
@@ -111,7 +110,9 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 			cSchema[nsName] = ns
 		}
 		// if the namespace doesn't contain that type, lets create it
-		if _, ok := ns.EntityTypes[sKind]; ok {
+		_, etOk := ns.EntityTypes[sKind]
+		_, ctOk := ns.CommonTypes[sKind]
+		if etOk || ctOk {
 			continue
 		}
 		// K8s is only ever a string for Type
@@ -137,7 +138,7 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 				entity.Shape.Attributes = map[string]schema.EntityAttribute{}
 			}
 
-			ns.EntityTypes[sKind] = entity
+			// ns.EntityTypes[sKind] = entity
 
 		case "string":
 			entity = schema.Entity{
@@ -149,32 +150,41 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 		default:
 			klog.V(5).Infof("Skipping unknown type %s on %s", schemaDefinition.Type[0], schemaKind)
 		}
+
+		if !isEntity(entity.Shape) {
+			ns.CommonTypes[sKind] = entity.Shape
+			continue
+		}
+
 		ns.EntityTypes[sKind] = entity
-
-		// conditions to skip adding the entity to action list
-		if entity.Shape.Attributes == nil {
-			continue
-		}
-		if apiVersionAttr, ok := entity.Shape.Attributes["apiVersion"]; !ok || apiVersionAttr.Type != "String" {
-			continue
-		}
-		if kindAttr, ok := entity.Shape.Attributes["kind"]; !ok || kindAttr.Type != "String" {
-			continue
-		}
-		metadataAttr, ok := entity.Shape.Attributes["metadata"]
-		if !ok || (metadataAttr.Name != "meta::v1::ListMeta" && metadataAttr.Name != "meta::v1::ObjectMeta") {
-			continue
-		}
-
 		// TODO: probably have to scan the schema for valid actions?
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionCreateAction, nsName+"::"+sKind)
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionDeleteAction, nsName+"::"+sKind)
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionUpdateAction, nsName+"::"+sKind)
-		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionConnectAction, nsName+"::"+sKind) // TODO: this is not correct, but we'll just add it for now?
+		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionConnectAction, nsName+"::"+sKind)
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AllAction, nsName+"::"+sKind)
 	}
 
 	return nil
+}
+
+// isEntity determines if the structure is an entity (true) or common type (false)
+func isEntity(shape schema.EntityShape) bool {
+	if shape.Attributes == nil {
+		return false
+	}
+	if apiVersionAttr, ok := shape.Attributes["apiVersion"]; !ok || apiVersionAttr.Type != "String" {
+		return false
+	}
+
+	if kindAttr, ok := shape.Attributes["kind"]; !ok || kindAttr.Type != "String" {
+		return false
+	}
+
+	if metadataAttr, ok := shape.Attributes["metadata"]; !ok || (metadataAttr.Type != "meta::v1::ListMeta" && metadataAttr.Type != "meta::v1::ObjectMeta") {
+		return false
+	}
+	return true
 }
 
 func getRequestBody(operation *spec3.Operation) string {
@@ -291,25 +301,15 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 				} else if attrDef.Items != nil && len(attrDef.Items.Schema.AllOf) > 0 {
 
 					typeName := refToRelativeTypeName(schemaKind, attrDef.Items.Schema.AllOf[0].Ref.String())
-					// hack to get around some weird types
-					if typeName == "Time" ||
-						typeName == "meta::v1::Time" ||
-						typeName == "meta::v1::MicroTime" ||
-						typeName == "io::k8s::apimachinery::pkg::util::intstr::IntOrString" ||
-						typeName == "io::k8s::apimachinery::pkg::api::resource::Quantity" ||
-						typeName == "io::k8s::apimachinery::pkg::runtime::RawExtension" {
-						klog.V(9).Infof("Setting %s attr %s array of type %s to String", schemaKind, attrName, typeName)
-						typeName = "String"
+					attrShape, err := RefToEntityShape(api, attrDef.Items.Schema.AllOf[0].Ref.String()[21:])
+					if err != nil {
+						return entityShape, err
 					}
 
-					element := &schema.EntityAttributeElement{
-						Type: typeName,
-					}
-					if typeName != "String" && typeName != "" {
-						element = &schema.EntityAttributeElement{
-							Name: typeName,
-							Type: "Entity",
-						}
+					element := &schema.EntityAttributeElement{Type: typeName}
+					if strings.HasSuffix(schemaKind, "."+typeName+"List") || isEntity(attrShape) {
+						element.Type = "Entity"
+						element.Name = typeName
 					}
 
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
@@ -343,36 +343,23 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 				}
 
 				if url := attrDef.AdditionalProperties.Schema.Ref.GetURL(); url != nil && url.String() != "" {
-					// TODO: relativeType reference
 					typeName := refToRelativeTypeName(schemaKind, url.String())
 
-					// manual hack for now
-					if typeName == "Time" ||
-						typeName == "meta::v1::Time" ||
-						typeName == "meta::v1::MicroTime" ||
-						typeName == "io::k8s::apimachinery::pkg::util::intstr::IntOrString" ||
-						typeName == "io::k8s::apimachinery::pkg::api::resource::Quantity" ||
-						typeName == "io::k8s::apimachinery::pkg::runtime::RawExtension" {
-						klog.V(6).Infof("Setting %s attr %s additionalProperties.$ref type %s to String", schemaKind, attrName, typeName)
-						typeName = "String"
+					attrShape, err := RefToEntityShape(api, url.String()[21:])
+					if err != nil {
+						return entityShape, err
 					}
 
-					attr := schema.EntityAttribute{
+					element := schema.EntityAttribute{
 						Type:     typeName,
 						Required: slices.Contains(schemaDefinition.Required, attrName),
 					}
-					if !slices.Contains(
-						[]string{"Bool", "Boolean", "Long", "String", "Extension"},
-						typeName,
-					) && typeName != "" {
-						attr = schema.EntityAttribute{
-							Type:     "Entity",
-							Name:     typeName,
-							Required: slices.Contains(schemaDefinition.Required, attrName),
-						}
+					if isEntity(attrShape) {
+						element.Type = "Entity"
+						element.Name = typeName
 					}
 
-					entityShape.Attributes[attrName] = attr
+					entityShape.Attributes[attrName] = element
 					continue
 				}
 
@@ -443,32 +430,20 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 			}
 
 			typeName := refToRelativeTypeName(schemaKind, attrDef.AllOf[0].Ref.String())
-
-			// manual hack for now
-			if typeName == "Time" ||
-				typeName == "meta::v1::Time" ||
-				typeName == "meta::v1::MicroTime" ||
-				typeName == "io::k8s::apimachinery::pkg::util::intstr::IntOrString" ||
-				typeName == "io::k8s::apimachinery::pkg::api::resource::Quantity" ||
-				typeName == "io::k8s::apimachinery::pkg::runtime::RawExtension" {
-				klog.V(6).Infof("Setting %s attr %s allOf type %s to String", schemaKind, attrName, typeName)
-				typeName = "String"
-			}
-
-			attrDef := schema.EntityAttribute{
+			aea := schema.EntityAttribute{
 				Type:     typeName,
 				Required: slices.Contains(schemaDefinition.Required, attrName),
 			}
-			if !slices.Contains(
-				[]string{"Bool", "Boolean", "Long", "String", "Extension"},
-				typeName) && typeName != "" {
-				attrDef = schema.EntityAttribute{
-					Type:     "Entity",
-					Name:     typeName,
-					Required: slices.Contains(schemaDefinition.Required, attrName),
-				}
+
+			attrShape, err := RefToEntityShape(api, attrDef.AllOf[0].Ref.String()[21:])
+			if err != nil {
+				return entityShape, err
 			}
-			entityShape.Attributes[attrName] = attrDef
+			if isEntity(attrShape) {
+				aea.Type = "Entity"
+				aea.Name = typeName
+			}
+			entityShape.Attributes[attrName] = aea
 		} else {
 			// TODO type:
 			// io.k8s.api.core.v1.NamespaceCondition.lastTransitionTime
@@ -549,61 +524,4 @@ func parseCRDProperties(depth int, properties map[string]spec.Schema) (map[strin
 	}
 	return attrMap, nil
 
-}
-
-func ParseSchemaName(schemaName string) (ns, apiGroup, version, kind string) {
-
-	schemaName = strings.ReplaceAll(schemaName, "-", "_")
-	strs := strings.Split(schemaName, ".")
-	if len(strs) < 4 {
-		return
-	}
-	slices.Reverse(strs)
-
-	if strings.HasPrefix(schemaName, "io.k8s.api.") {
-		strs = strs[:len(strs)-3]
-	} else if strings.HasPrefix(schemaName, "io.k8s.apimachinery.pkg.apis.meta") {
-		strs = strs[:len(strs)-4]
-	} else {
-		nsParts := strs[3:]
-		slices.Reverse(nsParts)
-		ns = strings.Join(nsParts, "::")
-	}
-
-	kind = strs[0]
-	version = strs[1]
-	apiGroup = strs[2]
-	return
-}
-
-func SchemaNameToCedar(schemaName string) (ns, typeName string) {
-	ns, apiGroup, version, kind := ParseSchemaName(schemaName)
-	if ns != "" {
-		return strings.Join([]string{ns, apiGroup, version}, "::"), kind
-	}
-	return strings.Join([]string{apiGroup, version}, "::"), kind
-}
-
-// Transform `"#/components/schemas/io.k8s.api.apps.v1.DaemonSetSpec"`
-// into `apps::v1::DaemonSetSpec`
-// TODO: make this prettier for in-tree K8s API types and subtypes in go packages
-// like `#/components/schemas/io.k8s.apimachinery.pkg.runtime.RawExtension` or
-// `#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta`
-func refToRelativeTypeName(current, ref string) string {
-	curParsed, found := strings.CutPrefix(current, "#/components/schemas/")
-	if !found {
-		curParsed = current
-	}
-	currentNs, _ := SchemaNameToCedar(curParsed)
-
-	refParsed, found := strings.CutPrefix(ref, "#/components/schemas/")
-	if !found {
-		refParsed = ref
-	}
-	refNs, refType := SchemaNameToCedar(refParsed)
-
-	if currentNs == refNs {
-		return refType
-	}
-	return refNs + "::" + refType
 }
