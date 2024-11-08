@@ -11463,7 +11463,7 @@
 						"type": "Set",
 						"required": false,
 						"element": {
-							"type": "meta::v1::KeyValue"
+							"type": "KeyValue"
 						}
 					}
 				}
@@ -11549,7 +11549,7 @@
 						"type": "Set",
 						"required": false,
 						"element": {
-							"type": "meta::v1::KeyValue"
+							"type": "KeyValue"
 						}
 					},
 					"creationTimestamp": {
@@ -11583,7 +11583,7 @@
 						"type": "Set",
 						"required": false,
 						"element": {
-							"type": "meta::v1::KeyValue"
+							"type": "KeyValue"
 						}
 					},
 					"managedFields": {

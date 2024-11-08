@@ -386,7 +386,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
 						Type: schema.SetType,
 						Element: &schema.EntityAttributeElement{
-							Type: "meta::v1::KeyValue",
+							Type: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValue"),
 						},
 					}
 					continue
@@ -408,7 +408,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
 						Type: schema.SetType,
 						Element: &schema.EntityAttributeElement{
-							Type: "meta::v1::KeyValueStringSlice",
+							Type: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValueStringSlice"),
 						},
 					}
 					continue

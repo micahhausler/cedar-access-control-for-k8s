@@ -2564,7 +2564,7 @@ type FieldsV1 = {};
 	};
 	type LabelSelector = {
 		"matchExpressions"?: Set < LabelSelectorRequirement >,
-		"matchLabels"?: Set < meta::v1::KeyValue >
+		"matchLabels"?: Set < KeyValue >
 	};
 	type LabelSelectorRequirement = {
 		"key": __cedar::String,
@@ -2587,14 +2587,14 @@ type FieldsV1 = {};
 		"time"?: __cedar::String
 	};
 	type ObjectMeta = {
-		"annotations"?: Set < meta::v1::KeyValue >,
+		"annotations"?: Set < KeyValue >,
 		"creationTimestamp"?: __cedar::String,
 		"deletionGracePeriodSeconds"?: __cedar::Long,
 		"deletionTimestamp"?: __cedar::String,
 		"finalizers"?: Set < __cedar::String >,
 		"generateName"?: __cedar::String,
 		"generation"?: __cedar::Long,
-		"labels"?: Set < meta::v1::KeyValue >,
+		"labels"?: Set < KeyValue >,
 		"managedFields"?: Set < ManagedFieldsEntry >,
 		"name"?: __cedar::String,
 		"namespace"?: __cedar::String,
