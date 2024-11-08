@@ -4,6 +4,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env: 
+  CEDAR_VERSION: 4.2.1
 jobs:
   cedar:
     name: Cedar
@@ -11,9 +13,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Validate Policies
-        uses: common-fate/cedar-validate-action@v1
+      - name: Install cedar-cli
+        run: cargo install cedar-policy-cli@${{env.CEDAR_VERSION}}
+      - uses: actions/cache@v4
         with:
-          schema-file: ./cedarschema/k8s-full.cedarschema.json
-          policy-files: '**/*.cedar'
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{env.CEDAR_VERSION}}
+      - name: Validate Policies
+        run: make validate-policies
