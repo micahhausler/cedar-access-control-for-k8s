@@ -24,10 +24,10 @@ func UserEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
-			Type: "Record",
+			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
-				"extra": {Type: "Set", Element: &EntityAttributeElement{
+				"extra": {Type: SetType, Element: &EntityAttributeElement{
 					Type: ExtraValuesAttributeType,
 				}},
 			},
@@ -38,7 +38,7 @@ func UserEntity() Entity {
 // GroupEntity returns the Cedar schema entity for a group
 func GroupEntity() Entity {
 	return Entity{
-		Shape: EntityShape{Type: "Record", Attributes: map[string]EntityAttribute{}},
+		Shape: EntityShape{Type: RecordType, Attributes: map[string]EntityAttribute{}},
 	}
 }
 
@@ -47,11 +47,11 @@ func ServiceAccountEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
-			Type: "Record",
+			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
 				"name":      {Type: StringType, Required: true},
 				"namespace": {Type: StringType, Required: true},
-				"extra": {Type: "Set", Element: &EntityAttributeElement{
+				"extra": {Type: SetType, Element: &EntityAttributeElement{
 					Type: ExtraValuesAttributeType,
 				}},
 			},
@@ -63,10 +63,10 @@ func NodeEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
-			Type: "Record",
+			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
-				"extra": {Type: "Set", Element: &EntityAttributeElement{
+				"extra": {Type: SetType, Element: &EntityAttributeElement{
 					Type: ExtraValuesAttributeType,
 				}},
 			},
@@ -76,10 +76,10 @@ func NodeEntity() Entity {
 
 func ExtraEntityShape() EntityShape {
 	return EntityShape{
-		Type: "Record",
+		Type: RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":    {Type: StringType, Required: true},
-			"values": {Type: "Set", Element: &EntityAttributeElement{Type: StringType}},
+			"values": {Type: SetType, Element: &EntityAttributeElement{Type: StringType}},
 		},
 	}
 }

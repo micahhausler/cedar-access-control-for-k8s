@@ -456,11 +456,11 @@
 			"FieldRequirement": {
 				"type": "Record",
 				"attributes": {
-					"key": {
+					"field": {
 						"type": "String",
 						"required": true
 					},
-					"op": {
+					"operator": {
 						"type": "String",
 						"required": true
 					},

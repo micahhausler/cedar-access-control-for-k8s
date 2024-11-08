@@ -55,9 +55,9 @@ func FieldRequirementEntityShape() EntityShape {
 	return EntityShape{
 		Type: RecordType,
 		Attributes: map[string]EntityAttribute{
-			"key":   {Type: StringType, Required: true},
-			"op":    {Type: StringType, Required: true},
-			"value": {Type: StringType, Required: true},
+			"field":    {Type: StringType, Required: true},
+			"operator": {Type: StringType, Required: true},
+			"value":    {Type: StringType, Required: true},
 		},
 	}
 }

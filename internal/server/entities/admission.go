@@ -156,7 +156,7 @@ func cedarResourceEntityFromAdmissionRequest(req *admission.Request, rawData []b
 		return nil, fmt.Errorf("error getting unstructured resource %s: %w", req.Name, err)
 	}
 
-	// TODO:
+	// TODO: entity list construction based on the schema
 	// * Generate the schema
 	// * Update the schema on CRD changes
 	// * Walk the schema for this type and build the Cedar entity

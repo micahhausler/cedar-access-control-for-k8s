@@ -32,8 +32,8 @@ namespace k8s {
 		"values"?: Set < __cedar::String >
 	};
 	type FieldRequirement = {
-		"key": __cedar::String,
-		"op": __cedar::String,
+		"field": __cedar::String,
+		"operator": __cedar::String,
 		"value": __cedar::String
 	};
 	type LabelRequirement = {
