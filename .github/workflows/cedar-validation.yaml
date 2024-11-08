@@ -13,16 +13,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install cedar-cli
-        run: cargo install cedar-policy-cli@${{env.CEDAR_VERSION}}
-      - uses: actions/cache@v4
+      - name: Restore cached crates
+        id: cargo-cache-restore
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{env.CEDAR_VERSION}}
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+          key: ${{ runner.os }}-cargo-cedar-${{env.CEDAR_VERSION}}
+      - name: Install cedar-cli
+        run: cargo install cedar-policy-cli@${{env.CEDAR_VERSION}}
+      - name: Save cached crates
+        id: cargo-cache-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+          key: ${{ runner.os }}-cargo-cedar-${{env.CEDAR_VERSION}}
       - name: Validate Policies
         run: make validate-policies

@@ -507,7 +507,6 @@ func parseCRDProperties(depth int, properties map[string]spec.Schema) (map[strin
 				continue
 			}
 
-			// klog.V(2).Infof("Skipping %s attr %s object", k, v.Type[0])
 			if v.Properties != nil {
 				attrs, err := parseCRDProperties(depth-1, v.Properties)
 				if err != nil {
