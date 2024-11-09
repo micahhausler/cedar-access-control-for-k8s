@@ -18,8 +18,12 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
+    - CONNECT
     resources:
+    - services
     - pods
+    - nodes
     - configmaps
     - secrets
     - serviceaccounts

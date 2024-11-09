@@ -260,7 +260,6 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 		if apiVersion, ok := apiGroup[version]; ok {
 			if attrNames, ok := apiVersion[kind]; ok {
 				if slices.Contains(attrNames, keyName) {
-					klog.V(6).InfoS("Converting k/v pairs to meta::v1::KeyValue", "group", group, "version", version, "kind", kind, "attr", keyName, "value", obj)
 					set := []cedartypes.Value{}
 					for kk, vv := range obj.(map[string]interface{}) {
 
@@ -301,7 +300,6 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 		if apiVersion, ok := apiGroup[version]; ok {
 			if attrNames, ok := apiVersion[kind]; ok {
 				if slices.Contains(attrNames, keyName) {
-					klog.V(6).InfoS("Converting k/v pairs to meta::v1::KeyValueStringSlice", "group", group, "version", version, "kind", kind, "attr", keyName, "value", obj)
 					set := []cedartypes.Value{}
 					for kk, vv := range obj.(map[string]interface{}) {
 
@@ -326,7 +324,6 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 	}
 
 	if _, ok := obj.(map[string]interface{}); (keyName == "labels" || keyName == "annotations") && ok {
-		klog.V(6).InfoS("Converting labels/annotations to set of Cedar records", keyName, obj)
 		set := []cedartypes.Value{}
 		for kk, vv := range obj.(map[string]interface{}) {
 

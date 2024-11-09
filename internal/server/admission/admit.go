@@ -75,25 +75,34 @@ func (h *cedarHandler) Handle(ctx context.Context, req admission.Request) admiss
 
 func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool, *cedar.Diagnostic, error) {
 	if reqJSON, err := json.Marshal(req); err != nil {
-		klog.V(6).Info("Reviewing request ", reqJSON)
+		klog.V(8).Info("Reviewing request ", string(reqJSON))
 	} else {
-		klog.V(6).Infof("Reviewing request: %#v", req)
+		klog.V(8).Infof("Reviewing request: %#v", req)
 	}
 
 	principalEntity, requestEntities, err := entities.CedarPrincipalEntitesFromAdmissionRequest(req)
 	if err != nil {
 		return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar principal entity: %w", err)
 	}
+	var resourceEntity *cedartypes.Entity
 
-	// Convert the request to a Cedar entity
-	resourceEntity, err := entities.CedarResourceEntityFromAdmissionRequest(req)
-	if err != nil {
-		return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
+	if req.Operation == "DELETE" {
+		resourceEntity, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
+		if err != nil {
+			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
+		}
+	} else {
+		// Convert the request to a Cedar entity
+		resourceEntity, err = entities.CedarResourceEntityFromAdmissionRequest(req)
+		if err != nil {
+			return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
+		}
 	}
-	klog.V(6).InfoS("Resource entity", "entity", resourceEntity)
+	klog.V(7).InfoS("Resource entity", "entity", resourceEntity)
+	entities.MergeIntoEntities(requestEntities, resourceEntity)
 
 	var oldObject *cedartypes.Entity
-	if req.OldObject.Raw != nil {
+	if req.OldObject.Raw != nil && req.Operation != "DELETE" {
 		oldObject, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
@@ -105,10 +114,7 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 		return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar action entity: %w", err)
 	}
 
-	entities.MergeIntoEntities(requestEntities, resourceEntity)
-
-	// TODO: Add back to get action groups to work
-	// entities.MergeIntoEntities(requestEntities, entities.AdmissionActionEntities()...)
+	entities.MergeIntoEntities(requestEntities, entities.AdmissionActionEntities()...)
 
 	context := cedartypes.RecordMap{}
 	if oldObject != nil {

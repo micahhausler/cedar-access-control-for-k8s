@@ -10,7 +10,7 @@ spec:
   containers:
     - command:
         - /cedar-webhook
-        - -v=4
+        - -v=6
       image: cedar-webhook:latest
       imagePullPolicy: IfNotPresent
       env:

@@ -90,10 +90,16 @@ test-user-kubeconfig: ## Create a user 'test-user' in the groups 'test-group' an
 	# Set the test user kubeconfig's server URL to something useable from the developer's desktop
 	kubectl --kubeconfig ./mount/test-user-kubeconfig.yaml config set clusters.kubernetes.server $(shell kubectl config view --minify -o jsonpath="{.clusters[0].cluster.server}")
 
+
+BASE64_VERSION=$(shell base64 --version 2>&1 | grep -c 'GNU coreutils')
+ifneq ($(BASE64_VERSION),0)
+    BASE64ARGS=-w 0
+endif
+
 .PHONY: admission-webhook
 admission-webhook: ## Install the Cedar validatingwebhookconfiguration
 	cat manifests/admission-webhook.yaml | \
-		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64 -w 0)/" | \
+		sed -e "s/CA_BUNDLE_CONTENT/$(shell cat mount/certs/cedar-authorizer-server.crt | base64 $(BASE64ARGS))/" | \
 		kubectl apply -f -
 
 ##@ Cedar Schema

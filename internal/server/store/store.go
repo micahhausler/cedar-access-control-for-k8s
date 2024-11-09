@@ -57,7 +57,7 @@ func (u *unifiedStore) PolicySet(ctx context.Context) *cedar.PolicySet {
 	for _, store := range u.stores {
 		prefix := cedar.PolicyID(store.Name())
 		for k, v := range store.PolicySet(ctx).Map() {
-			pSet.Store(prefix+k, v)
+			pSet.Store(prefix+"-"+k, v)
 		}
 	}
 	return pSet

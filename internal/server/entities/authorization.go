@@ -6,6 +6,10 @@ import (
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 )
 
+// ResourceRequestToPath returns a Kubernetes URL for a given authorization attribute
+//
+// This function does not implement field and label selectors in the URl, since
+// we never add both a filtered request and an unfiltered request in the entity list
 func ResourceRequestToPath(attributes authorizer.Attributes) string {
 	base := "/api"
 	if attributes.GetAPIGroup() != "" {
@@ -22,9 +26,5 @@ func ResourceRequestToPath(attributes authorizer.Attributes) string {
 	if attributes.GetSubresource() != "" {
 		resp = resp + "/" + attributes.GetSubresource()
 	}
-
-	// TODO: implement field and label selectors?
-	// If we're never adding both a filtered request and an unfiltered reqeust in the entity list,
-	// it probably doesn't matter
 	return resp
 }

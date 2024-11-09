@@ -14,7 +14,6 @@ import (
 
 // policyStore contains the Indexers that stores policies
 type localPolicyStore struct {
-	// TODO use a sync.Once?
 	initalPolicyLoadComplete   bool
 	initalPolicyLoadCompleteMu sync.RWMutex
 

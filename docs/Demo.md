@@ -304,8 +304,9 @@ KUBECONFIG=./mount/test-user-kubeconfig.yaml kubectl create configmap prod-confi
 
 These types of admission rules are already possible today with general purpose tools like Open Policy Agent (OPA) or Kyverno, but each requires learning and writing separate domain languages than what authorization policies are defined in (RBAC).
 
-#### Key/Value maps
 
+#### Key/Value maps
+<!-- TODO: ENTITY TAGS -->
 For now, the webhook modifies labels and annotations into a list of structure with the fields "key" and "value", so policy can be written against it.
 Once cedar-go [adds support for entity tags][cedar-go-entity-tags], we'll refactor to use that structure and syntax.
 That will be a breaking change to any policy using the current key/value structure.
@@ -337,12 +338,10 @@ permit (
 // authz policy forbiding users in group "requires-labels" from making list/watches
 // without label selector owner={principal.name}
 forbid (
-    principal is k8s::User,
+    principal is k8s::User in k8s::Group::"requires-labels",
     action in [k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
-) when {
-    principal in k8s::Group::"requires-labels"
-} unless {
+) unless {
     resource has labelSelector &&
     resource.labelSelector.contains({
       "key": "owner",
@@ -353,26 +352,22 @@ forbid (
 
 // admission policy to forbid resource creation without an owner key
 forbid (
-    principal is k8s::User,
-    action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
+    principal is k8s::User in k8s::Group::"requires-labels",
+    action in [k8s::admission::Action::"create", k8s::admission::Action::"update", k8s::admission::Action::"delete"],
     resource
-) when {
-    principal in k8s::Group::"requires-labels"
-} unless {
+) unless {
     resource has metadata &&
     resource.metadata has labels &&
     resource.metadata.labels.contains({"key": "owner", "value": principal.name})
 };
 
-// admission policy forbidding users in "requires-labels" group from updating or deleting
-// resources that they don't already have the owner={principal.name} label
+// admission policy forbidding users in "requires-labels" group from updating a
+// resource that they doesn't already have the owner={principal.name} label
 forbid (
-    principal is k8s::User,
-    action in [k8s::admission::Action::"delete", k8s::admission::Action::"update"],
+    principal is k8s::User in k8s::Group::"requires-labels",
+    action == k8s::admission::Action::"update",
     resource
-) when {
-    principal in k8s::Group::"requires-labels"
-} unless {
+) unless {
     context has oldObject &&
     context.oldObject has metadata &&
     context.oldObject.metadata has labels &&
