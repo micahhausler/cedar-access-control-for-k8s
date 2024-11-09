@@ -27,33 +27,6 @@
 					}
 				}
 			},
-			"MutatingWebhookConfigurationList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "MutatingWebhookConfiguration"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"ValidatingAdmissionPolicy": {
 				"shape": {
 					"type": "Record",
@@ -104,60 +77,6 @@
 					}
 				}
 			},
-			"ValidatingAdmissionPolicyBindingList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ValidatingAdmissionPolicyBinding"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"ValidatingAdmissionPolicyList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ValidatingAdmissionPolicy"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"ValidatingWebhookConfiguration": {
 				"shape": {
 					"type": "Record",
@@ -180,33 +99,6 @@
 							"element": {
 								"type": "ValidatingWebhook"
 							}
-						}
-					}
-				}
-			},
-			"ValidatingWebhookConfigurationList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ValidatingWebhookConfiguration"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -723,33 +615,6 @@
 					}
 				}
 			},
-			"ControllerRevisionList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ControllerRevision"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"DaemonSet": {
 				"shape": {
 					"type": "Record",
@@ -772,33 +637,6 @@
 						},
 						"status": {
 							"type": "DaemonSetStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"DaemonSetList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "DaemonSet"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -831,33 +669,6 @@
 					}
 				}
 			},
-			"DeploymentList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Deployment"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"ReplicaSet": {
 				"shape": {
 					"type": "Record",
@@ -885,33 +696,6 @@
 					}
 				}
 			},
-			"ReplicaSetList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ReplicaSet"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"StatefulSet": {
 				"shape": {
 					"type": "Record",
@@ -934,33 +718,6 @@
 						},
 						"status": {
 							"type": "StatefulSetStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"StatefulSetList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "StatefulSet"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -2080,33 +1837,6 @@
 					}
 				}
 			},
-			"HorizontalPodAutoscalerList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "HorizontalPodAutoscaler"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Scale": {
 				"shape": {
 					"type": "Record",
@@ -2248,33 +1978,6 @@
 						},
 						"status": {
 							"type": "HorizontalPodAutoscalerStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"HorizontalPodAutoscalerList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "HorizontalPodAutoscaler"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -2725,25 +2428,6 @@
 						}
 					}
 				}
-			},
-			"PolicyList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {}
@@ -2777,33 +2461,6 @@
 					}
 				}
 			},
-			"CronJobList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "CronJob"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Job": {
 				"shape": {
 					"type": "Record",
@@ -2826,33 +2483,6 @@
 						},
 						"status": {
 							"type": "JobStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"JobList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Job"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -3220,33 +2850,6 @@
 						}
 					}
 				}
-			},
-			"CertificateSigningRequestList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "CertificateSigningRequest"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {},
@@ -3368,33 +2971,6 @@
 						}
 					}
 				}
-			},
-			"LeaseList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Lease"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {},
@@ -3485,33 +3061,6 @@
 					}
 				}
 			},
-			"ComponentStatusList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ComponentStatus"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"ConfigMap": {
 				"shape": {
 					"type": "Record",
@@ -3549,33 +3098,6 @@
 					}
 				}
 			},
-			"ConfigMapList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ConfigMap"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Endpoints": {
 				"shape": {
 					"type": "Record",
@@ -3598,33 +3120,6 @@
 							"element": {
 								"type": "EndpointSubset"
 							}
-						}
-					}
-				}
-			},
-			"EndpointsList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Endpoints"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -3704,33 +3199,6 @@
 					}
 				}
 			},
-			"EventList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Event"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"LimitRange": {
 				"shape": {
 					"type": "Record",
@@ -3749,33 +3217,6 @@
 						},
 						"spec": {
 							"type": "LimitRangeSpec",
-							"required": false
-						}
-					}
-				}
-			},
-			"LimitRangeList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "LimitRange"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -3808,33 +3249,6 @@
 					}
 				}
 			},
-			"NamespaceList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Namespace"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Node": {
 				"shape": {
 					"type": "Record",
@@ -3857,33 +3271,6 @@
 						},
 						"status": {
 							"type": "NodeStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"NodeList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Node"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -3943,60 +3330,6 @@
 					}
 				}
 			},
-			"PersistentVolumeClaimList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PersistentVolumeClaim"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"PersistentVolumeList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PersistentVolume"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Pod": {
 				"shape": {
 					"type": "Record",
@@ -4024,33 +3357,6 @@
 					}
 				}
 			},
-			"PodList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Pod"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"PodTemplate": {
 				"shape": {
 					"type": "Record",
@@ -4069,33 +3375,6 @@
 						},
 						"template": {
 							"type": "PodTemplateSpec",
-							"required": false
-						}
-					}
-				}
-			},
-			"PodTemplateList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PodTemplate"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -4128,33 +3407,6 @@
 					}
 				}
 			},
-			"ReplicationControllerList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ReplicationController"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"ResourceQuota": {
 				"shape": {
 					"type": "Record",
@@ -4177,33 +3429,6 @@
 						},
 						"status": {
 							"type": "ResourceQuotaStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"ResourceQuotaList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ResourceQuota"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -4245,33 +3470,6 @@
 						},
 						"type": {
 							"type": "String",
-							"required": false
-						}
-					}
-				}
-			},
-			"SecretList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Secret"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -4337,60 +3535,6 @@
 							"element": {
 								"type": "ObjectReference"
 							}
-						}
-					}
-				}
-			},
-			"ServiceAccountList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ServiceAccount"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"ServiceList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Service"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -8941,33 +8085,6 @@
 						}
 					}
 				}
-			},
-			"EndpointSliceList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "EndpointSlice"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {},
@@ -9152,33 +8269,6 @@
 						}
 					}
 				}
-			},
-			"EventList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Event"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {},
@@ -9227,33 +8317,6 @@
 					}
 				}
 			},
-			"FlowSchemaList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "FlowSchema"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"PriorityLevelConfiguration": {
 				"shape": {
 					"type": "Record",
@@ -9276,33 +8339,6 @@
 						},
 						"status": {
 							"type": "PriorityLevelConfigurationStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"PriorityLevelConfigurationList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PriorityLevelConfiguration"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -9673,33 +8709,6 @@
 					}
 				}
 			},
-			"FlowSchemaList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "FlowSchema"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"PriorityLevelConfiguration": {
 				"shape": {
 					"type": "Record",
@@ -9722,33 +8731,6 @@
 						},
 						"status": {
 							"type": "PriorityLevelConfigurationStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"PriorityLevelConfigurationList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PriorityLevelConfiguration"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -10596,23 +9578,14 @@
 					],
 					"resourceTypes": [
 						"admissionregistration::v1::MutatingWebhookConfiguration",
-						"admissionregistration::v1::MutatingWebhookConfigurationList",
 						"admissionregistration::v1::ValidatingAdmissionPolicy",
 						"admissionregistration::v1::ValidatingAdmissionPolicyBinding",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBindingList",
-						"admissionregistration::v1::ValidatingAdmissionPolicyList",
 						"admissionregistration::v1::ValidatingWebhookConfiguration",
-						"admissionregistration::v1::ValidatingWebhookConfigurationList",
 						"apps::v1::ControllerRevision",
-						"apps::v1::ControllerRevisionList",
 						"apps::v1::DaemonSet",
-						"apps::v1::DaemonSetList",
 						"apps::v1::Deployment",
-						"apps::v1::DeploymentList",
 						"apps::v1::ReplicaSet",
-						"apps::v1::ReplicaSetList",
 						"apps::v1::StatefulSet",
-						"apps::v1::StatefulSetList",
 						"authentication::v1::SelfSubjectReview",
 						"authentication::v1::TokenRequest",
 						"authentication::v1::TokenReview",
@@ -10621,96 +9594,52 @@
 						"authorization::v1::SelfSubjectRulesReview",
 						"authorization::v1::SubjectAccessReview",
 						"autoscaling::v1::HorizontalPodAutoscaler",
-						"autoscaling::v1::HorizontalPodAutoscalerList",
 						"autoscaling::v1::Scale",
 						"autoscaling::v2::HorizontalPodAutoscaler",
-						"autoscaling::v2::HorizontalPodAutoscalerList",
 						"aws::k8s::cedar::v1alpha1::Policy",
-						"aws::k8s::cedar::v1alpha1::PolicyList",
 						"batch::v1::CronJob",
-						"batch::v1::CronJobList",
 						"batch::v1::Job",
-						"batch::v1::JobList",
 						"certificates::v1::CertificateSigningRequest",
-						"certificates::v1::CertificateSigningRequestList",
 						"coordination::v1::Lease",
-						"coordination::v1::LeaseList",
 						"core::v1::Binding",
 						"core::v1::ComponentStatus",
-						"core::v1::ComponentStatusList",
 						"core::v1::ConfigMap",
-						"core::v1::ConfigMapList",
 						"core::v1::Endpoints",
-						"core::v1::EndpointsList",
 						"core::v1::Event",
-						"core::v1::EventList",
 						"core::v1::LimitRange",
-						"core::v1::LimitRangeList",
 						"core::v1::Namespace",
-						"core::v1::NamespaceList",
 						"core::v1::Node",
-						"core::v1::NodeList",
 						"core::v1::PersistentVolume",
 						"core::v1::PersistentVolumeClaim",
-						"core::v1::PersistentVolumeClaimList",
-						"core::v1::PersistentVolumeList",
 						"core::v1::Pod",
-						"core::v1::PodList",
 						"core::v1::PodTemplate",
-						"core::v1::PodTemplateList",
 						"core::v1::ReplicationController",
-						"core::v1::ReplicationControllerList",
 						"core::v1::ResourceQuota",
-						"core::v1::ResourceQuotaList",
 						"core::v1::Secret",
-						"core::v1::SecretList",
 						"core::v1::Service",
 						"core::v1::ServiceAccount",
-						"core::v1::ServiceAccountList",
-						"core::v1::ServiceList",
 						"discovery::v1::EndpointSlice",
-						"discovery::v1::EndpointSliceList",
 						"events::v1::Event",
-						"events::v1::EventList",
 						"flowcontrol::v1::FlowSchema",
-						"flowcontrol::v1::FlowSchemaList",
 						"flowcontrol::v1::PriorityLevelConfiguration",
-						"flowcontrol::v1::PriorityLevelConfigurationList",
 						"flowcontrol::v1beta3::FlowSchema",
-						"flowcontrol::v1beta3::FlowSchemaList",
 						"flowcontrol::v1beta3::PriorityLevelConfiguration",
-						"flowcontrol::v1beta3::PriorityLevelConfigurationList",
 						"networking::v1::Ingress",
 						"networking::v1::IngressClass",
-						"networking::v1::IngressClassList",
-						"networking::v1::IngressList",
 						"networking::v1::NetworkPolicy",
-						"networking::v1::NetworkPolicyList",
 						"node::v1::RuntimeClass",
-						"node::v1::RuntimeClassList",
 						"policy::v1::Eviction",
 						"policy::v1::PodDisruptionBudget",
-						"policy::v1::PodDisruptionBudgetList",
 						"rbac::v1::ClusterRole",
 						"rbac::v1::ClusterRoleBinding",
-						"rbac::v1::ClusterRoleBindingList",
-						"rbac::v1::ClusterRoleList",
 						"rbac::v1::Role",
 						"rbac::v1::RoleBinding",
-						"rbac::v1::RoleBindingList",
-						"rbac::v1::RoleList",
 						"scheduling::v1::PriorityClass",
-						"scheduling::v1::PriorityClassList",
 						"storage::v1::CSIDriver",
-						"storage::v1::CSIDriverList",
 						"storage::v1::CSINode",
-						"storage::v1::CSINodeList",
 						"storage::v1::CSIStorageCapacity",
-						"storage::v1::CSIStorageCapacityList",
 						"storage::v1::StorageClass",
-						"storage::v1::StorageClassList",
-						"storage::v1::VolumeAttachment",
-						"storage::v1::VolumeAttachmentList"
+						"storage::v1::VolumeAttachment"
 					]
 				}
 			},
@@ -10723,122 +9652,9 @@
 						"k8s::User"
 					],
 					"resourceTypes": [
-						"admissionregistration::v1::MutatingWebhookConfiguration",
-						"admissionregistration::v1::MutatingWebhookConfigurationList",
-						"admissionregistration::v1::ValidatingAdmissionPolicy",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBinding",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBindingList",
-						"admissionregistration::v1::ValidatingAdmissionPolicyList",
-						"admissionregistration::v1::ValidatingWebhookConfiguration",
-						"admissionregistration::v1::ValidatingWebhookConfigurationList",
-						"apps::v1::ControllerRevision",
-						"apps::v1::ControllerRevisionList",
-						"apps::v1::DaemonSet",
-						"apps::v1::DaemonSetList",
-						"apps::v1::Deployment",
-						"apps::v1::DeploymentList",
-						"apps::v1::ReplicaSet",
-						"apps::v1::ReplicaSetList",
-						"apps::v1::StatefulSet",
-						"apps::v1::StatefulSetList",
-						"authentication::v1::SelfSubjectReview",
-						"authentication::v1::TokenRequest",
-						"authentication::v1::TokenReview",
-						"authorization::v1::LocalSubjectAccessReview",
-						"authorization::v1::SelfSubjectAccessReview",
-						"authorization::v1::SelfSubjectRulesReview",
-						"authorization::v1::SubjectAccessReview",
-						"autoscaling::v1::HorizontalPodAutoscaler",
-						"autoscaling::v1::HorizontalPodAutoscalerList",
-						"autoscaling::v1::Scale",
-						"autoscaling::v2::HorizontalPodAutoscaler",
-						"autoscaling::v2::HorizontalPodAutoscalerList",
-						"aws::k8s::cedar::v1alpha1::Policy",
-						"aws::k8s::cedar::v1alpha1::PolicyList",
-						"batch::v1::CronJob",
-						"batch::v1::CronJobList",
-						"batch::v1::Job",
-						"batch::v1::JobList",
-						"certificates::v1::CertificateSigningRequest",
-						"certificates::v1::CertificateSigningRequestList",
-						"coordination::v1::Lease",
-						"coordination::v1::LeaseList",
-						"core::v1::Binding",
-						"core::v1::ComponentStatus",
-						"core::v1::ComponentStatusList",
-						"core::v1::ConfigMap",
-						"core::v1::ConfigMapList",
-						"core::v1::Endpoints",
-						"core::v1::EndpointsList",
-						"core::v1::Event",
-						"core::v1::EventList",
-						"core::v1::LimitRange",
-						"core::v1::LimitRangeList",
-						"core::v1::Namespace",
-						"core::v1::NamespaceList",
 						"core::v1::Node",
-						"core::v1::NodeList",
-						"core::v1::PersistentVolume",
-						"core::v1::PersistentVolumeClaim",
-						"core::v1::PersistentVolumeClaimList",
-						"core::v1::PersistentVolumeList",
 						"core::v1::Pod",
-						"core::v1::PodList",
-						"core::v1::PodTemplate",
-						"core::v1::PodTemplateList",
-						"core::v1::ReplicationController",
-						"core::v1::ReplicationControllerList",
-						"core::v1::ResourceQuota",
-						"core::v1::ResourceQuotaList",
-						"core::v1::Secret",
-						"core::v1::SecretList",
-						"core::v1::Service",
-						"core::v1::ServiceAccount",
-						"core::v1::ServiceAccountList",
-						"core::v1::ServiceList",
-						"discovery::v1::EndpointSlice",
-						"discovery::v1::EndpointSliceList",
-						"events::v1::Event",
-						"events::v1::EventList",
-						"flowcontrol::v1::FlowSchema",
-						"flowcontrol::v1::FlowSchemaList",
-						"flowcontrol::v1::PriorityLevelConfiguration",
-						"flowcontrol::v1::PriorityLevelConfigurationList",
-						"flowcontrol::v1beta3::FlowSchema",
-						"flowcontrol::v1beta3::FlowSchemaList",
-						"flowcontrol::v1beta3::PriorityLevelConfiguration",
-						"flowcontrol::v1beta3::PriorityLevelConfigurationList",
-						"networking::v1::Ingress",
-						"networking::v1::IngressClass",
-						"networking::v1::IngressClassList",
-						"networking::v1::IngressList",
-						"networking::v1::NetworkPolicy",
-						"networking::v1::NetworkPolicyList",
-						"node::v1::RuntimeClass",
-						"node::v1::RuntimeClassList",
-						"policy::v1::Eviction",
-						"policy::v1::PodDisruptionBudget",
-						"policy::v1::PodDisruptionBudgetList",
-						"rbac::v1::ClusterRole",
-						"rbac::v1::ClusterRoleBinding",
-						"rbac::v1::ClusterRoleBindingList",
-						"rbac::v1::ClusterRoleList",
-						"rbac::v1::Role",
-						"rbac::v1::RoleBinding",
-						"rbac::v1::RoleBindingList",
-						"rbac::v1::RoleList",
-						"scheduling::v1::PriorityClass",
-						"scheduling::v1::PriorityClassList",
-						"storage::v1::CSIDriver",
-						"storage::v1::CSIDriverList",
-						"storage::v1::CSINode",
-						"storage::v1::CSINodeList",
-						"storage::v1::CSIStorageCapacity",
-						"storage::v1::CSIStorageCapacityList",
-						"storage::v1::StorageClass",
-						"storage::v1::StorageClassList",
-						"storage::v1::VolumeAttachment",
-						"storage::v1::VolumeAttachmentList"
+						"core::v1::Service"
 					]
 				},
 				"memberOf": [
@@ -10857,23 +9673,14 @@
 					],
 					"resourceTypes": [
 						"admissionregistration::v1::MutatingWebhookConfiguration",
-						"admissionregistration::v1::MutatingWebhookConfigurationList",
 						"admissionregistration::v1::ValidatingAdmissionPolicy",
 						"admissionregistration::v1::ValidatingAdmissionPolicyBinding",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBindingList",
-						"admissionregistration::v1::ValidatingAdmissionPolicyList",
 						"admissionregistration::v1::ValidatingWebhookConfiguration",
-						"admissionregistration::v1::ValidatingWebhookConfigurationList",
 						"apps::v1::ControllerRevision",
-						"apps::v1::ControllerRevisionList",
 						"apps::v1::DaemonSet",
-						"apps::v1::DaemonSetList",
 						"apps::v1::Deployment",
-						"apps::v1::DeploymentList",
 						"apps::v1::ReplicaSet",
-						"apps::v1::ReplicaSetList",
 						"apps::v1::StatefulSet",
-						"apps::v1::StatefulSetList",
 						"authentication::v1::SelfSubjectReview",
 						"authentication::v1::TokenRequest",
 						"authentication::v1::TokenReview",
@@ -10882,96 +9689,50 @@
 						"authorization::v1::SelfSubjectRulesReview",
 						"authorization::v1::SubjectAccessReview",
 						"autoscaling::v1::HorizontalPodAutoscaler",
-						"autoscaling::v1::HorizontalPodAutoscalerList",
-						"autoscaling::v1::Scale",
 						"autoscaling::v2::HorizontalPodAutoscaler",
-						"autoscaling::v2::HorizontalPodAutoscalerList",
 						"aws::k8s::cedar::v1alpha1::Policy",
-						"aws::k8s::cedar::v1alpha1::PolicyList",
 						"batch::v1::CronJob",
-						"batch::v1::CronJobList",
 						"batch::v1::Job",
-						"batch::v1::JobList",
 						"certificates::v1::CertificateSigningRequest",
-						"certificates::v1::CertificateSigningRequestList",
 						"coordination::v1::Lease",
-						"coordination::v1::LeaseList",
 						"core::v1::Binding",
-						"core::v1::ComponentStatus",
-						"core::v1::ComponentStatusList",
 						"core::v1::ConfigMap",
-						"core::v1::ConfigMapList",
 						"core::v1::Endpoints",
-						"core::v1::EndpointsList",
 						"core::v1::Event",
-						"core::v1::EventList",
 						"core::v1::LimitRange",
-						"core::v1::LimitRangeList",
 						"core::v1::Namespace",
-						"core::v1::NamespaceList",
 						"core::v1::Node",
-						"core::v1::NodeList",
 						"core::v1::PersistentVolume",
 						"core::v1::PersistentVolumeClaim",
-						"core::v1::PersistentVolumeClaimList",
-						"core::v1::PersistentVolumeList",
 						"core::v1::Pod",
-						"core::v1::PodList",
 						"core::v1::PodTemplate",
-						"core::v1::PodTemplateList",
 						"core::v1::ReplicationController",
-						"core::v1::ReplicationControllerList",
 						"core::v1::ResourceQuota",
-						"core::v1::ResourceQuotaList",
 						"core::v1::Secret",
-						"core::v1::SecretList",
 						"core::v1::Service",
 						"core::v1::ServiceAccount",
-						"core::v1::ServiceAccountList",
-						"core::v1::ServiceList",
 						"discovery::v1::EndpointSlice",
-						"discovery::v1::EndpointSliceList",
 						"events::v1::Event",
-						"events::v1::EventList",
 						"flowcontrol::v1::FlowSchema",
-						"flowcontrol::v1::FlowSchemaList",
 						"flowcontrol::v1::PriorityLevelConfiguration",
-						"flowcontrol::v1::PriorityLevelConfigurationList",
 						"flowcontrol::v1beta3::FlowSchema",
-						"flowcontrol::v1beta3::FlowSchemaList",
 						"flowcontrol::v1beta3::PriorityLevelConfiguration",
-						"flowcontrol::v1beta3::PriorityLevelConfigurationList",
 						"networking::v1::Ingress",
 						"networking::v1::IngressClass",
-						"networking::v1::IngressClassList",
-						"networking::v1::IngressList",
 						"networking::v1::NetworkPolicy",
-						"networking::v1::NetworkPolicyList",
 						"node::v1::RuntimeClass",
-						"node::v1::RuntimeClassList",
 						"policy::v1::Eviction",
 						"policy::v1::PodDisruptionBudget",
-						"policy::v1::PodDisruptionBudgetList",
 						"rbac::v1::ClusterRole",
 						"rbac::v1::ClusterRoleBinding",
-						"rbac::v1::ClusterRoleBindingList",
-						"rbac::v1::ClusterRoleList",
 						"rbac::v1::Role",
 						"rbac::v1::RoleBinding",
-						"rbac::v1::RoleBindingList",
-						"rbac::v1::RoleList",
 						"scheduling::v1::PriorityClass",
-						"scheduling::v1::PriorityClassList",
 						"storage::v1::CSIDriver",
-						"storage::v1::CSIDriverList",
 						"storage::v1::CSINode",
-						"storage::v1::CSINodeList",
 						"storage::v1::CSIStorageCapacity",
-						"storage::v1::CSIStorageCapacityList",
 						"storage::v1::StorageClass",
-						"storage::v1::StorageClassList",
-						"storage::v1::VolumeAttachment",
-						"storage::v1::VolumeAttachmentList"
+						"storage::v1::VolumeAttachment"
 					]
 				},
 				"memberOf": [
@@ -10990,121 +9751,57 @@
 					],
 					"resourceTypes": [
 						"admissionregistration::v1::MutatingWebhookConfiguration",
-						"admissionregistration::v1::MutatingWebhookConfigurationList",
 						"admissionregistration::v1::ValidatingAdmissionPolicy",
 						"admissionregistration::v1::ValidatingAdmissionPolicyBinding",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBindingList",
-						"admissionregistration::v1::ValidatingAdmissionPolicyList",
 						"admissionregistration::v1::ValidatingWebhookConfiguration",
-						"admissionregistration::v1::ValidatingWebhookConfigurationList",
 						"apps::v1::ControllerRevision",
-						"apps::v1::ControllerRevisionList",
 						"apps::v1::DaemonSet",
-						"apps::v1::DaemonSetList",
 						"apps::v1::Deployment",
-						"apps::v1::DeploymentList",
 						"apps::v1::ReplicaSet",
-						"apps::v1::ReplicaSetList",
 						"apps::v1::StatefulSet",
-						"apps::v1::StatefulSetList",
-						"authentication::v1::SelfSubjectReview",
-						"authentication::v1::TokenRequest",
-						"authentication::v1::TokenReview",
-						"authorization::v1::LocalSubjectAccessReview",
-						"authorization::v1::SelfSubjectAccessReview",
-						"authorization::v1::SelfSubjectRulesReview",
-						"authorization::v1::SubjectAccessReview",
 						"autoscaling::v1::HorizontalPodAutoscaler",
-						"autoscaling::v1::HorizontalPodAutoscalerList",
-						"autoscaling::v1::Scale",
 						"autoscaling::v2::HorizontalPodAutoscaler",
-						"autoscaling::v2::HorizontalPodAutoscalerList",
 						"aws::k8s::cedar::v1alpha1::Policy",
-						"aws::k8s::cedar::v1alpha1::PolicyList",
 						"batch::v1::CronJob",
-						"batch::v1::CronJobList",
 						"batch::v1::Job",
-						"batch::v1::JobList",
 						"certificates::v1::CertificateSigningRequest",
-						"certificates::v1::CertificateSigningRequestList",
 						"coordination::v1::Lease",
-						"coordination::v1::LeaseList",
-						"core::v1::Binding",
-						"core::v1::ComponentStatus",
-						"core::v1::ComponentStatusList",
 						"core::v1::ConfigMap",
-						"core::v1::ConfigMapList",
 						"core::v1::Endpoints",
-						"core::v1::EndpointsList",
 						"core::v1::Event",
-						"core::v1::EventList",
 						"core::v1::LimitRange",
-						"core::v1::LimitRangeList",
 						"core::v1::Namespace",
-						"core::v1::NamespaceList",
 						"core::v1::Node",
-						"core::v1::NodeList",
 						"core::v1::PersistentVolume",
 						"core::v1::PersistentVolumeClaim",
-						"core::v1::PersistentVolumeClaimList",
-						"core::v1::PersistentVolumeList",
 						"core::v1::Pod",
-						"core::v1::PodList",
 						"core::v1::PodTemplate",
-						"core::v1::PodTemplateList",
 						"core::v1::ReplicationController",
-						"core::v1::ReplicationControllerList",
 						"core::v1::ResourceQuota",
-						"core::v1::ResourceQuotaList",
 						"core::v1::Secret",
-						"core::v1::SecretList",
 						"core::v1::Service",
 						"core::v1::ServiceAccount",
-						"core::v1::ServiceAccountList",
-						"core::v1::ServiceList",
 						"discovery::v1::EndpointSlice",
-						"discovery::v1::EndpointSliceList",
 						"events::v1::Event",
-						"events::v1::EventList",
 						"flowcontrol::v1::FlowSchema",
-						"flowcontrol::v1::FlowSchemaList",
 						"flowcontrol::v1::PriorityLevelConfiguration",
-						"flowcontrol::v1::PriorityLevelConfigurationList",
 						"flowcontrol::v1beta3::FlowSchema",
-						"flowcontrol::v1beta3::FlowSchemaList",
 						"flowcontrol::v1beta3::PriorityLevelConfiguration",
-						"flowcontrol::v1beta3::PriorityLevelConfigurationList",
 						"networking::v1::Ingress",
 						"networking::v1::IngressClass",
-						"networking::v1::IngressClassList",
-						"networking::v1::IngressList",
 						"networking::v1::NetworkPolicy",
-						"networking::v1::NetworkPolicyList",
 						"node::v1::RuntimeClass",
-						"node::v1::RuntimeClassList",
-						"policy::v1::Eviction",
 						"policy::v1::PodDisruptionBudget",
-						"policy::v1::PodDisruptionBudgetList",
 						"rbac::v1::ClusterRole",
 						"rbac::v1::ClusterRoleBinding",
-						"rbac::v1::ClusterRoleBindingList",
-						"rbac::v1::ClusterRoleList",
 						"rbac::v1::Role",
 						"rbac::v1::RoleBinding",
-						"rbac::v1::RoleBindingList",
-						"rbac::v1::RoleList",
 						"scheduling::v1::PriorityClass",
-						"scheduling::v1::PriorityClassList",
 						"storage::v1::CSIDriver",
-						"storage::v1::CSIDriverList",
 						"storage::v1::CSINode",
-						"storage::v1::CSINodeList",
 						"storage::v1::CSIStorageCapacity",
-						"storage::v1::CSIStorageCapacityList",
 						"storage::v1::StorageClass",
-						"storage::v1::StorageClassList",
-						"storage::v1::VolumeAttachment",
-						"storage::v1::VolumeAttachmentList"
+						"storage::v1::VolumeAttachment"
 					]
 				},
 				"memberOf": [
@@ -11123,121 +9820,58 @@
 					],
 					"resourceTypes": [
 						"admissionregistration::v1::MutatingWebhookConfiguration",
-						"admissionregistration::v1::MutatingWebhookConfigurationList",
 						"admissionregistration::v1::ValidatingAdmissionPolicy",
 						"admissionregistration::v1::ValidatingAdmissionPolicyBinding",
-						"admissionregistration::v1::ValidatingAdmissionPolicyBindingList",
-						"admissionregistration::v1::ValidatingAdmissionPolicyList",
 						"admissionregistration::v1::ValidatingWebhookConfiguration",
-						"admissionregistration::v1::ValidatingWebhookConfigurationList",
 						"apps::v1::ControllerRevision",
-						"apps::v1::ControllerRevisionList",
 						"apps::v1::DaemonSet",
-						"apps::v1::DaemonSetList",
 						"apps::v1::Deployment",
-						"apps::v1::DeploymentList",
 						"apps::v1::ReplicaSet",
-						"apps::v1::ReplicaSetList",
 						"apps::v1::StatefulSet",
-						"apps::v1::StatefulSetList",
-						"authentication::v1::SelfSubjectReview",
-						"authentication::v1::TokenRequest",
-						"authentication::v1::TokenReview",
-						"authorization::v1::LocalSubjectAccessReview",
-						"authorization::v1::SelfSubjectAccessReview",
-						"authorization::v1::SelfSubjectRulesReview",
-						"authorization::v1::SubjectAccessReview",
 						"autoscaling::v1::HorizontalPodAutoscaler",
-						"autoscaling::v1::HorizontalPodAutoscalerList",
 						"autoscaling::v1::Scale",
 						"autoscaling::v2::HorizontalPodAutoscaler",
-						"autoscaling::v2::HorizontalPodAutoscalerList",
 						"aws::k8s::cedar::v1alpha1::Policy",
-						"aws::k8s::cedar::v1alpha1::PolicyList",
 						"batch::v1::CronJob",
-						"batch::v1::CronJobList",
 						"batch::v1::Job",
-						"batch::v1::JobList",
 						"certificates::v1::CertificateSigningRequest",
-						"certificates::v1::CertificateSigningRequestList",
 						"coordination::v1::Lease",
-						"coordination::v1::LeaseList",
-						"core::v1::Binding",
-						"core::v1::ComponentStatus",
-						"core::v1::ComponentStatusList",
 						"core::v1::ConfigMap",
-						"core::v1::ConfigMapList",
 						"core::v1::Endpoints",
-						"core::v1::EndpointsList",
 						"core::v1::Event",
-						"core::v1::EventList",
 						"core::v1::LimitRange",
-						"core::v1::LimitRangeList",
 						"core::v1::Namespace",
-						"core::v1::NamespaceList",
 						"core::v1::Node",
-						"core::v1::NodeList",
 						"core::v1::PersistentVolume",
 						"core::v1::PersistentVolumeClaim",
-						"core::v1::PersistentVolumeClaimList",
-						"core::v1::PersistentVolumeList",
 						"core::v1::Pod",
-						"core::v1::PodList",
 						"core::v1::PodTemplate",
-						"core::v1::PodTemplateList",
 						"core::v1::ReplicationController",
-						"core::v1::ReplicationControllerList",
 						"core::v1::ResourceQuota",
-						"core::v1::ResourceQuotaList",
 						"core::v1::Secret",
-						"core::v1::SecretList",
 						"core::v1::Service",
 						"core::v1::ServiceAccount",
-						"core::v1::ServiceAccountList",
-						"core::v1::ServiceList",
 						"discovery::v1::EndpointSlice",
-						"discovery::v1::EndpointSliceList",
 						"events::v1::Event",
-						"events::v1::EventList",
 						"flowcontrol::v1::FlowSchema",
-						"flowcontrol::v1::FlowSchemaList",
 						"flowcontrol::v1::PriorityLevelConfiguration",
-						"flowcontrol::v1::PriorityLevelConfigurationList",
 						"flowcontrol::v1beta3::FlowSchema",
-						"flowcontrol::v1beta3::FlowSchemaList",
 						"flowcontrol::v1beta3::PriorityLevelConfiguration",
-						"flowcontrol::v1beta3::PriorityLevelConfigurationList",
 						"networking::v1::Ingress",
 						"networking::v1::IngressClass",
-						"networking::v1::IngressClassList",
-						"networking::v1::IngressList",
 						"networking::v1::NetworkPolicy",
-						"networking::v1::NetworkPolicyList",
 						"node::v1::RuntimeClass",
-						"node::v1::RuntimeClassList",
-						"policy::v1::Eviction",
 						"policy::v1::PodDisruptionBudget",
-						"policy::v1::PodDisruptionBudgetList",
 						"rbac::v1::ClusterRole",
 						"rbac::v1::ClusterRoleBinding",
-						"rbac::v1::ClusterRoleBindingList",
-						"rbac::v1::ClusterRoleList",
 						"rbac::v1::Role",
 						"rbac::v1::RoleBinding",
-						"rbac::v1::RoleBindingList",
-						"rbac::v1::RoleList",
 						"scheduling::v1::PriorityClass",
-						"scheduling::v1::PriorityClassList",
 						"storage::v1::CSIDriver",
-						"storage::v1::CSIDriverList",
 						"storage::v1::CSINode",
-						"storage::v1::CSINodeList",
 						"storage::v1::CSIStorageCapacity",
-						"storage::v1::CSIStorageCapacityList",
 						"storage::v1::StorageClass",
-						"storage::v1::StorageClassList",
-						"storage::v1::VolumeAttachment",
-						"storage::v1::VolumeAttachmentList"
+						"storage::v1::VolumeAttachment"
 					]
 				},
 				"memberOf": [
@@ -11821,60 +10455,6 @@
 					}
 				}
 			},
-			"IngressClassList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "IngressClass"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"IngressList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Ingress"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"NetworkPolicy": {
 				"shape": {
 					"type": "Record",
@@ -11893,33 +10473,6 @@
 						},
 						"spec": {
 							"type": "NetworkPolicySpec",
-							"required": false
-						}
-					}
-				}
-			},
-			"NetworkPolicyList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "NetworkPolicy"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -12296,33 +10849,6 @@
 						}
 					}
 				}
-			},
-			"RuntimeClassList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "RuntimeClass"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {},
@@ -12404,33 +10930,6 @@
 						},
 						"status": {
 							"type": "PodDisruptionBudgetStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"PodDisruptionBudgetList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PodDisruptionBudget"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}
@@ -12560,60 +11059,6 @@
 					}
 				}
 			},
-			"ClusterRoleBindingList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ClusterRoleBinding"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"ClusterRoleList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "ClusterRole"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"Role": {
 				"shape": {
 					"type": "Record",
@@ -12666,60 +11111,6 @@
 							"element": {
 								"type": "Subject"
 							}
-						}
-					}
-				}
-			},
-			"RoleBindingList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "RoleBinding"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
-			"RoleList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "Role"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -12855,33 +11246,6 @@
 						}
 					}
 				}
-			},
-			"PriorityClassList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "PriorityClass"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
 			}
 		},
 		"actions": {}
@@ -12911,33 +11275,6 @@
 					}
 				}
 			},
-			"CSIDriverList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "CSIDriver"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"CSINode": {
 				"shape": {
 					"type": "Record",
@@ -12957,33 +11294,6 @@
 						"spec": {
 							"type": "CSINodeSpec",
 							"required": true
-						}
-					}
-				}
-			},
-			"CSINodeList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "CSINode"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -13019,33 +11329,6 @@
 						"storageClassName": {
 							"type": "String",
 							"required": true
-						}
-					}
-				}
-			},
-			"CSIStorageCapacityList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "CSIStorageCapacity"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
 						}
 					}
 				}
@@ -13106,33 +11389,6 @@
 					}
 				}
 			},
-			"StorageClassList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "StorageClass"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
-							"required": false
-						}
-					}
-				}
-			},
 			"VolumeAttachment": {
 				"shape": {
 					"type": "Record",
@@ -13155,33 +11411,6 @@
 						},
 						"status": {
 							"type": "VolumeAttachmentStatus",
-							"required": false
-						}
-					}
-				}
-			},
-			"VolumeAttachmentList": {
-				"shape": {
-					"type": "Record",
-					"attributes": {
-						"apiVersion": {
-							"type": "String",
-							"required": false
-						},
-						"items": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "Entity",
-								"name": "VolumeAttachment"
-							}
-						},
-						"kind": {
-							"type": "String",
-							"required": false
-						},
-						"metadata": {
-							"type": "meta::v1::ListMeta",
 							"required": false
 						}
 					}

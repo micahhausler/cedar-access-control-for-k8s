@@ -10,8 +10,10 @@ import (
 	"strings"
 
 	schema "github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtimeschema "k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/klog/v2"
@@ -76,7 +78,16 @@ func (g *K8sSchemaGetter) GetAllVersionedSchemas() ([]string, error) {
 	return resp, nil
 }
 
-func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.CedarSchema, api, version, actionNamespace string) error {
+func (g *K8sSchemaGetter) APIResourceList(apiPath string) (*metav1.APIResourceList, error) {
+	resources := &metav1.APIResourceList{}
+	err := g.client.Get().AbsPath(apiPath).Do(context.Background()).Into(resources)
+	if err != nil {
+		return nil, err
+	}
+	return resources, nil
+}
+
+func ModifySchemaForAPIVersion(apiResources *metav1.APIResourceList, openApiSchema *spec3.OpenAPI, cSchema schema.CedarSchema, api, version, actionNamespace string) error {
 
 	for schemaKind, schemaDefinition := range openApiSchema.Components.Schemas {
 
@@ -148,21 +159,62 @@ func ModifySchemaForAPIVersion(openApiSchema *spec3.OpenAPI, cSchema schema.Ceda
 			klog.V(5).Infof("Skipping unknown type %s on %s", schemaDefinition.Type[0], schemaKind)
 		}
 
+		if isListEntity(entity.Shape) {
+			// List types are not evaluated in admission, we can drop them
+			continue
+		}
+
 		if !isEntity(entity.Shape) {
 			ns.CommonTypes[sKind] = entity.Shape
 			continue
 		}
+		// TODO: add an optional "oldObject" Entity attribute that is the Kind's kind for every admissible type.
+		// Context with analysis can't have dynamic types, so we put it on the entity rather than
+		// either an action per Entity type, or a huge context type with an attribute for every entity
+		//
+		// oldObject will only be polulated for update calls, since we don't want delete to have an empty entity
 
+		verbs := verbsForKind(sKind, apiResources)
+
+		// Catch delete calls
+		if verbs.Intersection(sets.New("delete", "deletecollection")).Len() > 0 {
+			schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionDeleteAction, nsName+"::"+sKind)
+		}
+
+		// Catch update calls
+		if verbs.Intersection(sets.New("update", "patch")).Len() > 0 {
+			schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionUpdateAction, nsName+"::"+sKind)
+		}
+
+		// Catch create calls
+		if verbs.Has("create") {
+			schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionCreateAction, nsName+"::"+sKind)
+		}
+
+		// We hard-code `CONNECT` since there are only 3 connectable Kinds in the API.
+		// The only way to dynamically figure this out is in the OpenAPI schema, looking for the `x-kubernetes-action`
+		// on every path, but those paths don't have the corresponding Kind
+		if nsName == "core::v1" {
+			if slices.Contains([]string{"Pod", "Service", "Node"}, sKind) {
+				schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionConnectAction, nsName+"::"+sKind)
+			}
+		}
 		ns.EntityTypes[sKind] = entity
-		// TODO: probably have to scan the schema for valid actions?
-		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionCreateAction, nsName+"::"+sKind)
-		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionDeleteAction, nsName+"::"+sKind)
-		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionUpdateAction, nsName+"::"+sKind)
-		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionConnectAction, nsName+"::"+sKind)
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AllAction, nsName+"::"+sKind)
 	}
 
 	return nil
+}
+
+func verbsForKind(kind string, apiResources *metav1.APIResourceList) sets.Set[string] {
+	verbs := sets.New[string]()
+	for _, r := range apiResources.APIResources {
+		if r.Kind == kind {
+			verbs = verbs.Union(sets.New(r.Verbs...))
+		}
+	}
+	klog.InfoS("Verbs", "kind", kind, "verbs", sets.List(verbs))
+	return verbs
 }
 
 // isEntity determines if the structure is an entity (true) or common type (false)
@@ -178,7 +230,26 @@ func isEntity(shape schema.EntityShape) bool {
 		return false
 	}
 
-	if metadataAttr, ok := shape.Attributes["metadata"]; !ok || (metadataAttr.Type != "meta::v1::ListMeta" && metadataAttr.Type != "meta::v1::ObjectMeta") {
+	if metadataAttr, ok := shape.Attributes["metadata"]; !ok || metadataAttr.Type != "meta::v1::ObjectMeta" {
+		return false
+	}
+	return true
+}
+
+// isEntity determines if the structure is an entity (true) or common type (false)
+func isListEntity(shape schema.EntityShape) bool {
+	if shape.Attributes == nil {
+		return false
+	}
+	if apiVersionAttr, ok := shape.Attributes["apiVersion"]; !ok || apiVersionAttr.Type != schema.StringType {
+		return false
+	}
+
+	if kindAttr, ok := shape.Attributes["kind"]; !ok || kindAttr.Type != schema.StringType {
+		return false
+	}
+
+	if metadataAttr, ok := shape.Attributes["metadata"]; !ok || metadataAttr.Type != "meta::v1::ListMeta" {
 		return false
 	}
 	return true
@@ -360,6 +431,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					continue
 				}
 
+				// TODO: ENTITY TAGS: this is just here until we get real key/value map support
 				// for string/string maps, hack to use custom KeyValue or KeyValueSlice types
 				knownKeyValueStringMapAttributes := map[string][]string{
 					"io.k8s.api.core.v1.ConfigMap":                       {"data", "binaryData"}, // format is []byte, should we exclude?
@@ -379,7 +451,6 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					"io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector": {"matchLabels"},
 					"io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta":    {"annotations", "labels"},
 				}
-
 				if attrs, ok := knownKeyValueStringMapAttributes[schemaKind]; ok &&
 					slices.Contains(attrs, attrName) &&
 					len(attrDef.AdditionalProperties.Schema.Type) > 0 && attrDef.AdditionalProperties.Schema.Type[0] == "string" {
@@ -391,7 +462,6 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					}
 					continue
 				}
-
 				knownKeyValueStringStringSlice := map[string][]string{
 					"io.k8s.api.authentication.v1.UserInfo":                    {"extra"},
 					"io.k8s.api.authorization.v1.SubjectAccessReviewSpec":      {"extra"},

@@ -45,11 +45,13 @@ func main() {
 	indent := ""
 	for _, line := range strings.Split(string(content), "\n") {
 		indent = strings.Repeat("\t", braceCount)
-
 		if line == "}" && braceCount == 1 {
 			// handle end of namespace
 			fmt.Println(line + "\n")
-		} else if strings.HasSuffix(line, "};") || strings.HasSuffix(line, "},") || strings.HasSuffix(line, "}") && !strings.HasSuffix(line, "{}") {
+		} else if (strings.HasSuffix(line, "};") && !strings.HasSuffix(line, "{};")) ||
+			strings.HasSuffix(line, "},") ||
+			strings.HasSuffix(line, "}") &&
+				!strings.HasSuffix(line, "{}") {
 			// handle end of entity
 			fmt.Println(strings.Repeat("\t", intOrZero(braceCount-1)) + line)
 		} else if len(line) > 0 {

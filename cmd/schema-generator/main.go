@@ -131,7 +131,13 @@ func main() {
 			//    * Look for the corresponding admission verbs (delete/deletecollection/create/patch/update)
 			//    * Figure out how to determine which subresource maps to CONNECT
 
-			err = convert.ModifySchemaForAPIVersion(openAPISpec, cedarschema, v.Name, v.Version, *actionNs)
+			resources, err := getter.APIResourceList(k)
+			if err != nil {
+				klog.ErrorS(err, "Failed to get APIResourceList for API, skipping", "api", k)
+				continue
+			}
+
+			err = convert.ModifySchemaForAPIVersion(resources, openAPISpec, cedarschema, v.Name, v.Version, *actionNs)
 			if err != nil {
 				klog.ErrorS(err, "Failed to get convert to cedar schema for API, skipping", "api", v.Name, "version", v.Version)
 				continue

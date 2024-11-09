@@ -1,27 +1,27 @@
 namespace k8s::admission {
 	action "all" appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingWebhookConfiguration, apps::v1::ControllerRevision, apps::v1::DaemonSet, apps::v1::Deployment, apps::v1::ReplicaSet, apps::v1::StatefulSet, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, aws::k8s::cedar::v1alpha1::Policy, batch::v1::CronJob, batch::v1::Job, certificates::v1::CertificateSigningRequest, coordination::v1::Lease, core::v1::Binding, core::v1::ComponentStatus, core::v1::ConfigMap, core::v1::Endpoints, core::v1::Event, core::v1::LimitRange, core::v1::Namespace, core::v1::Node, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::Pod, core::v1::PodTemplate, core::v1::ReplicationController, core::v1::ResourceQuota, core::v1::Secret, core::v1::Service, core::v1::ServiceAccount, discovery::v1::EndpointSlice, events::v1::Event, flowcontrol::v1::FlowSchema, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::PriorityLevelConfiguration, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::NetworkPolicy, node::v1::RuntimeClass, policy::v1::Eviction, policy::v1::PodDisruptionBudget, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::Role, rbac::v1::RoleBinding, scheduling::v1::PriorityClass, storage::v1::CSIDriver, storage::v1::CSINode, storage::v1::CSIStorageCapacity, storage::v1::StorageClass, storage::v1::VolumeAttachment],
 		context: {}
 	};
 	action "connect" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [core::v1::Node, core::v1::Pod, core::v1::Service],
 		context: {}
 	};
 	action "create" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingWebhookConfiguration, apps::v1::ControllerRevision, apps::v1::DaemonSet, apps::v1::Deployment, apps::v1::ReplicaSet, apps::v1::StatefulSet, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscaler, aws::k8s::cedar::v1alpha1::Policy, batch::v1::CronJob, batch::v1::Job, certificates::v1::CertificateSigningRequest, coordination::v1::Lease, core::v1::Binding, core::v1::ConfigMap, core::v1::Endpoints, core::v1::Event, core::v1::LimitRange, core::v1::Namespace, core::v1::Node, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::Pod, core::v1::PodTemplate, core::v1::ReplicationController, core::v1::ResourceQuota, core::v1::Secret, core::v1::Service, core::v1::ServiceAccount, discovery::v1::EndpointSlice, events::v1::Event, flowcontrol::v1::FlowSchema, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::PriorityLevelConfiguration, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::NetworkPolicy, node::v1::RuntimeClass, policy::v1::Eviction, policy::v1::PodDisruptionBudget, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::Role, rbac::v1::RoleBinding, scheduling::v1::PriorityClass, storage::v1::CSIDriver, storage::v1::CSINode, storage::v1::CSIStorageCapacity, storage::v1::StorageClass, storage::v1::VolumeAttachment],
 		context: {}
 	};
 	action "delete" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingWebhookConfiguration, apps::v1::ControllerRevision, apps::v1::DaemonSet, apps::v1::Deployment, apps::v1::ReplicaSet, apps::v1::StatefulSet, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscaler, aws::k8s::cedar::v1alpha1::Policy, batch::v1::CronJob, batch::v1::Job, certificates::v1::CertificateSigningRequest, coordination::v1::Lease, core::v1::ConfigMap, core::v1::Endpoints, core::v1::Event, core::v1::LimitRange, core::v1::Namespace, core::v1::Node, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::Pod, core::v1::PodTemplate, core::v1::ReplicationController, core::v1::ResourceQuota, core::v1::Secret, core::v1::Service, core::v1::ServiceAccount, discovery::v1::EndpointSlice, events::v1::Event, flowcontrol::v1::FlowSchema, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::PriorityLevelConfiguration, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::NetworkPolicy, node::v1::RuntimeClass, policy::v1::PodDisruptionBudget, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::Role, rbac::v1::RoleBinding, scheduling::v1::PriorityClass, storage::v1::CSIDriver, storage::v1::CSINode, storage::v1::CSIStorageCapacity, storage::v1::StorageClass, storage::v1::VolumeAttachment],
 		context: {}
 	};
 	action "update" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::MutatingWebhookConfigurationList, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingAdmissionPolicyBindingList, admissionregistration::v1::ValidatingAdmissionPolicyList, admissionregistration::v1::ValidatingWebhookConfiguration, admissionregistration::v1::ValidatingWebhookConfigurationList, apps::v1::ControllerRevision, apps::v1::ControllerRevisionList, apps::v1::DaemonSet, apps::v1::DaemonSetList, apps::v1::Deployment, apps::v1::DeploymentList, apps::v1::ReplicaSet, apps::v1::ReplicaSetList, apps::v1::StatefulSet, apps::v1::StatefulSetList, authentication::v1::SelfSubjectReview, authentication::v1::TokenRequest, authentication::v1::TokenReview, authorization::v1::LocalSubjectAccessReview, authorization::v1::SelfSubjectAccessReview, authorization::v1::SelfSubjectRulesReview, authorization::v1::SubjectAccessReview, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::HorizontalPodAutoscalerList, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, autoscaling::v2::HorizontalPodAutoscalerList, aws::k8s::cedar::v1alpha1::Policy, aws::k8s::cedar::v1alpha1::PolicyList, batch::v1::CronJob, batch::v1::CronJobList, batch::v1::Job, batch::v1::JobList, certificates::v1::CertificateSigningRequest, certificates::v1::CertificateSigningRequestList, coordination::v1::Lease, coordination::v1::LeaseList, core::v1::Binding, core::v1::ComponentStatus, core::v1::ComponentStatusList, core::v1::ConfigMap, core::v1::ConfigMapList, core::v1::Endpoints, core::v1::EndpointsList, core::v1::Event, core::v1::EventList, core::v1::LimitRange, core::v1::LimitRangeList, core::v1::Namespace, core::v1::NamespaceList, core::v1::Node, core::v1::NodeList, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::PersistentVolumeClaimList, core::v1::PersistentVolumeList, core::v1::Pod, core::v1::PodList, core::v1::PodTemplate, core::v1::PodTemplateList, core::v1::ReplicationController, core::v1::ReplicationControllerList, core::v1::ResourceQuota, core::v1::ResourceQuotaList, core::v1::Secret, core::v1::SecretList, core::v1::Service, core::v1::ServiceAccount, core::v1::ServiceAccountList, core::v1::ServiceList, discovery::v1::EndpointSlice, discovery::v1::EndpointSliceList, events::v1::Event, events::v1::EventList, flowcontrol::v1::FlowSchema, flowcontrol::v1::FlowSchemaList, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1::PriorityLevelConfigurationList, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::FlowSchemaList, flowcontrol::v1beta3::PriorityLevelConfiguration, flowcontrol::v1beta3::PriorityLevelConfigurationList, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::IngressClassList, networking::v1::IngressList, networking::v1::NetworkPolicy, networking::v1::NetworkPolicyList, node::v1::RuntimeClass, node::v1::RuntimeClassList, policy::v1::Eviction, policy::v1::PodDisruptionBudget, policy::v1::PodDisruptionBudgetList, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::ClusterRoleBindingList, rbac::v1::ClusterRoleList, rbac::v1::Role, rbac::v1::RoleBinding, rbac::v1::RoleBindingList, rbac::v1::RoleList, scheduling::v1::PriorityClass, scheduling::v1::PriorityClassList, storage::v1::CSIDriver, storage::v1::CSIDriverList, storage::v1::CSINode, storage::v1::CSINodeList, storage::v1::CSIStorageCapacity, storage::v1::CSIStorageCapacityList, storage::v1::StorageClass, storage::v1::StorageClassList, storage::v1::VolumeAttachment, storage::v1::VolumeAttachmentList],
+		resource: [admissionregistration::v1::MutatingWebhookConfiguration, admissionregistration::v1::ValidatingAdmissionPolicy, admissionregistration::v1::ValidatingAdmissionPolicyBinding, admissionregistration::v1::ValidatingWebhookConfiguration, apps::v1::ControllerRevision, apps::v1::DaemonSet, apps::v1::Deployment, apps::v1::ReplicaSet, apps::v1::StatefulSet, autoscaling::v1::HorizontalPodAutoscaler, autoscaling::v1::Scale, autoscaling::v2::HorizontalPodAutoscaler, aws::k8s::cedar::v1alpha1::Policy, batch::v1::CronJob, batch::v1::Job, certificates::v1::CertificateSigningRequest, coordination::v1::Lease, core::v1::ConfigMap, core::v1::Endpoints, core::v1::Event, core::v1::LimitRange, core::v1::Namespace, core::v1::Node, core::v1::PersistentVolume, core::v1::PersistentVolumeClaim, core::v1::Pod, core::v1::PodTemplate, core::v1::ReplicationController, core::v1::ResourceQuota, core::v1::Secret, core::v1::Service, core::v1::ServiceAccount, discovery::v1::EndpointSlice, events::v1::Event, flowcontrol::v1::FlowSchema, flowcontrol::v1::PriorityLevelConfiguration, flowcontrol::v1beta3::FlowSchema, flowcontrol::v1beta3::PriorityLevelConfiguration, networking::v1::Ingress, networking::v1::IngressClass, networking::v1::NetworkPolicy, node::v1::RuntimeClass, policy::v1::PodDisruptionBudget, rbac::v1::ClusterRole, rbac::v1::ClusterRoleBinding, rbac::v1::Role, rbac::v1::RoleBinding, scheduling::v1::PriorityClass, storage::v1::CSIDriver, storage::v1::CSINode, storage::v1::CSIStorageCapacity, storage::v1::StorageClass, storage::v1::VolumeAttachment],
 		context: {}
 	};
 }
@@ -296,12 +296,6 @@ namespace admissionregistration::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"webhooks"?: Set < MutatingWebhook >
 	};
-	entity MutatingWebhookConfigurationList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < MutatingWebhookConfiguration >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity ValidatingAdmissionPolicy = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -315,29 +309,11 @@ namespace admissionregistration::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: ValidatingAdmissionPolicyBindingSpec
 	};
-	entity ValidatingAdmissionPolicyBindingList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ValidatingAdmissionPolicyBinding >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity ValidatingAdmissionPolicyList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ValidatingAdmissionPolicy >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity ValidatingWebhookConfiguration = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"webhooks"?: Set < ValidatingWebhook >
-	};
-	entity ValidatingWebhookConfigurationList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ValidatingWebhookConfiguration >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -487,24 +463,12 @@ namespace apps::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"revision": __cedar::Long
 	};
-	entity ControllerRevisionList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ControllerRevision >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity DaemonSet = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: DaemonSetSpec,
 		"status"?: DaemonSetStatus
-	};
-	entity DaemonSetList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < DaemonSet >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity Deployment = {
 		"apiVersion"?: __cedar::String,
@@ -513,12 +477,6 @@ namespace apps::v1 {
 		"spec"?: DeploymentSpec,
 		"status"?: DeploymentStatus
 	};
-	entity DeploymentList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Deployment >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity ReplicaSet = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -526,24 +484,12 @@ namespace apps::v1 {
 		"spec"?: ReplicaSetSpec,
 		"status"?: ReplicaSetStatus
 	};
-	entity ReplicaSetList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ReplicaSet >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity StatefulSet = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: StatefulSetSpec,
 		"status"?: StatefulSetStatus
-	};
-	entity StatefulSetList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < StatefulSet >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -728,12 +674,6 @@ namespace autoscaling::v1 {
 		"spec"?: HorizontalPodAutoscalerSpec,
 		"status"?: HorizontalPodAutoscalerStatus
 	};
-	entity HorizontalPodAutoscalerList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < HorizontalPodAutoscaler >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Scale = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -837,24 +777,12 @@ namespace batch::v1 {
 		"spec"?: CronJobSpec,
 		"status"?: CronJobStatus
 	};
-	entity CronJobList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < CronJob >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Job = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: JobSpec,
 		"status"?: JobStatus
-	};
-	entity JobList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Job >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -888,12 +816,6 @@ namespace certificates::v1 {
 		"spec": CertificateSigningRequestSpec,
 		"status"?: CertificateSigningRequestStatus
 	};
-	entity CertificateSigningRequestList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < CertificateSigningRequest >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 }
 
 namespace coordination::v1 {
@@ -911,12 +833,6 @@ namespace coordination::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: LeaseSpec
-	};
-	entity LeaseList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Lease >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2103,12 +2019,6 @@ namespace core::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta
 	};
-	entity ComponentStatusList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ComponentStatus >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity ConfigMap = {
 		"apiVersion"?: __cedar::String,
 		"binaryData"?: Set < meta::v1::KeyValue >,
@@ -2117,23 +2027,11 @@ namespace core::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta
 	};
-	entity ConfigMapList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ConfigMap >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Endpoints = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"subsets"?: Set < EndpointSubset >
-	};
-	entity EndpointsList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Endpoints >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity Event = {
 		"action"?: __cedar::String,
@@ -2154,23 +2052,11 @@ namespace core::v1 {
 		"source"?: EventSource,
 		"type"?: __cedar::String
 	};
-	entity EventList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Event >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity LimitRange = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: LimitRangeSpec
-	};
-	entity LimitRangeList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < LimitRange >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity Namespace = {
 		"apiVersion"?: __cedar::String,
@@ -2179,24 +2065,12 @@ namespace core::v1 {
 		"spec"?: NamespaceSpec,
 		"status"?: NamespaceStatus
 	};
-	entity NamespaceList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Namespace >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Node = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: NodeSpec,
 		"status"?: NodeStatus
-	};
-	entity NodeList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Node >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity PersistentVolume = {
 		"apiVersion"?: __cedar::String,
@@ -2212,18 +2086,6 @@ namespace core::v1 {
 		"spec"?: PersistentVolumeClaimSpec,
 		"status"?: PersistentVolumeClaimStatus
 	};
-	entity PersistentVolumeClaimList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PersistentVolumeClaim >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity PersistentVolumeList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PersistentVolume >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Pod = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -2231,23 +2093,11 @@ namespace core::v1 {
 		"spec"?: PodSpec,
 		"status"?: PodStatus
 	};
-	entity PodList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Pod >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity PodTemplate = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"template"?: PodTemplateSpec
-	};
-	entity PodTemplateList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PodTemplate >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity ReplicationController = {
 		"apiVersion"?: __cedar::String,
@@ -2256,24 +2106,12 @@ namespace core::v1 {
 		"spec"?: ReplicationControllerSpec,
 		"status"?: ReplicationControllerStatus
 	};
-	entity ReplicationControllerList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ReplicationController >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity ResourceQuota = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: ResourceQuotaSpec,
 		"status"?: ResourceQuotaStatus
-	};
-	entity ResourceQuotaList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ResourceQuota >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity Secret = {
 		"apiVersion"?: __cedar::String,
@@ -2283,12 +2121,6 @@ namespace core::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"stringData"?: Set < meta::v1::KeyValue >,
 		"type"?: __cedar::String
-	};
-	entity SecretList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Secret >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity Service = {
 		"apiVersion"?: __cedar::String,
@@ -2304,18 +2136,6 @@ namespace core::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"secrets"?: Set < ObjectReference >
-	};
-	entity ServiceAccountList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ServiceAccount >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity ServiceList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Service >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2355,12 +2175,6 @@ namespace discovery::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"ports"?: Set < EndpointPort >
 	};
-	entity EndpointSliceList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < EndpointSlice >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 }
 
 namespace events::v1 {
@@ -2386,12 +2200,6 @@ namespace events::v1 {
 		"reportingInstance"?: __cedar::String,
 		"series"?: EventSeries,
 		"type"?: __cedar::String
-	};
-	entity EventList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Event >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2491,24 +2299,12 @@ namespace flowcontrol::v1 {
 		"spec"?: FlowSchemaSpec,
 		"status"?: FlowSchemaStatus
 	};
-	entity FlowSchemaList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < FlowSchema >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity PriorityLevelConfiguration = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: PriorityLevelConfigurationSpec,
 		"status"?: PriorityLevelConfigurationStatus
-	};
-	entity PriorityLevelConfigurationList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PriorityLevelConfiguration >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2553,7 +2349,7 @@ namespace meta::v1 {
 		"operator": __cedar::String,
 		"values"?: Set < __cedar::String >
 	};
-type FieldsV1 = {};
+	type FieldsV1 = {};
 	type KeyValue = {
 		"key": __cedar::String,
 		"value"?: __cedar::String
@@ -2611,7 +2407,7 @@ type FieldsV1 = {};
 		"name": __cedar::String,
 		"uid": __cedar::String
 	};
-type Patch = {};
+	type Patch = {};
 	type Preconditions = {
 		"resourceVersion"?: __cedar::String,
 		"uid"?: __cedar::String
@@ -2747,29 +2543,11 @@ namespace networking::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: IngressClassSpec
 	};
-	entity IngressClassList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < IngressClass >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity IngressList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Ingress >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity NetworkPolicy = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: NetworkPolicySpec
-	};
-	entity NetworkPolicyList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < NetworkPolicy >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2788,12 +2566,6 @@ namespace node::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"overhead"?: Overhead,
 		"scheduling"?: Scheduling
-	};
-	entity RuntimeClassList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < RuntimeClass >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2825,12 +2597,6 @@ namespace policy::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: PodDisruptionBudgetSpec,
 		"status"?: PodDisruptionBudgetStatus
-	};
-	entity PodDisruptionBudgetList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PodDisruptionBudget >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2870,18 +2636,6 @@ namespace rbac::v1 {
 		"roleRef": RoleRef,
 		"subjects"?: Set < Subject >
 	};
-	entity ClusterRoleBindingList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ClusterRoleBinding >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity ClusterRoleList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < ClusterRole >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity Role = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -2895,18 +2649,6 @@ namespace rbac::v1 {
 		"roleRef": RoleRef,
 		"subjects"?: Set < Subject >
 	};
-	entity RoleBindingList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < RoleBinding >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
-	entity RoleList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < Role >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 }
 
 namespace scheduling::v1 {
@@ -2918,12 +2660,6 @@ namespace scheduling::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"preemptionPolicy"?: __cedar::String,
 		"value": __cedar::Long
-	};
-	entity PriorityClassList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PriorityClass >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -2979,23 +2715,11 @@ namespace storage::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec": CSIDriverSpec
 	};
-	entity CSIDriverList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < CSIDriver >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity CSINode = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec": CSINodeSpec
-	};
-	entity CSINodeList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < CSINode >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity CSIStorageCapacity = {
 		"apiVersion"?: __cedar::String,
@@ -3005,12 +2729,6 @@ namespace storage::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"nodeTopology"?: meta::v1::LabelSelector,
 		"storageClassName": __cedar::String
-	};
-	entity CSIStorageCapacityList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < CSIStorageCapacity >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 	entity StorageClass = {
 		"allowVolumeExpansion"?: __cedar::Bool,
@@ -3024,24 +2742,12 @@ namespace storage::v1 {
 		"reclaimPolicy"?: __cedar::String,
 		"volumeBindingMode"?: __cedar::String
 	};
-	entity StorageClassList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < StorageClass >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity VolumeAttachment = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec": VolumeAttachmentSpec,
 		"status"?: VolumeAttachmentStatus
-	};
-	entity VolumeAttachmentList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < VolumeAttachment >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -3053,11 +2759,6 @@ namespace aws::k8s::cedar::v1alpha1 {
 		"spec": {
 			"content"?: __cedar::String
 		}
-	};
-	entity PolicyList = {
-		"apiVersion"?: __cedar::String,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -3157,24 +2858,12 @@ namespace flowcontrol::v1beta3 {
 		"spec"?: FlowSchemaSpec,
 		"status"?: FlowSchemaStatus
 	};
-	entity FlowSchemaList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < FlowSchema >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
-	};
 	entity PriorityLevelConfiguration = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: PriorityLevelConfigurationSpec,
 		"status"?: PriorityLevelConfigurationStatus
-	};
-	entity PriorityLevelConfigurationList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < PriorityLevelConfiguration >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 
@@ -3301,12 +2990,6 @@ namespace autoscaling::v2 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: HorizontalPodAutoscalerSpec,
 		"status"?: HorizontalPodAutoscalerStatus
-	};
-	entity HorizontalPodAutoscalerList = {
-		"apiVersion"?: __cedar::String,
-		"items": Set < HorizontalPodAutoscaler >,
-		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ListMeta
 	};
 }
 

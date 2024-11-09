@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/kube-openapi/pkg/spec3"
 )
 
@@ -22,8 +23,8 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 	cases := []struct {
 		name   string
 		inputs []struct {
-			inputOpenAPIFile        string
-			inputName, inputVersion string
+			inputOpenAPIFile, inputApiResourcesFile string
+			inputName, inputVersion                 string
 		}
 		wantFunc func(t *testing.T, got schema.CedarSchema)
 	}{
@@ -31,12 +32,14 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 			name: "RBAC API",
 			inputs: []struct {
 				inputOpenAPIFile        string
+				inputApiResourcesFile   string
 				inputName, inputVersion string
 			}{
 				{
-					inputOpenAPIFile: "apis.rbac.authorization.k8s.io.v1.schema.json",
-					inputName:        "rbac",
-					inputVersion:     "v1",
+					inputOpenAPIFile:      "apis.rbac.authorization.k8s.io.v1.schema.json",
+					inputApiResourcesFile: "apis.rbac.authorization.k8s.io.v1.resourcelist.json",
+					inputName:             "rbac",
+					inputVersion:          "v1",
 				},
 			},
 			wantFunc: func(t *testing.T, got schema.CedarSchema) {
@@ -49,17 +52,20 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 			name: "Apps API",
 			inputs: []struct {
 				inputOpenAPIFile        string
+				inputApiResourcesFile   string
 				inputName, inputVersion string
 			}{
 				{
-					inputOpenAPIFile: "apis.apps.v1.schema.json",
-					inputName:        "apps",
-					inputVersion:     "v1",
+					inputOpenAPIFile:      "apis.apps.v1.schema.json",
+					inputApiResourcesFile: "apis.apps.v1.resourcelist.json",
+					inputName:             "apps",
+					inputVersion:          "v1",
 				},
 				{
-					inputOpenAPIFile: "api.v1.schema.json",
-					inputName:        "core",
-					inputVersion:     "v1",
+					inputOpenAPIFile:      "api.v1.schema.json",
+					inputApiResourcesFile: "api.v1.resourcelist.json",
+					inputName:             "core",
+					inputVersion:          "v1",
 				},
 			},
 			wantFunc: func(t *testing.T, got schema.CedarSchema) {
@@ -78,12 +84,14 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 			name: "Authentication API",
 			inputs: []struct {
 				inputOpenAPIFile        string
+				inputApiResourcesFile   string
 				inputName, inputVersion string
 			}{
 				{
-					inputOpenAPIFile: "apis.authentication.k8s.io.v1.schema.json",
-					inputName:        "authentication",
-					inputVersion:     "v1",
+					inputOpenAPIFile:      "apis.authentication.k8s.io.v1.schema.json",
+					inputApiResourcesFile: "apis.authentication.k8s.io.v1.resourcelist.json",
+					inputName:             "authentication",
+					inputVersion:          "v1",
 				},
 			},
 			wantFunc: func(t *testing.T, got schema.CedarSchema) {
@@ -108,7 +116,17 @@ func TestModifySchemaForAPIVersion(t *testing.T) {
 				if err != nil {
 					t.Fatalf("error unmarshalling file %s: %v", input.inputOpenAPIFile, err)
 				}
-				err = ModifySchemaForAPIVersion(api, cedarschema, input.inputName, input.inputVersion, "k8s::admission")
+
+				apiData, err := os.ReadFile(filepath.Join("testdata", input.inputApiResourcesFile))
+				if err != nil {
+					t.Fatalf("error reading file %s: %v", input.inputOpenAPIFile, err)
+				}
+				apiResources := &metav1.APIResourceList{}
+				err = api.UnmarshalJSON(apiData)
+				if err != nil {
+					t.Fatalf("error unmarshalling file %s: %v", input.inputOpenAPIFile, err)
+				}
+				err = ModifySchemaForAPIVersion(apiResources, api, cedarschema, input.inputName, input.inputVersion, "k8s::admission")
 				if err != nil {
 					t.Fatalf("error modifying schema for %s: %v", input.inputOpenAPIFile, err)
 				}

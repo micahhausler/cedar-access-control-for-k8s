@@ -74,6 +74,7 @@ func NodeEntity() Entity {
 	}
 }
 
+// TODO: ENTITY TAGS: this is just here until we get real key/value map support
 func ExtraEntityShape() EntityShape {
 	return EntityShape{
 		Type: RecordType,

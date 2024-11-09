@@ -156,6 +156,7 @@ type ActionMember struct {
 
 // ActionAppliesTo contains the entity types that a Cedar action applies to
 type ActionAppliesTo struct {
-	PrincipalTypes []string `json:"principalTypes"`
-	ResourceTypes  []string `json:"resourceTypes"`
+	PrincipalTypes []string     `json:"principalTypes"`
+	ResourceTypes  []string     `json:"resourceTypes"`
+	Context        *EntityShape `json:"context,omitempty"`
 }
