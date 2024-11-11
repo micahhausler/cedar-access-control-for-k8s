@@ -3276,6 +3276,25 @@
 					}
 				}
 			},
+			"NodeProxyOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"path": {
+							"type": "String",
+							"required": true
+						}
+					}
+				}
+			},
 			"PersistentVolume": {
 				"shape": {
 					"type": "Record",
@@ -3353,6 +3372,131 @@
 						"status": {
 							"type": "PodStatus",
 							"required": false
+						}
+					}
+				}
+			},
+			"PodAttachOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"command": {
+							"type": "Set",
+							"required": true,
+							"element": {
+								"type": "String"
+							}
+						},
+						"container": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"stderr": {
+							"type": "Boolean",
+							"required": true
+						},
+						"stdin": {
+							"type": "Boolean",
+							"required": true
+						},
+						"stdout": {
+							"type": "Boolean",
+							"required": true
+						},
+						"tty": {
+							"type": "Boolean",
+							"required": true
+						}
+					}
+				}
+			},
+			"PodExecOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"command": {
+							"type": "Set",
+							"required": true,
+							"element": {
+								"type": "String"
+							}
+						},
+						"container": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"stderr": {
+							"type": "Boolean",
+							"required": true
+						},
+						"stdin": {
+							"type": "Boolean",
+							"required": true
+						},
+						"stdout": {
+							"type": "Boolean",
+							"required": true
+						},
+						"tty": {
+							"type": "Boolean",
+							"required": true
+						}
+					}
+				}
+			},
+			"PodPortForwardOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"ports": {
+							"type": "Set",
+							"required": false,
+							"element": {
+								"type": "String"
+							}
+						}
+					}
+				}
+			},
+			"PodProxyOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"path": {
+							"type": "String",
+							"required": true
 						}
 					}
 				}
@@ -3535,6 +3679,25 @@
 							"element": {
 								"type": "ObjectReference"
 							}
+						}
+					}
+				}
+			},
+			"ServiceProxyOptions": {
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"apiVersion": {
+							"type": "String",
+							"required": true
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"path": {
+							"type": "String",
+							"required": true
 						}
 					}
 				}
@@ -9652,9 +9815,12 @@
 						"k8s::User"
 					],
 					"resourceTypes": [
-						"core::v1::Node",
-						"core::v1::Pod",
-						"core::v1::Service"
+						"core::v1::NodeProxyOptions",
+						"core::v1::PodAttachOptions",
+						"core::v1::PodExecOptions",
+						"core::v1::PodPortForwardOptions",
+						"core::v1::PodProxyOptions",
+						"core::v1::ServiceProxyOptions"
 					]
 				},
 				"memberOf": [

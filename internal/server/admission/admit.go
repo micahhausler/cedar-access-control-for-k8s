@@ -98,7 +98,7 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 			return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
 		}
 	}
-	klog.V(7).InfoS("Resource entity", "entity", resourceEntity)
+	klog.V(7).InfoS("Admission resource entity", "entity", resourceEntity)
 	entities.MergeIntoEntities(requestEntities, resourceEntity)
 
 	var oldObject *cedartypes.Entity

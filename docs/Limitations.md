@@ -1,5 +1,67 @@
 # Limitations
 
+## Implicit subresources
+
+Kubernetes RBAC doesn't permit requests on subresources unless a resources's subresource is explicitly named, or uses a wildcard (`*`).
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: get-services
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - "get"
+  - "list"
+```
+
+The above policy does not allow port forwarding (ex: `kubectl port-forward -n kube-system svc/kube-dns`), because no `port-forward` subresource was specified, even though the apiGroup, verb, and resource matched the reqeust.
+
+RBAC would require the following policy to permit a port-forward request.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: deployment-manager
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services/portforward
+  verbs:
+  - "get"
+```
+
+Because subresources are modeled as an entity attribute in Cedar, the following policy does permit port-forward requests to services, because the verb, apiGroup and resource type match.
+
+```cedar
+permit (
+    principal in k8s::Group::"read-only-group",
+    action in [k8s::Action::"get", k8s::Action::"list"],
+    resource is k8s::Resource
+) when {
+    resource.apiGroup == "" && resource.resource == "services"
+};
+```
+
+In order to allow service listing while preventing subresources like port-forward, a condition excluding subresources is required:
+```cedar
+permit (
+    principal in k8s::Group::"read-only-group",
+    action in [k8s::Action::"get", k8s::Action::"list"],
+    resource is k8s::Resource
+) when {
+    resource.apiGroup == "" && resource.resource == "services"
+} unless {
+    resource has subresource
+};
+```
+
 ## Entity Tags (key/value maps)
 
 Cedar's Rust implementation and CLI gained support for entity tags (key/value maps) in [Cedar v4.2.0][4.2].

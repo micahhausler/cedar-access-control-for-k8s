@@ -191,14 +191,7 @@ func ModifySchemaForAPIVersion(apiResources *metav1.APIResourceList, openApiSche
 			schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionCreateAction, nsName+"::"+sKind)
 		}
 
-		// We hard-code `CONNECT` since there are only 3 connectable Kinds in the API.
-		// The only way to dynamically figure this out is in the OpenAPI schema, looking for the `x-kubernetes-action`
-		// on every path, but those paths don't have the corresponding Kind
-		if nsName == "core::v1" {
-			if slices.Contains([]string{"Pod", "Service", "Node"}, sKind) {
-				schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionConnectAction, nsName+"::"+sKind)
-			}
-		}
+		// We hard-code `CONNECT` elsewhere since there are only a few connectable Kinds that aren't in the OpenAPI schema.
 		ns.EntityTypes[sKind] = entity
 		schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AllAction, nsName+"::"+sKind)
 	}

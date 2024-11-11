@@ -17,7 +17,6 @@ import (
 
 func main() {
 	authorizationNs := flag.String("authorization-namespace", "k8s", "Namespace for authorization entities and actions")
-	// principalNs := flag.String("principal-namespace", "k8s", "Namespace for principal entities")
 	actionNs := flag.String("admission-action-namespace", "k8s::admission", "Namespace for admission entities")
 	addAdmissionTypes := flag.Bool("admission", true, "Add admission entities")
 	sourceSchema := flag.String("source-schema", "", "File to read schema from ")
@@ -124,13 +123,6 @@ func main() {
 			}
 			klog.InfoS("Converting schema for API", "api", v.Name, "version", v.Version)
 
-			// TODO: In order to find which Admission verbs apply to which resources:
-			// * Get the APIResourceList{} (/{k}) for a given API
-			// * In ModifySchemaForAPIVersion(),
-			//    * Find the APIResourceList.resources[].Kind
-			//    * Look for the corresponding admission verbs (delete/deletecollection/create/patch/update)
-			//    * Figure out how to determine which subresource maps to CONNECT
-
 			resources, err := getter.APIResourceList(k)
 			if err != nil {
 				klog.ErrorS(err, "Failed to get APIResourceList for API, skipping", "api", k)
@@ -143,6 +135,7 @@ func main() {
 				continue
 			}
 		}
+		schema.AddConnectEntities(cedarschema)
 	}
 	cedarschema.SortActionEntities()
 	// TODO: ENTITY TAGS: this is just here until we get real key/value map support

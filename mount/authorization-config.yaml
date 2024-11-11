@@ -6,8 +6,8 @@ authorizers:
   - type: Webhook
     name: cedar
     webhook:
-      authorizedTTL: 30s
-      unauthorizedTTL: 30s
+      authorizedTTL: 10s
+      unauthorizedTTL: 10s
       timeout: 3s
       subjectAccessReviewVersion: v1
       matchConditionSubjectAccessReviewVersion: v1

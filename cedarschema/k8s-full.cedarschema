@@ -6,7 +6,7 @@ namespace k8s::admission {
 	};
 	action "connect" in [Action::"all"] appliesTo {
 		principal: [k8s::Group, k8s::Node, k8s::ServiceAccount, k8s::User],
-		resource: [core::v1::Node, core::v1::Pod, core::v1::Service],
+		resource: [core::v1::NodeProxyOptions, core::v1::PodAttachOptions, core::v1::PodExecOptions, core::v1::PodPortForwardOptions, core::v1::PodProxyOptions, core::v1::ServiceProxyOptions],
 		context: {}
 	};
 	action "create" in [Action::"all"] appliesTo {
@@ -2072,6 +2072,11 @@ namespace core::v1 {
 		"spec"?: NodeSpec,
 		"status"?: NodeStatus
 	};
+	entity NodeProxyOptions = {
+		"apiVersion": __cedar::String,
+		"kind": __cedar::String,
+		"path": __cedar::String
+	};
 	entity PersistentVolume = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
@@ -2092,6 +2097,36 @@ namespace core::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"spec"?: PodSpec,
 		"status"?: PodStatus
+	};
+	entity PodAttachOptions = {
+		"apiVersion": __cedar::String,
+		"command": Set < __cedar::String >,
+		"container": __cedar::String,
+		"kind": __cedar::String,
+		"stderr": __cedar::Bool,
+		"stdin": __cedar::Bool,
+		"stdout": __cedar::Bool,
+		"tty": __cedar::Bool
+	};
+	entity PodExecOptions = {
+		"apiVersion": __cedar::String,
+		"command": Set < __cedar::String >,
+		"container": __cedar::String,
+		"kind": __cedar::String,
+		"stderr": __cedar::Bool,
+		"stdin": __cedar::Bool,
+		"stdout": __cedar::Bool,
+		"tty": __cedar::Bool
+	};
+	entity PodPortForwardOptions = {
+		"apiVersion": __cedar::String,
+		"kind": __cedar::String,
+		"ports"?: Set < __cedar::String >
+	};
+	entity PodProxyOptions = {
+		"apiVersion": __cedar::String,
+		"kind": __cedar::String,
+		"path": __cedar::String
 	};
 	entity PodTemplate = {
 		"apiVersion"?: __cedar::String,
@@ -2136,6 +2171,11 @@ namespace core::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"secrets"?: Set < ObjectReference >
+	};
+	entity ServiceProxyOptions = {
+		"apiVersion": __cedar::String,
+		"kind": __cedar::String,
+		"path": __cedar::String
 	};
 }
 

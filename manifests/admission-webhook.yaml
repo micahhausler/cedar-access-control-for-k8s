@@ -21,11 +21,14 @@ webhooks:
     - DELETE
     - CONNECT
     resources:
-    - services
-    - pods
-    - nodes
-    - configmaps
-    - secrets
-    - serviceaccounts
+    - "*/*"
+    # - configmaps
+    # - nodes
+    # - pods
+    # - pods/*
+    # - secrets
+    # - serviceaccounts
+    # - services
+    # - services/*
   sideEffects: None
   timeoutSeconds: 30

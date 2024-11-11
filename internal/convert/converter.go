@@ -148,6 +148,11 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 					policy = policy.When(condition)
 				}
 
+				// if no subresources
+				if !hasSubResources(rule) {
+					policy = policy.Unless(ast.Resource().Has("subresource"))
+				}
+
 				policy = policy.ResourceIs(schema.ResourceEntityType)
 				policyId := cedar.PolicyID(binder.Name() + ":" + binder.Type() + ":" + strconv.Itoa(pi) + strconv.Itoa(ri))
 				resp.Store(policyId, cedar.NewPolicyFromAST(policy))
@@ -255,7 +260,16 @@ func conditionForAPIGroups(rule rbacv1.PolicyRule) ast.Node {
 	return condition
 }
 
-func conditionForResources(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
+func hasSubResources(rule rbacv1.PolicyRule) bool {
+	for _, resource := range rule.Resources {
+		if strings.Contains(resource, "/") {
+			return true
+		}
+	}
+	return false
+}
+
+func conditionForResources(condition ast.Node, rule rbacv1.PolicyRule) (when ast.Node) {
 	if len(rule.Resources) == 1 {
 		if rule.Resources[0] == "*" {
 			return condition

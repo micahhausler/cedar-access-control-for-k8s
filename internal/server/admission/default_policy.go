@@ -13,7 +13,7 @@ func AllowAllAdmissionPolicy() *cedar.Policy {
 			cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: schema.AdmissionCreateAction},
 			cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: schema.AdmissionUpdateAction},
 			cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: schema.AdmissionDeleteAction},
-			cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: schema.AdmissionDeleteAction},
+			cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: schema.AdmissionConnectAction},
 		),
 	)
 }
