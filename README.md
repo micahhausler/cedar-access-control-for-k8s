@@ -49,18 +49,97 @@ forbid (
 };
 ```
 
+## Motivation
+
+Administrators who want to secure their Kubernetes clusters today have to learn and use multiple different policy languages, and ensure those policies are individually applied on all their clusters.
+For example, if an administrator wants to allow users to create deployments, but prevent them from creating pods that don't have a required label pair, they must write two policies in separate languages: one authorization policy permitting pod creation, and another validation policy preventing pods with offending label.
+
+An example authorization RBAC policy might look like:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: deployment-manager
+rules:
+- apiGroups:
+  - "apps"
+  resources:
+  - deployments
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: deployment-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: deployment-manager
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: developers
+```
+
+With an Open Policy Agent/Gatekeeper policy written in Rego like so:
+
+```rego
+package k8srequiredlabels
+
+get_message(parameters, _default) := _default {
+    not parameters.message
+}
+
+get_message(parameters, _) := parameters.message
+
+violation[{"msg": msg, "details": {"missing_labels": missing}}] {
+    provided := {label | input.review.object.metadata.labels[label]}
+    required := {label | label := input.parameters.labels[_].key}
+    missing := required - provided
+    count(missing) > 0
+    def_msg := sprintf("you must provide labels: %v", [missing])
+    msg := get_message(input.parameters, def_msg)
+}
+
+violation[{"msg": msg}] {
+    value := input.review.object.metadata.labels[key]
+    expected := input.parameters.labels[_]
+    expected.key == key
+    # do not match if allowedRegex is not defined, or is an empty string
+    expected.allowedRegex != ""
+    not regex.match(expected.allowedRegex, value)
+    def_msg := sprintf("Label <%v: %v> does not satisfy allowed regex: %v", [key, value, expected.allowedRegex])
+    msg := get_message(input.parameters, def_msg)
+}
+```
+
+> (borrowed from the [OPA Gatekeeper library][gk-lib])
+
+[gk-lib]: https://open-policy-agent.github.io/gatekeeper-library/website/validation/requiredlabels
+
+Defining permit actions in one file and restrictions in separate policy files, languages, and frameworks introduces high cognitive overhead to administrators tasked with defending their clusters.
+The risk of an unintended effect increases when writing and reviewing code changes to existing policies, as a reviewer might not be aware of all permissions or restrictions if only one is being modified.
+
+Cedar access control for Kubernetes helps solve these problems.
+By using the same language for both authorization and admission policies, administrators can quickly reason about what permissions are granted and what restrictions are applied in the same policy file.
+Additionally, policies can be specified outside a cluster and apply to whole fleets of clusters.
+This gives administrators powerful and unmatched new tools to secure their clusters.
+
 ## Documentation
 
-| Title                                             | Description                                                          |
-| ------------------------------------------------- | -------------------------------------------------------------------- |
-| [Setup](./docs/Setup.md)                          | A quick start guide to running this project in a local Kind cluster  |
-| [Cedar Introduction](./docs/CedarIntroduction.md) | An introduction on Cedar policies and request evaluation             |
-| [Cedar Schemas](./docs/CedarSchemas.md)           | An overview of the Cedar structures used in policies in this project |
-| [Demonstration](./docs/Demo.md)                   | A walkthrough using Cedar access controls for Kubernetes             |
-| [Limitations](./docs/Limitations.md)              | A list of limitations of Cedar access control for Kubernetes         |
-| [Potential Features](./docs/FutureFeatures.md)    | A list of potential features to add to this project                  |
-| [Rejected Features](./docs/RejectedFeatures.md)   | Features that were tried but failed to work out                      |
-| [Development](./docs/Development.md)              | A guide to developing and contributing to this project               |
+| Title | Description |
+| - | - |
+| [Setup](./docs/Setup.md) | A quick start guide to running this project in a local Kind cluster |
+| [Cedar Introduction](./docs/CedarIntroduction.md) | An introduction on Cedar policies and request evaluation |
+| [Cedar Schemas](./docs/CedarSchemas.md) | An overview of the Cedar structures used in policies in this project |
+| [Demonstration](./docs/Demo.md) | A walkthrough using Cedar access controls for Kubernetes |
+| [RBAC Converter](./docs/ConvertRBAC.md) | A quick demo on how to convert Kubernetes RBACs on Cedar Policies |
+| [Limitations](./docs/Limitations.md) | A list of limitations of Cedar access control for Kubernetes |
+| [Potential Features](./docs/FutureFeatures.md) | A list of potential features to add to this project |
+| [Rejected Features](./docs/RejectedFeatures.md) | Features that were tried but failed to work out |
+| [Development](./docs/Development.md) | A guide to developing and contributing to this project |
 
 ## FAQ
 
