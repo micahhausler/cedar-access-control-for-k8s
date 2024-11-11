@@ -12,7 +12,8 @@ when
   principal.name == "coredns" &&
   resource.apiGroup == "" &&
   ["endpoints", "services", "pods", "namespaces"].contains(resource.resource)
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:coredns")
 @clusterRole("system:coredns")
@@ -28,4 +29,5 @@ when
   principal.name == "coredns" &&
   resource.apiGroup == "discovery.k8s.io" &&
   resource.resource == "endpointslices"
-};
+}
+unless { resource has subresource };

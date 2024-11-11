@@ -12,7 +12,8 @@ when
   principal.name == "crazy-service-account" &&
   ["batch", "batch.k8s.aws"].contains(resource.apiGroup) &&
   ["jobs", "cronjobs"].contains(resource.resource)
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("crazy-policy")
 @clusterRole("crazy-policy")
@@ -27,7 +28,8 @@ when
   principal.namespace == "default" &&
   principal.name == "crazy-service-account" &&
   resource.resource == "something"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("crazy-policy")
 @clusterRole("crazy-policy")
@@ -109,7 +111,8 @@ when
     (
       resource.apiGroup
     )
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("crazy-policy")
 @clusterRole("crazy-policy")
@@ -145,7 +148,8 @@ when
   resource.resource == "configmaps" &&
   resource has name &&
   resource.name == "aws-auth"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("crazy-policy")
 @clusterRole("crazy-policy")
@@ -163,7 +167,8 @@ when
   resource.resource == "configmaps" &&
   resource has name &&
   ["kubeadm-config", "kube-proxy", "coredns"].contains(resource.name)
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("crazy-policy")
 @clusterRole("crazy-policy")
@@ -178,4 +183,5 @@ when
   principal.namespace == "default" &&
   principal.name == "crazy-service-account" &&
   resource.apiGroup == ""
-};
+}
+unless { resource has subresource };

@@ -6,4 +6,5 @@ permit (
   action == k8s::Action::"get",
   resource is k8s::Resource
 )
-when { resource.apiGroup == "" && resource.resource == "nodes" };
+when { resource.apiGroup == "" && resource.resource == "nodes" }
+unless { resource has subresource };

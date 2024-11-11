@@ -12,7 +12,8 @@ when
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "autoscaling" &&
   resource.resource == "horizontalpodautoscalers"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")
 @clusterRole("system:controller:horizontal-pod-autoscaler")
@@ -81,7 +82,8 @@ when
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "" &&
   resource.resource == "pods"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")
 @clusterRole("system:controller:horizontal-pod-autoscaler")
@@ -97,7 +99,8 @@ when
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "metrics.k8s.io" &&
   resource.resource == "pods"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")
 @clusterRole("system:controller:horizontal-pod-autoscaler")
@@ -112,7 +115,8 @@ when
   principal.namespace == "kube-system" &&
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "custom.metrics.k8s.io"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")
 @clusterRole("system:controller:horizontal-pod-autoscaler")
@@ -127,7 +131,8 @@ when
   principal.namespace == "kube-system" &&
   principal.name == "horizontal-pod-autoscaler" &&
   resource.apiGroup == "external.metrics.k8s.io"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:controller:horizontal-pod-autoscaler")
 @clusterRole("system:controller:horizontal-pod-autoscaler")
@@ -144,4 +149,5 @@ when
   principal.name == "horizontal-pod-autoscaler" &&
   ["", "events.k8s.io"].contains(resource.apiGroup) &&
   resource.resource == "events"
-};
+}
+unless { resource has subresource };

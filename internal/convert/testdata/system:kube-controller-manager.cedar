@@ -6,7 +6,8 @@ permit (
   action in [k8s::Action::"list", k8s::Action::"watch"],
   resource is k8s::Resource
 )
-when { principal.name == "system:kube-controller-manager" };
+when { principal.name == "system:kube-controller-manager" }
+unless { resource has subresource };
 
 @clusterRoleBinding("system:kube-controller-manager")
 @clusterRole("system:kube-controller-manager")

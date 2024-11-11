@@ -19,7 +19,8 @@ when
   resource.resource == "secrets" &&
   resource has namespace &&
   resource.namespace == "kube-system"
-};
+}
+unless { resource has subresource };
 
 @roleBinding("system:controller:token-cleaner")
 @role("system:controller:token-cleaner")
@@ -39,4 +40,5 @@ when
   resource.resource == "events" &&
   resource has namespace &&
   resource.namespace == "kube-system"
-};
+}
+unless { resource has subresource };

@@ -11,7 +11,8 @@ when
   principal.name == "system:kube-proxy" &&
   resource.apiGroup == "" &&
   ["endpoints", "services"].contains(resource.resource)
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:node-proxier")
 @clusterRole("system:node-proxier")
@@ -26,7 +27,8 @@ when
   principal.name == "system:kube-proxy" &&
   resource.apiGroup == "" &&
   resource.resource == "nodes"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:node-proxier")
 @clusterRole("system:node-proxier")
@@ -42,7 +44,8 @@ when
   principal.name == "system:kube-proxy" &&
   ["", "events.k8s.io"].contains(resource.apiGroup) &&
   resource.resource == "events"
-};
+}
+unless { resource has subresource };
 
 @clusterRoleBinding("system:node-proxier")
 @clusterRole("system:node-proxier")
@@ -57,4 +60,5 @@ when
   principal.name == "system:kube-proxy" &&
   resource.apiGroup == "discovery.k8s.io" &&
   resource.resource == "endpointslices"
-};
+}
+unless { resource has subresource };
