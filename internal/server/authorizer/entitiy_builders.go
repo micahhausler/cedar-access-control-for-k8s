@@ -149,8 +149,5 @@ func ResourceToCedarEntity(attributes authorizer.Attributes) cedartypes.Entity {
 			ID:   cedartypes.String(entities.ResourceRequestToPath(attributes)),
 		},
 		Attributes: cedartypes.NewRecord(respAttributes),
-		// TODO: Parent of Namespace Entity for namespaced resources?
-		// maybe the best argument for a namespaced resource
-		// or everything has a namespace parent of "all"?
 	}
 }

@@ -1,6 +1,8 @@
 # Convert RBAC policies
 
 There's an RBAC converter that works on ClusterRoleBindings or RoleBindings.
+This converter is intended to help you transition any RBAC policies you want to add conditions to into Cedar.
+Any existing RBAC policies that aren't denied by a Cedar policy will still work.
 
 If not done already, clone this repository to your local environment or IDE.
 

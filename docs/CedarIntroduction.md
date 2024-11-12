@@ -64,7 +64,7 @@ forbid (
 
 How does Cedar know if a principal is in a group? 
 When evaluating a request, Cedar has several inputs.
-(You can play with some examples in the [Cedar Playground](https://www.cedarpolicy.com/en/playground)):
+(You can play with some examples for Kubernetes in the [Cedar Playground](https://www.cedarpolicy.com/en/playground)):
 
 * A JSON list of entity structures to be considered
 * A principal identifier, which must be in the entities list
@@ -114,12 +114,12 @@ If an entity is a member of another entity type, the Entities list must say so. 
 ```
 
 Given the above input, the entity with the id `507B11AD-4DE0-44B1-AB7C-99C0C04854B1` and the name `alice` has a `parents` reference to the Group type named `viewers`, so in this case Alice is a member of the group `viewers`.
-Cedar also supports membership on resource entities and verbs, but we don't use them in this project.
+Cedar also supports membership on resource entities and verbs, which we'll get to later.
 
 ## Schema
 
 When writing policy how do you know what is a valid attribute of a type so you can write policy against it?
-Cedar policy supports a [schema] defining all valid entities (principals and resources), their attributes, actions, and which actions apply to which entities (principal and resources).
+Cedar policy supports a [schema] defining all valid entities (principals and resources), their attributes, actions, which actions apply to which entities (principal and resources), and what the context structure for a given action is.
 You can see the Cedar schema used for Kubernetes authorization this project in [human][authz_human_schema] and [json][authz_json_schema] format.
 
 [schema]: https://docs.cedarpolicy.com/schema/schema.html
@@ -149,6 +149,12 @@ cedar validate -s ./cedarschema/k8s-full.cedarschema --schema-format cedar -p al
 
 [cedar_go]: https://pkg.go.dev/github.com/cedar-policy/cedar-go
 [cedar_cli]: https://crates.io/crates/cedar-policy-cli
+
+The Makefile includes a target to validate all `.cedar` poilcy files in this repostiory.
+
+```bash
+make validate
+```
 
 To regenerate all schema files in both JSON and cedar formats (`k8s-full.cedarschema` and `k8s-full.cedarschema.json`), run:
 

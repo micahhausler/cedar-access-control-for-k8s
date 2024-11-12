@@ -37,8 +37,12 @@ spec:
         periodSeconds: 1
         timeoutSeconds: 15
       resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
         requests:
           cpu: 250m
+          memory: 128Mi
       startupProbe:
         failureThreshold: 24
         httpGet:

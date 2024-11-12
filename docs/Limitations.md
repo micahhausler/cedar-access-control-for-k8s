@@ -27,7 +27,7 @@ RBAC would require the following policy to permit a port-forward request.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: deployment-manager
+  name: service-port-forwarder
 rules:
 - apiGroups:
   - ""
@@ -109,7 +109,7 @@ namespace k8s {
 ## Expressiveness limitations
 
 A core tenet of Cedar is to be analyzable, meaning that the language can verify that a policy is valid and will not error.
-A general `map`/`filter` function on dynamic inputs [is not analyzible][rfc21], and not a candidate for the project.
+A general `map`/`filter` function on dynamic inputs and ordered lists [are not analyzible][rfc21], and not a candidate for Cedar.
 This prevents specifically checking subfields over sets of structures, which is a common Kubernetes policy management requirement.
 Cedar is powered by [automated reasoning], including an [SMT solver], which does not implement loops or map functions.
 Rather than viewing Cedar as a replacement for admission restrictions tools like [Open Policy Agent/Gatekeeper][gatekeeper] or [Kyverno][kyverno], it is best seen as an additional tool for access control enforcement.

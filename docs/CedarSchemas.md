@@ -12,7 +12,7 @@ The referenced schemas are primarily created to document the entity shapes and a
 
 ## Authorizer cedarschema
 
-For the full authorization schema, see [cedarschema/k8s-authorization.cedarschema](../cedarschema/k8s-authorization.cedarschema).
+For the authorization schema, see [cedarschema/k8s-authorization.cedarschema](../cedarschema/k8s-authorization.cedarschema).
 
 ### Principals
 
@@ -30,10 +30,10 @@ This project supports the following Principal entities:
         "extra"?: Set < ExtraAttribute >,
         "name": __cedar::String
     };
-	type Extra = {
-		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
-	};
+    type Extra = {
+        "key": __cedar::String,
+        "values"?: Set < __cedar::String >
+    };
     ```
 * `k8s::ServiceAccount`. When a user's name in a [SubjectAccessReview] starts with `system:serviceaccount:`, the authorizer sets the principal type to `k8s::ServiceAccount` with the following attributes.
     ```cedarschema
@@ -70,7 +70,7 @@ permit (
 };
 ```
 
-We do have a resource group for all readOnly actions. It encompasses `get`/`list`/`watch`, and is called `readOnly`, and only applies to `k8s::Resource` resources.
+We do have an action group for all read-only actions. It encompasses `get`/`list`/`watch`, and is called `readOnly`, and only applies to `k8s::Resource` resources.
 
 ```cedar
 permit (
@@ -85,7 +85,7 @@ permit (
 
 ### Resources
 
-> Note: `"resource"`, `"k8s::Resource"`, and `"resource.resource`, why the redundancy?!
+> **`"resource"`, `"k8s::Resource"`, and `"resource.resource`, why the redundancy?!**
 >
 > This is an unfortunate naming collision. Cedar policies always have a `resource` as part of the policy.
 > We call Kubernetes typed objects `k8s::Resource` as opposed to the `k8s::NonResourceURL` type, because that's what Kubernetes calls them.
@@ -93,7 +93,11 @@ permit (
 
 We define two primary resource types for this authorizer:
 
-* `NonResourceURL`: This is for non-resource requests made to the Kubernetes API server. Examples include `/healthz`, `/livez`, `/metrics`, and subpaths. (Hint: run `kubectl get --raw /` to see others) Paths can match a `*` on the suffix.
+* `NonResourceURL`: This is for non-resource requests made to the Kubernetes API server.
+  Examples include `/healthz`, `/livez`, `/metrics`, and subpaths
+  (Hint: run `kubectl get --raw /` to see others).
+  A request's path is also used as the identifier in the entity list when evaluated for authorization.
+  Paths can match a `*` on the suffix.
     ```cedarschema
     entity NonResourceURL = {
         "path": __cedar::String
@@ -117,7 +121,8 @@ We define two primary resource types for this authorizer:
         resource == k8s::NonResourceURL::"/version"
     );
     ```
-* `Resource`: This is for resource requests made to the Kubernetes API server. Entity IDs on resources are the constructed URL path being made for the request.
+* `Resource`: This is for resource requests made to the Kubernetes API server.
+  Entity IDs on resources are the constructed URL path being made for the request.
     ```cedarschema
     entity Resource = {
         "apiGroup": __cedar::String,
@@ -166,7 +171,7 @@ We define two primary resource types for this authorizer:
     };
     ```
 
-`Resource` has a `fieldSelector` and `labelSelector` types. These were added in Kubernetes 1.31 behind the [`AuthorizeWithSelectors`][AuthorizeWithSelectors] feature gate so authorizers can enforce that a watch or list request has a field or label selector:
+`Resource` has a `fieldSelector` and `labelSelector` types. These were [added in Kubernetes 1.31][AuthorizeWithSelectors] behind the `AuthorizeWithSelectors` feature gate so authorizers can enforce that a watch or list request has a field or label selector:
 
 [AuthorizeWithSelectors]: https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/
 
@@ -184,10 +189,10 @@ type LabelRequirement = {
 };
 ```
 
-This can be used to enforce attribute-based access policies, such as a user can only get/list/watch resources where the label `owner` equals the user's name
+Selectors can be used to enforce attribute-based access policies, such as enforcing that a user can only get/list/watch resources where the label `owner` equals the user's name
 ```cedar
 permit (
-    principal is User,
+    principal is k8s::User,
     action in [k8s::Action::"list", k8s::Action::"watch"],
     resource is k8s::Resource
 ) when {
@@ -220,7 +225,7 @@ other-example-secret   Opaque   1      2d20h   owner=prod-user
 
 #### Impersonated resources
 
-To make an impersonated request as another user, Kubernetes sends multiple authorization requests to an authorizer: one for each attribute being impersonated: The user's name, the UID (if set), the groups (if set), and the userInfo extra key/value map (entity tags are [not yet supported in cedar-go](https://github.com/cedar-policy/cedar-go/issues/47)). To support this, we define a few types:
+To make an impersonated request as another user, Kubernetes sends multiple authorization requests to an authorizer: one for each attribute being impersonated: The user's name, the UID (if set), the groups (if set), and the userInfo extra key/value map. To support this, we define a few types:
 
 * `Group`. This structure is the same from the principal type. This only functions if the user can also impersonate the requested username.:
     ```cedar
@@ -255,7 +260,10 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     ```
 * `Extra`: To allow impersonating a principal's key/values extra info, the policy's resource type must be `Extra`. This only functions if the user can also impersonate the requested username.
     ```cedarschema
-    entity PrincipalUID;
+    entity Extra = {
+        "key": __cedar::String,
+        "values"?: Set < __cedar::String >
+    };
     ```
     Examples:
     ```cedar
@@ -344,10 +352,10 @@ forbid (
 );
 ```
 
-All admission actions currently apply to any Kubernetes type that have a [`metav1.ObjectMeta`][objmeta] or [`corev1.ListMeta`][listmeta].
+Most admission actions currently apply to any Kubernetes type that have a [`metav1.ObjectMeta`][objmeta].
 
 [objmeta]: https://pkg.go.dev/k8s.io/apimachinery/pkg/apis/meta/v1#ObjectMeta
-[listmeta]: https://pkg.go.dev/k8s.io/apimachinery/pkg/apis/meta/v1#ListMeta
+
 
 ### Resources
 
@@ -358,7 +366,8 @@ The resource entity structure matches that of the Kubernetes API structure, with
 // Forbid pods with hostNetwork in namespaces other than kube-system
 forbid (
     principal,
-    action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
+    action in [
+        k8s::admission::Action::"create", k8s::admission::Action::"update"],
     resource is core::v1::Pod
 ) when {
     resource has spec &&
@@ -371,7 +380,7 @@ forbid (
 };
 ```
 
-Until [cedar-go supports entity maps][go-entity-maps], we've manually added `KeyValue` and `KeyValues` types into the `meta::v1` namespace to support key/value labels.
+Until [cedar-go supports entity maps][go-entity-maps], we've manually added `KeyValue` and `KeyValueStringSlice` types into the `meta::v1` namespace to support key/value labels.
 Any Kubernetes types that consist of `map[string]string{}` or `map[string][]string{}` are converted to a Set of KeyValue or KeyValueStringSlice.
 ```cedarschema
 namespace meta::v1 {
@@ -397,3 +406,62 @@ namespace meta::v1 {
 ```
 
 [go-entity-maps]: https://github.com/cedar-policy/cedar-go/issues/47
+
+The Kubernetes `CONNECT` admission action only applies to a small set of structures that don't appear in the Kubernetes OpenAPI Schema, so we inject them manually:
+```cedarschema
+namespace core::v1 {
+    // other types and entities
+    entity NodeProxyOptions = {
+        "apiVersion": __cedar::String,
+        "kind": __cedar::String,
+        "path": __cedar::String
+    };
+    entity PodAttachOptions = {
+        "apiVersion": __cedar::String,
+        "command": Set < __cedar::String >,
+        "container": __cedar::String,
+        "kind": __cedar::String,
+        "stderr": __cedar::Bool,
+        "stdin": __cedar::Bool,
+        "stdout": __cedar::Bool,
+        "tty": __cedar::Bool
+    };
+    entity PodExecOptions = {
+        "apiVersion": __cedar::String,
+        "command": Set < __cedar::String >,
+        "container": __cedar::String,
+        "kind": __cedar::String,
+        "stderr": __cedar::Bool,
+        "stdin": __cedar::Bool,
+        "stdout": __cedar::Bool,
+        "tty": __cedar::Bool
+    };
+    entity PodPortForwardOptions = {
+        "apiVersion": __cedar::String,
+        "kind": __cedar::String,
+        "ports"?: Set < __cedar::String >
+    };
+    entity PodProxyOptions = {
+        "apiVersion": __cedar::String,
+        "kind": __cedar::String,
+        "path": __cedar::String
+    };
+    entity ServiceProxyOptions = {
+        "apiVersion": __cedar::String,
+        "kind": __cedar::String,
+        "path": __cedar::String
+    };
+}
+```
+
+Policy can be used to forbid proxying to those types:
+```cedar
+// deny policy on exec unless command is `whoami`
+forbid (
+    principal,
+    action == k8s::admission::Action::"connect",
+    resource is core::v1::PodExecOptions
+) unless {
+    resource.command = ["whoami"]
+};
+```

@@ -25,13 +25,19 @@ We have a couple of policies already written on the [`demo/authorization-policy.
 @description("test-user can get/list/watch pods")
 permit (
     principal is k8s::User,
-    action in [k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+    action in [
+        k8s::Action::"get",
+        k8s::Action::"list",
+        k8s::Action::"watch"],
     resource is k8s::Resource
 ) when {
     principal.name == "test-user" &&
     // "" is the core API group in Kubernetes
     resource.apiGroup == "" &&
     resource.resource == "pods"
+} unless {
+    // we don't want to allow a GET on a portforward subresource
+    resource has subresource
 };
 
 @description("forbid test-user to get/list/watch nodes")
@@ -93,7 +99,10 @@ Given that the test-user is in the group `viewers`, lets leverage that group by 
 // viewer group members can get/list/watch any Resource other than secrets in the default namespace
 permit (
     principal in k8s::Group::"viewers",
-    action in [ k8s::Action::"get", k8s::Action::"list", k8s::Action::"watch"],
+    action in [
+        k8s::Action::"get",
+        k8s::Action::"list",
+        k8s::Action::"watch"],
     resource is k8s::Resource
 ) unless {
     resource.resource == "secrets" &&
@@ -274,7 +283,9 @@ permit (
 // Admission policy preventing test-user from creating/updating configmaps with name starting with "prod"
 forbid (
     principal is k8s::User,
-    action in [k8s::admission::Action::"create", k8s::admission::Action::"update"],
+    action in [
+        k8s::admission::Action::"create",
+        k8s::admission::Action::"update"],
     resource is core::v1::ConfigMap
 ) when {
     principal.name == "test-user" &&
@@ -339,7 +350,9 @@ permit (
 // without label selector owner={principal.name}
 forbid (
     principal is k8s::User in k8s::Group::"requires-labels",
-    action in [k8s::Action::"list", k8s::Action::"watch"],
+    action in [
+        k8s::Action::"list",
+        k8s::Action::"watch"],
     resource is k8s::Resource
 ) unless {
     resource has labelSelector &&
@@ -353,7 +366,10 @@ forbid (
 // admission policy to forbid resource creation without an owner key
 forbid (
     principal is k8s::User in k8s::Group::"requires-labels",
-    action in [k8s::admission::Action::"create", k8s::admission::Action::"update", k8s::admission::Action::"delete"],
+    action in [
+        k8s::admission::Action::"create",
+        k8s::admission::Action::"update",
+        k8s::admission::Action::"delete"],
     resource
 ) unless {
     resource has metadata &&
