@@ -168,6 +168,10 @@ func ModifySchemaForAPIVersion(apiResources *metav1.APIResourceList, openApiSche
 			ns.CommonTypes[sKind] = entity.Shape
 			continue
 		}
+		if _, ok := entity.Shape.Attributes["oldObject"]; ok {
+			panic(fmt.Sprintf("Conflict with Kubernetes resource %s::%s: has attribute name `oldObject` that conflicts with Cedar schema's oldObject", nsName, sKind))
+		}
+
 		// TODO: add an optional "oldObject" Entity attribute that is the Kind's kind for every admissible type.
 		// Context with analysis can't have dynamic types, so we put it on the entity rather than
 		// either an action per Entity type, or a huge context type with an attribute for every entity
@@ -183,6 +187,7 @@ func ModifySchemaForAPIVersion(apiResources *metav1.APIResourceList, openApiSche
 
 		// Catch update calls
 		if verbs.Intersection(sets.New("update", "patch")).Len() > 0 {
+			addOldObjectAttribute(entity, sKind)
 			schema.AddResourceTypeToAction(cSchema, actionNamespace, schema.AdmissionUpdateAction, nsName+"::"+sKind)
 		}
 
@@ -197,6 +202,14 @@ func ModifySchemaForAPIVersion(apiResources *metav1.APIResourceList, openApiSche
 	}
 
 	return nil
+}
+
+func addOldObjectAttribute(entity schema.Entity, entityKind string) {
+	entity.Shape.Attributes["oldObject"] = schema.EntityAttribute{
+		Type:     schema.EntityType,
+		Name:     entityKind,
+		Required: false,
+	}
 }
 
 func verbsForKind(kind string, apiResources *metav1.APIResourceList) sets.Set[string] {

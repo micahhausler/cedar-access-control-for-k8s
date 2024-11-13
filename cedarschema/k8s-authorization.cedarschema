@@ -17,7 +17,9 @@ namespace k8s {
 		"key": __cedar::String,
 		"values"?: Set < __cedar::String >
 	};
-	entity Group;
+	entity Group = {
+		"name": __cedar::String
+	};
 	entity Node in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String

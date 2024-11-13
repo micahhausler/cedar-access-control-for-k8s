@@ -363,7 +363,7 @@ forbid (
     })
 };
 
-// admission policy to forbid resource creation without an owner key
+// admission policy to forbid resource creation, deletion, or update without an owner key
 forbid (
     principal is k8s::User in k8s::Group::"requires-labels",
     action in [
@@ -384,10 +384,10 @@ forbid (
     action == k8s::admission::Action::"update",
     resource
 ) unless {
-    context has oldObject &&
-    context.oldObject has metadata &&
-    context.oldObject.metadata has labels &&
-    context.oldObject.metadata.labels.contains({"key": "owner", "value": principal.name})
+    resource has oldObject &&
+    resource.oldObject has metadata &&
+    resource.oldObject.metadata has labels &&
+    resource.oldObject.metadata.labels.contains({"key": "owner", "value": principal.name})
 };
 ```
 

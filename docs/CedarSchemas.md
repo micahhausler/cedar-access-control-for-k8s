@@ -20,7 +20,9 @@ This project supports the following Principal entities:
 
 * `k8s::Group`. Groups are identified by the group name in policy.
     ```cedarschema
-    entity Group;
+    entity Group = {
+		"name": __cedar::String
+	};
     ```
 * `k8s::User`. Users are identified by the user's UID as reported by the authenticator.
     The group list comes in from the Kubernetes authenticator (webhook, serviceaccount, OIDC, etc), so we dynamically build the list of group Entities for a request.

@@ -22,7 +22,12 @@
 			"Group": {
 				"shape": {
 					"type": "Record",
-					"attributes": {}
+					"attributes": {
+						"name": {
+							"type": "String",
+							"required": true
+						}
+					}
 				}
 			},
 			"Node": {

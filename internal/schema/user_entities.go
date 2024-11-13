@@ -38,7 +38,9 @@ func UserEntity() Entity {
 // GroupEntity returns the Cedar schema entity for a group
 func GroupEntity() Entity {
 	return Entity{
-		Shape: EntityShape{Type: RecordType, Attributes: map[string]EntityAttribute{}},
+		Shape: EntityShape{Type: RecordType, Attributes: map[string]EntityAttribute{
+			"name": {Type: StringType, Required: true},
+		}},
 	}
 }
 
