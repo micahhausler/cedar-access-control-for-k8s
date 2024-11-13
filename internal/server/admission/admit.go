@@ -98,8 +98,6 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 			return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
 		}
 	}
-	klog.V(7).InfoS("Admission resource entity", "entity", resourceEntity)
-	entities.MergeIntoEntities(requestEntities, resourceEntity)
 
 	var oldObject *cedartypes.Entity
 	if req.OldObject.Raw != nil && req.Operation != "DELETE" {
@@ -107,7 +105,20 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
 		}
+
+		// The old object and new object will have the same UID, and to differentiate them
+		// we use the validation UID (which is unique) as an entity UID for the old object.
+		// This makes it impossible to authorize requests directly on the old object's UID,
+		// but that's probably fine
+		oldObject.UID.ID = cedartypes.String(req.UID)
+		attrMap := resourceEntity.Attributes.Map()
+		attrMap["oldObject"] = oldObject.UID
+		resourceEntity.Attributes = cedartypes.NewRecord(attrMap)
+		entities.MergeIntoEntities(requestEntities, oldObject)
 	}
+
+	klog.V(7).InfoS("Admission resource entity", "entity", resourceEntity)
+	entities.MergeIntoEntities(requestEntities, resourceEntity)
 
 	actionEntityUID, err := entities.CedarActionEntityFromAdmissionRequest(req)
 	if err != nil {

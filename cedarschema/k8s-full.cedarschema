@@ -294,12 +294,14 @@ namespace admissionregistration::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: MutatingWebhookConfiguration,
 		"webhooks"?: Set < MutatingWebhook >
 	};
 	entity ValidatingAdmissionPolicy = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ValidatingAdmissionPolicy,
 		"spec"?: ValidatingAdmissionPolicySpec,
 		"status"?: ValidatingAdmissionPolicyStatus
 	};
@@ -307,12 +309,14 @@ namespace admissionregistration::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ValidatingAdmissionPolicyBinding,
 		"spec"?: ValidatingAdmissionPolicyBindingSpec
 	};
 	entity ValidatingWebhookConfiguration = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ValidatingWebhookConfiguration,
 		"webhooks"?: Set < ValidatingWebhook >
 	};
 }
@@ -461,12 +465,14 @@ namespace apps::v1 {
 		"data"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ControllerRevision,
 		"revision": __cedar::Long
 	};
 	entity DaemonSet = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: DaemonSet,
 		"spec"?: DaemonSetSpec,
 		"status"?: DaemonSetStatus
 	};
@@ -474,6 +480,7 @@ namespace apps::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Deployment,
 		"spec"?: DeploymentSpec,
 		"status"?: DeploymentStatus
 	};
@@ -481,6 +488,7 @@ namespace apps::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ReplicaSet,
 		"spec"?: ReplicaSetSpec,
 		"status"?: ReplicaSetStatus
 	};
@@ -488,6 +496,7 @@ namespace apps::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: StatefulSet,
 		"spec"?: StatefulSetSpec,
 		"status"?: StatefulSetStatus
 	};
@@ -671,6 +680,7 @@ namespace autoscaling::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: HorizontalPodAutoscaler,
 		"spec"?: HorizontalPodAutoscalerSpec,
 		"status"?: HorizontalPodAutoscalerStatus
 	};
@@ -678,6 +688,7 @@ namespace autoscaling::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Scale,
 		"spec"?: ScaleSpec,
 		"status"?: ScaleStatus
 	};
@@ -774,6 +785,7 @@ namespace batch::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: CronJob,
 		"spec"?: CronJobSpec,
 		"status"?: CronJobStatus
 	};
@@ -781,6 +793,7 @@ namespace batch::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Job,
 		"spec"?: JobSpec,
 		"status"?: JobStatus
 	};
@@ -813,6 +826,7 @@ namespace certificates::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: CertificateSigningRequest,
 		"spec": CertificateSigningRequestSpec,
 		"status"?: CertificateSigningRequestStatus
 	};
@@ -832,6 +846,7 @@ namespace coordination::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Lease,
 		"spec"?: LeaseSpec
 	};
 }
@@ -2025,12 +2040,14 @@ namespace core::v1 {
 		"data"?: Set < meta::v1::KeyValue >,
 		"immutable"?: __cedar::Bool,
 		"kind"?: __cedar::String,
-		"metadata"?: meta::v1::ObjectMeta
+		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ConfigMap
 	};
 	entity Endpoints = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Endpoints,
 		"subsets"?: Set < EndpointSubset >
 	};
 	entity Event = {
@@ -2044,6 +2061,7 @@ namespace core::v1 {
 		"lastTimestamp"?: __cedar::String,
 		"message"?: __cedar::String,
 		"metadata": meta::v1::ObjectMeta,
+		"oldObject"?: Event,
 		"reason"?: __cedar::String,
 		"related"?: ObjectReference,
 		"reportingComponent"?: __cedar::String,
@@ -2056,12 +2074,14 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: LimitRange,
 		"spec"?: LimitRangeSpec
 	};
 	entity Namespace = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Namespace,
 		"spec"?: NamespaceSpec,
 		"status"?: NamespaceStatus
 	};
@@ -2069,6 +2089,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Node,
 		"spec"?: NodeSpec,
 		"status"?: NodeStatus
 	};
@@ -2081,6 +2102,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PersistentVolume,
 		"spec"?: PersistentVolumeSpec,
 		"status"?: PersistentVolumeStatus
 	};
@@ -2088,6 +2110,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PersistentVolumeClaim,
 		"spec"?: PersistentVolumeClaimSpec,
 		"status"?: PersistentVolumeClaimStatus
 	};
@@ -2095,6 +2118,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Pod,
 		"spec"?: PodSpec,
 		"status"?: PodStatus
 	};
@@ -2132,12 +2156,14 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PodTemplate,
 		"template"?: PodTemplateSpec
 	};
 	entity ReplicationController = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ReplicationController,
 		"spec"?: ReplicationControllerSpec,
 		"status"?: ReplicationControllerStatus
 	};
@@ -2145,6 +2171,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ResourceQuota,
 		"spec"?: ResourceQuotaSpec,
 		"status"?: ResourceQuotaStatus
 	};
@@ -2154,6 +2181,7 @@ namespace core::v1 {
 		"immutable"?: __cedar::Bool,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Secret,
 		"stringData"?: Set < meta::v1::KeyValue >,
 		"type"?: __cedar::String
 	};
@@ -2161,6 +2189,7 @@ namespace core::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Service,
 		"spec"?: ServiceSpec,
 		"status"?: ServiceStatus
 	};
@@ -2170,6 +2199,7 @@ namespace core::v1 {
 		"imagePullSecrets"?: Set < LocalObjectReference >,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ServiceAccount,
 		"secrets"?: Set < ObjectReference >
 	};
 	entity ServiceProxyOptions = {
@@ -2213,6 +2243,7 @@ namespace discovery::v1 {
 		"endpoints": Set < Endpoint >,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: EndpointSlice,
 		"ports"?: Set < EndpointPort >
 	};
 }
@@ -2233,6 +2264,7 @@ namespace events::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"note"?: __cedar::String,
+		"oldObject"?: Event,
 		"reason"?: __cedar::String,
 		"regarding"?: core::v1::ObjectReference,
 		"related"?: core::v1::ObjectReference,
@@ -2336,6 +2368,7 @@ namespace flowcontrol::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: FlowSchema,
 		"spec"?: FlowSchemaSpec,
 		"status"?: FlowSchemaStatus
 	};
@@ -2343,6 +2376,7 @@ namespace flowcontrol::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PriorityLevelConfiguration,
 		"spec"?: PriorityLevelConfigurationSpec,
 		"status"?: PriorityLevelConfigurationStatus
 	};
@@ -2574,6 +2608,7 @@ namespace networking::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Ingress,
 		"spec"?: IngressSpec,
 		"status"?: IngressStatus
 	};
@@ -2581,12 +2616,14 @@ namespace networking::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: IngressClass,
 		"spec"?: IngressClassSpec
 	};
 	entity NetworkPolicy = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: NetworkPolicy,
 		"spec"?: NetworkPolicySpec
 	};
 }
@@ -2604,6 +2641,7 @@ namespace node::v1 {
 		"handler": __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: RuntimeClass,
 		"overhead"?: Overhead,
 		"scheduling"?: Scheduling
 	};
@@ -2635,6 +2673,7 @@ namespace policy::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PodDisruptionBudget,
 		"spec"?: PodDisruptionBudgetSpec,
 		"status"?: PodDisruptionBudgetStatus
 	};
@@ -2667,12 +2706,14 @@ namespace rbac::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ClusterRole,
 		"rules"?: Set < PolicyRule >
 	};
 	entity ClusterRoleBinding = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: ClusterRoleBinding,
 		"roleRef": RoleRef,
 		"subjects"?: Set < Subject >
 	};
@@ -2680,12 +2721,14 @@ namespace rbac::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Role,
 		"rules"?: Set < PolicyRule >
 	};
 	entity RoleBinding = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: RoleBinding,
 		"roleRef": RoleRef,
 		"subjects"?: Set < Subject >
 	};
@@ -2698,6 +2741,7 @@ namespace scheduling::v1 {
 		"globalDefault"?: __cedar::Bool,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PriorityClass,
 		"preemptionPolicy"?: __cedar::String,
 		"value": __cedar::Long
 	};
@@ -2753,12 +2797,14 @@ namespace storage::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: CSIDriver,
 		"spec": CSIDriverSpec
 	};
 	entity CSINode = {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: CSINode,
 		"spec": CSINodeSpec
 	};
 	entity CSIStorageCapacity = {
@@ -2768,6 +2814,7 @@ namespace storage::v1 {
 		"maximumVolumeSize"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"nodeTopology"?: meta::v1::LabelSelector,
+		"oldObject"?: CSIStorageCapacity,
 		"storageClassName": __cedar::String
 	};
 	entity StorageClass = {
@@ -2777,6 +2824,7 @@ namespace storage::v1 {
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"mountOptions"?: Set < __cedar::String >,
+		"oldObject"?: StorageClass,
 		"parameters"?: Set < meta::v1::KeyValue >,
 		"provisioner": __cedar::String,
 		"reclaimPolicy"?: __cedar::String,
@@ -2786,6 +2834,7 @@ namespace storage::v1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: VolumeAttachment,
 		"spec": VolumeAttachmentSpec,
 		"status"?: VolumeAttachmentStatus
 	};
@@ -2796,6 +2845,7 @@ namespace aws::k8s::cedar::v1alpha1 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: Policy,
 		"spec": {
 			"content"?: __cedar::String
 		}
@@ -2895,6 +2945,7 @@ namespace flowcontrol::v1beta3 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: FlowSchema,
 		"spec"?: FlowSchemaSpec,
 		"status"?: FlowSchemaStatus
 	};
@@ -2902,6 +2953,7 @@ namespace flowcontrol::v1beta3 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: PriorityLevelConfiguration,
 		"spec"?: PriorityLevelConfigurationSpec,
 		"status"?: PriorityLevelConfigurationStatus
 	};
@@ -3028,6 +3080,7 @@ namespace autoscaling::v2 {
 		"apiVersion"?: __cedar::String,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
+		"oldObject"?: HorizontalPodAutoscaler,
 		"spec"?: HorizontalPodAutoscalerSpec,
 		"status"?: HorizontalPodAutoscalerStatus
 	};

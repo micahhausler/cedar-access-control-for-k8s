@@ -69,7 +69,6 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 			Type: schema.GroupEntityType,
 			ID:   cedartypes.String(attributes.GetName()),
 		}
-		respAttributes[cedartypes.String("name")] = cedartypes.String(attributes.GetName())
 	// TODO: ENTITY TAGS: Migrate to entity tags
 	case "userextras":
 		uid = cedartypes.EntityUID{
