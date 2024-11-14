@@ -32,8 +32,8 @@ func (u *UserInfoWrapper) GetExtra() map[string][]string {
 	return resp
 }
 
-func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.Entities) {
-	resp := cedartypes.Entities{}
+func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.EntityMap) {
+	resp := cedartypes.EntityMap{}
 
 	groupEntityUids := []cedartypes.EntityUID{}
 
@@ -49,7 +49,7 @@ func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.Entitie
 			})),
 		}
 
-		resp[groupEntityUid] = &groupEntity
+		resp[groupEntityUid] = groupEntity
 		groupEntityUids = append(groupEntityUids, groupEntityUid)
 	}
 
@@ -80,11 +80,11 @@ func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.Entitie
 		}
 		extraValues = append(extraValues, cedartypes.NewRecord(cedartypes.RecordMap{
 			"key":    cedartypes.String(k),
-			"values": cedartypes.NewSet(extraVV),
+			"values": cedartypes.NewSet(extraVV...),
 		}))
 	}
 	if len(extraValues) > 0 {
-		attributes["extra"] = cedartypes.NewSet(extraValues)
+		attributes["extra"] = cedartypes.NewSet(extraValues...)
 	}
 
 	principalUID := cedartypes.EntityUID{
@@ -92,10 +92,10 @@ func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.Entitie
 		ID:   cedartypes.String(user.GetUID()),
 	}
 
-	resp[principalUID] = &cedartypes.Entity{
+	resp[principalUID] = cedartypes.Entity{
 		UID:        principalUID,
+		Parents:    cedartypes.NewEntityUIDSet(groupEntityUids...),
 		Attributes: cedartypes.NewRecord(attributes),
-		Parents:    groupEntityUids,
 	}
 	return principalUID, resp
 }

@@ -108,7 +108,7 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 	)
 
 	pset := cedar.NewPolicySet()
-	pset.Store("allow-all-admission", admission.AllowAllAdmissionPolicy())
+	pset.Add("allow-all-admission", admission.AllowAllAdmissionPolicy())
 
 	// We use a unified store for admission because
 	// the we add a default allow-all admission policy.

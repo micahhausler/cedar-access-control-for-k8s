@@ -122,7 +122,7 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 					policy = policy.When(when)
 				}
 				policyId := cedar.PolicyID(binder.Name() + strconv.Itoa(pi) + strconv.Itoa(ri))
-				resp.Store(policyId, cedar.NewPolicyFromAST(policy))
+				resp.Add(policyId, cedar.NewPolicyFromAST(policy))
 			} else {
 				rule.APIGroups = reduceIfHasStar(rule.APIGroups)
 				rule.Resources = reduceIfHasStar(rule.Resources)
@@ -155,7 +155,7 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 
 				policy = policy.ResourceIs(schema.ResourceEntityType)
 				policyId := cedar.PolicyID(binder.Name() + ":" + binder.Type() + ":" + strconv.Itoa(pi) + strconv.Itoa(ri))
-				resp.Store(policyId, cedar.NewPolicyFromAST(policy))
+				resp.Add(policyId, cedar.NewPolicyFromAST(policy))
 
 			}
 		}

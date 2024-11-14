@@ -48,7 +48,7 @@ func (s *crdPolicyStore) OnAdd(rawObj interface{}, isInInitialList bool) {
 		// Use UID for uniqeness to avoid naming collisions (ex: the 0th policy from "mypolicy1" could conflict with the 11th policy from "mypolicy")
 		pname := cedar.PolicyID(obj.Name + strconv.Itoa(i) + "-" + string(obj.UID))
 		policyNames = append(policyNames, pname)
-		s.policies.Store(pname, policy)
+		s.policies.Add(pname, policy)
 	}
 	s.policyNames[obj.Name] = policyNames
 }
@@ -71,7 +71,7 @@ func (s *crdPolicyStore) OnUpdate(rawOldObj, rawNewObj interface{}) {
 	// clear out old policies from the map, if it exists
 	if policyNames, ok := s.policyNames[oldObj.Name]; ok {
 		for _, name := range policyNames {
-			s.policies.Delete(name)
+			s.policies.Remove(name)
 		}
 		delete(s.policyNames, oldObj.Name)
 	}
@@ -88,7 +88,7 @@ func (s *crdPolicyStore) OnUpdate(rawOldObj, rawNewObj interface{}) {
 		// ex: the 0th policy from "mypolicy1" could conflict with the 11th policy from "mypolicy")
 		pname := cedar.PolicyID(newObj.Name + strconv.Itoa(i) + "-" + string(newObj.UID))
 		policyNames = append(policyNames, pname)
-		s.policies.Store(pname, policy)
+		s.policies.Add(pname, policy)
 	}
 	s.policyNames[newObj.Name] = policyNames
 }
@@ -100,7 +100,7 @@ func (s *crdPolicyStore) OnDelete(rawObj interface{}) {
 	// clear out old policies from the policySet, if it exists
 	if policyNames, ok := s.policyNames[obj.Name]; ok {
 		for _, name := range policyNames {
-			s.policies.Delete(name)
+			s.policies.Remove(name)
 		}
 		delete(s.policyNames, obj.Name)
 	}

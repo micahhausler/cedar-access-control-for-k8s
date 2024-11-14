@@ -114,11 +114,11 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 		attrMap := resourceEntity.Attributes.Map()
 		attrMap["oldObject"] = oldObject.UID
 		resourceEntity.Attributes = cedartypes.NewRecord(attrMap)
-		entities.MergeIntoEntities(requestEntities, oldObject)
+		entities.MergeIntoEntities(requestEntities, *oldObject)
 	}
 
 	klog.V(7).InfoS("Admission resource entity", "entity", resourceEntity)
-	entities.MergeIntoEntities(requestEntities, resourceEntity)
+	entities.MergeIntoEntities(requestEntities, *resourceEntity)
 
 	actionEntityUID, err := entities.CedarActionEntityFromAdmissionRequest(req)
 	if err != nil {

@@ -11,8 +11,8 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func ActionEntities(verb string) (cedartypes.EntityUID, cedartypes.Entities) {
-	resp := cedartypes.Entities{}
+func ActionEntities(verb string) (cedartypes.EntityUID, cedartypes.EntityMap) {
+	resp := cedartypes.EntityMap{}
 	action := cedartypes.Entity{
 		UID: cedartypes.EntityUID{
 			Type: schema.AuthorizationActionEntityType,
@@ -24,9 +24,9 @@ func ActionEntities(verb string) (cedartypes.EntityUID, cedartypes.Entities) {
 			Type: schema.AuthorizationActionEntityType,
 			ID:   cedartypes.String("readOnly"),
 		}
-		resp[readOnlyEntityUID] = &cedartypes.Entity{UID: readOnlyEntityUID}
-		action.Parents = []cedartypes.EntityUID{readOnlyEntityUID}
-		resp[action.UID] = &action
+		resp[readOnlyEntityUID] = cedartypes.Entity{UID: readOnlyEntityUID}
+		action.Parents = cedartypes.NewEntityUIDSet(readOnlyEntityUID)
+		resp[action.UID] = action
 	}
 
 	return action.UID, resp
@@ -77,7 +77,7 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 			ID:   cedartypes.String(attributes.GetSubresource()),
 		}
 		respAttributes[cedartypes.String("key")] = cedartypes.String(attributes.GetSubresource())
-		respAttributes[cedartypes.String("values")] = cedartypes.NewSet([]cedartypes.Value{cedartypes.String(attributes.GetName())})
+		respAttributes[cedartypes.String("values")] = cedartypes.NewSet([]cedartypes.Value{cedartypes.String(attributes.GetName())}...)
 	}
 	return cedartypes.Entity{
 		UID:        uid,
@@ -121,10 +121,10 @@ func ResourceToCedarEntity(attributes authorizer.Attributes) cedartypes.Entity {
 			selectors = append(selectors, cedartypes.NewRecord(map[cedartypes.String]cedartypes.Value{
 				"key":      cedartypes.String(selector.Key()),
 				"operator": cedartypes.String(selector.Operator()),
-				"values":   cedartypes.NewSet(values),
+				"values":   cedartypes.NewSet(values...),
 			}))
 		}
-		respAttributes[cedartypes.String("labelSelector")] = cedartypes.NewSet(selectors)
+		respAttributes[cedartypes.String("labelSelector")] = cedartypes.NewSet(selectors...)
 	} else if err != nil {
 		klog.Error("error parsing label selector", "error", err)
 	}
@@ -138,7 +138,7 @@ func ResourceToCedarEntity(attributes authorizer.Attributes) cedartypes.Entity {
 				"value":    cedartypes.String(selector.Value),
 			}))
 		}
-		respAttributes[cedartypes.String("fieldSelector")] = cedartypes.NewSet(selectors)
+		respAttributes[cedartypes.String("fieldSelector")] = cedartypes.NewSet(selectors...)
 	} else if err != nil {
 		klog.Error("error parsing field selector", "error", err)
 	}

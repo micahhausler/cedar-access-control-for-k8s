@@ -84,7 +84,7 @@ func (s *localPolicyStore) loadPolicies() {
 
 		for i, p := range policySlice {
 			policyID := cedar.PolicyID(fmt.Sprintf("%s.policy%d", file.Name(), i))
-			policySet.Store(policyID, p)
+			policySet.Add(policyID, p)
 		}
 	}
 

@@ -37,23 +37,23 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(runtimeScheme))
 }
 
-func AdmissionActionEntities() []*cedartypes.Entity {
-	resp := []*cedartypes.Entity{{UID: cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: AdmissionActionIDAll}}}
+func AdmissionActionEntities() []cedartypes.Entity {
+	resp := []cedartypes.Entity{{UID: cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: AdmissionActionIDAll}}}
 	for _, actionID := range []cedartypes.String{
 		AdmissionActionIDConnect,
 		AdmissionActionIDCreate,
 		AdmissionActionIDUpdate,
 		AdmissionActionIDDelete} {
-		resp = append(resp, &cedartypes.Entity{
+		resp = append(resp, cedartypes.Entity{
 			UID:     cedartypes.EntityUID{Type: schema.AdmissionActionEntityType, ID: actionID},
-			Parents: []cedartypes.EntityUID{resp[0].UID},
+			Parents: cedartypes.NewEntityUIDSet(resp[0].UID),
 		})
 	}
 	return resp
 }
 
 // get the principal UID, and all principal entities from the request
-func CedarPrincipalEntitesFromAdmissionRequest(req *admission.Request) (*cedartypes.EntityUID, cedartypes.Entities, error) {
+func CedarPrincipalEntitesFromAdmissionRequest(req *admission.Request) (*cedartypes.EntityUID, cedartypes.EntityMap, error) {
 	if req == nil {
 		return nil, nil, errors.New("request is nil")
 	}
@@ -273,7 +273,7 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 							cedartypes.String("value"): cedartypes.String(val),
 						}))
 					}
-					return cedartypes.NewSet(set), nil
+					return cedartypes.NewSet(set...), nil
 				}
 			}
 		}
@@ -314,10 +314,10 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 						}
 						set = append(set, cedartypes.NewRecord(cedartypes.RecordMap{
 							cedartypes.String("key"):   cedartypes.String(kk),
-							cedartypes.String("value"): cedartypes.NewSet(valSet),
+							cedartypes.String("value"): cedartypes.NewSet(valSet...),
 						}))
 					}
-					return cedartypes.NewSet(set), nil
+					return cedartypes.NewSet(set...), nil
 				}
 			}
 		}
@@ -337,7 +337,7 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 				cedartypes.String("value"): cedartypes.String(val),
 			}))
 		}
-		return cedartypes.NewSet(set), nil
+		return cedartypes.NewSet(set...), nil
 	}
 	// End gross hack for key/value maps
 
@@ -369,7 +369,7 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 			}
 			set = append(set, val)
 		}
-		return cedartypes.NewSet(set), nil
+		return cedartypes.NewSet(set...), nil
 	case string:
 		// Try to parse the string as an IP address for
 		// known IP address keys

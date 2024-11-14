@@ -79,7 +79,7 @@ func mergeMaps[Map ~map[K]V, K comparable, V any](left Map, right Map) {
 	}
 }
 
-func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.Entities, cedar.Request) {
+func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.EntityMap, cedar.Request) {
 	action, reqEntities := ActionEntities(attributes.GetVerb())
 	principalUID, principalEntities := entities.UserToCedarEntity(attributes.GetUser())
 
@@ -98,7 +98,7 @@ func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.Entitie
 	}
 	entity := resourceEntityFunc(attributes)
 	req.Resource = entity.UID
-	reqEntities[entity.UID] = &entity
+	reqEntities[entity.UID] = entity
 
 	return reqEntities, req
 }

@@ -48,12 +48,11 @@ func TestUnstructuredToEntity(t *testing.T) {
 					cedartypes.String("namespace"): cedartypes.String("default"),
 				}),
 				cedartypes.String("spec"): cedartypes.NewRecord(cedartypes.RecordMap{
-					cedartypes.String("containers"): cedartypes.NewSet([]cedartypes.Value{
+					cedartypes.String("containers"): cedartypes.NewSet(
 						cedartypes.NewRecord(cedartypes.RecordMap{
 							cedartypes.String("name"):  cedartypes.String("test-container"),
 							cedartypes.String("image"): cedartypes.String("test-image"),
-						}),
-					}),
+						})),
 					cedartypes.String("nodeName"):              cedartypes.String("test-node"),
 					cedartypes.String("hostNetwork"):           cedartypes.Boolean(true),
 					cedartypes.String("shareProcessNamespace"): cedartypes.Boolean(false),
