@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main ]
 env: 
-  CEDAR_VERSION: 4.2.1
+  CEDAR_VERSION: 4.2.2
 jobs:
   cedar:
     name: Cedar
