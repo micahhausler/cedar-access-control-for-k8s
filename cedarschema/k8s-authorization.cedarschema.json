@@ -11,7 +11,7 @@
 						},
 						"values": {
 							"type": "Set",
-							"required": false,
+							"required": true,
 							"element": {
 								"type": "String"
 							}
@@ -451,7 +451,7 @@
 					},
 					"values": {
 						"type": "Set",
-						"required": false,
+						"required": true,
 						"element": {
 							"type": "String"
 						}

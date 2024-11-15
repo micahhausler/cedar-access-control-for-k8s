@@ -27,9 +27,12 @@ func UserEntity() Entity {
 			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
-				"extra": {Type: SetType, Element: &EntityAttributeElement{
-					Type: ExtraValuesAttributeType,
-				}},
+				"extra": {
+					Type:     SetType,
+					Required: false,
+					Element: &EntityAttributeElement{
+						Type: ExtraValuesAttributeType,
+					}},
 			},
 		},
 	}
@@ -53,9 +56,12 @@ func ServiceAccountEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name":      {Type: StringType, Required: true},
 				"namespace": {Type: StringType, Required: true},
-				"extra": {Type: SetType, Element: &EntityAttributeElement{
-					Type: ExtraValuesAttributeType,
-				}},
+				"extra": {
+					Type:     SetType,
+					Required: false,
+					Element: &EntityAttributeElement{
+						Type: ExtraValuesAttributeType,
+					}},
 			},
 		},
 	}
@@ -68,9 +74,12 @@ func NodeEntity() Entity {
 			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
-				"extra": {Type: SetType, Element: &EntityAttributeElement{
-					Type: ExtraValuesAttributeType,
-				}},
+				"extra": {
+					Type:     SetType,
+					Required: false,
+					Element: &EntityAttributeElement{
+						Type: ExtraValuesAttributeType,
+					}},
 			},
 		},
 	}
@@ -82,7 +91,7 @@ func ExtraEntityShape() EntityShape {
 		Type: RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":    {Type: StringType, Required: true},
-			"values": {Type: SetType, Element: &EntityAttributeElement{Type: StringType}},
+			"values": {Type: SetType, Required: true, Element: &EntityAttributeElement{Type: StringType}},
 		},
 	}
 }

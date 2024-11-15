@@ -29,7 +29,7 @@ namespace k8s::admission {
 namespace k8s {
 	type ExtraAttribute = {
 		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
+		"values": Set < __cedar::String >
 	};
 	type FieldRequirement = {
 		"field": __cedar::String,
@@ -43,7 +43,7 @@ namespace k8s {
 	};
 	entity Extra = {
 		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
+		"values": Set < __cedar::String >
 	};
 	entity Group = {
 		"name": __cedar::String
@@ -2428,11 +2428,11 @@ namespace meta::v1 {
 	type FieldsV1 = {};
 	type KeyValue = {
 		"key": __cedar::String,
-		"value"?: __cedar::String
+		"value": __cedar::String
 	};
 	type KeyValueStringSlice = {
 		"key": __cedar::String,
-		"value"?: Set < __cedar::String >
+		"value": Set < __cedar::String >
 	};
 	type LabelSelector = {
 		"matchExpressions"?: Set < LabelSelectorRequirement >,

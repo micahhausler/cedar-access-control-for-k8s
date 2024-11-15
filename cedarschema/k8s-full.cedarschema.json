@@ -9437,7 +9437,7 @@
 						},
 						"values": {
 							"type": "Set",
-							"required": false,
+							"required": true,
 							"element": {
 								"type": "String"
 							}
@@ -9877,7 +9877,7 @@
 					},
 					"values": {
 						"type": "Set",
-						"required": false,
+						"required": true,
 						"element": {
 							"type": "String"
 						}
@@ -10424,7 +10424,7 @@
 					},
 					"value": {
 						"type": "String",
-						"required": false
+						"required": true
 					}
 				}
 			},
@@ -10437,7 +10437,7 @@
 					},
 					"value": {
 						"type": "Set",
-						"required": false,
+						"required": true,
 						"element": {
 							"type": "String"
 						}

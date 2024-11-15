@@ -12,7 +12,7 @@ func ModifyObjectMetaMaps(schema CedarSchema) {
 		Type: RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":   {Type: StringType, Required: true},
-			"value": {Type: StringType, Required: false},
+			"value": {Type: StringType, Required: true},
 		},
 	}
 	ns.CommonTypes["KeyValue"] = keyValEntity
@@ -21,7 +21,7 @@ func ModifyObjectMetaMaps(schema CedarSchema) {
 		Type: RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":   {Type: StringType, Required: true},
-			"value": {Type: SetType, Element: &EntityAttributeElement{Type: StringType}, Required: false},
+			"value": {Type: SetType, Element: &EntityAttributeElement{Type: StringType}, Required: true},
 		},
 	}
 	ns.CommonTypes["KeyValueStringSlice"] = keyValStringSliceEntity

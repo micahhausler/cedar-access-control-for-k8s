@@ -1,7 +1,7 @@
 namespace k8s {
 	type ExtraAttribute = {
 		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
+		"values": Set < __cedar::String >
 	};
 	type FieldRequirement = {
 		"field": __cedar::String,
@@ -15,7 +15,7 @@ namespace k8s {
 	};
 	entity Extra = {
 		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
+		"values": Set < __cedar::String >
 	};
 	entity Group = {
 		"name": __cedar::String
