@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+	"net/http/pprof"
 	"strings"
 	"time"
 
@@ -30,22 +31,42 @@ import (
 type AuthorizerServer struct {
 	handler    http.Handler
 	authorizer cedarauthorizer.Authorizer
+
+	cfg *config.AuthorizationWebhookConfig
 }
 
 // NewServer is a constructor for the AuthorizerServer.  It defines the
-// /authorize handler.
+// /v1/authorize and /v1/admit handlers.
 func NewServer(authorizer cedarauthorizer.Authorizer, admissionHandler http.Handler, cfg *config.AuthorizationWebhookConfig) *AuthorizerServer {
 	mux := http.NewServeMux()
-	errorInjector := NewErrorInjector(cfg.ErrorInjection)
-	mux.HandleFunc("/v1/authorize", authorizeHandlerFunc(authorizer, errorInjector))
-	mux.Handle("/v1/admit", admissionHandler)
-	return &AuthorizerServer{
+	as := &AuthorizerServer{
 		handler:    mux,
 		authorizer: authorizer,
+		cfg:        cfg,
 	}
+	errorInjector := NewErrorInjector(cfg.ErrorInjection)
+
+	var authzHandler http.Handler = as.authorizeHandlerFunc(authorizer, errorInjector)
+
+	if cfg.DebugOptions.EnableRecording {
+		authzHandler = RecordRequest(cfg.DebugOptions.RecordingDir)(authzHandler)
+		admissionHandler = RecordRequest(cfg.DebugOptions.RecordingDir)(admissionHandler)
+	}
+
+	mux.Handle("/v1/authorize", authzHandler)
+	mux.Handle("/v1/admit", admissionHandler)
+
+	if cfg.DebugOptions.EnableProfiling {
+		mux.HandleFunc("/debug/pprof/", pprof.Index)
+		mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+		mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+		mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	}
+	return as
 }
 
-func newServer() *http.ServeMux {
+func newHealthHandlers() *http.ServeMux {
 	mux := http.NewServeMux()
 	// TODO: actually check health status
 	mux.HandleFunc("/healthz", healthzHandlerFunc())
@@ -58,13 +79,13 @@ func newServer() *http.ServeMux {
 func NewMetricsServer() *http.Server {
 	return &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", options.CedarAuthorizerDefaultAddress, options.CedarAuthorizerMetricsPort),
-		Handler:      newServer(),
+		Handler:      newHealthHandlers(),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 	}
 }
 
-func authorizeHandlerFunc(authorizer cedarauthorizer.Authorizer, errorInjector *ErrorInjector) http.HandlerFunc {
+func (as *AuthorizerServer) authorizeHandlerFunc(authorizer cedarauthorizer.Authorizer, errorInjector *ErrorInjector) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
 			err                   error

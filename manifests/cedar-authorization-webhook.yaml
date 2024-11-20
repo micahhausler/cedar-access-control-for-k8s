@@ -70,6 +70,8 @@ spec:
           readOnly: true
         - mountPath: /var/run/cedar-authorizer/certs
           name: var-run-cedar-authorizer-certs
+        - mountPath: /cedar/logs
+          name: cedar-logs
   hostNetwork: true
   priority: 2000001000
   priorityClassName: system-node-critical
@@ -77,6 +79,10 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   volumes:
+    - hostPath:
+        path: /cedar-authorizer/logs
+        type: ""
+      name: cedar-logs
     - hostPath:
         path: /cedar-authorizer
         type: ""

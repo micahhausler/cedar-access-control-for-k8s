@@ -3,7 +3,6 @@ package store
 import (
 	"github.com/cedar-policy/cedar-go"
 	cedartypes "github.com/cedar-policy/cedar-go/types"
-	"k8s.io/klog/v2"
 )
 
 type PolicyStore interface {
@@ -31,7 +30,6 @@ func (s TieredPolicyStores) IsAuthorized(entities cedartypes.EntityMap, req ceda
 		}
 
 		if decision == cedar.Deny && len(diagnostic.Reasons) == 0 && len(diagnostic.Errors) == 0 {
-			klog.V(2).InfoS("No explicit decision found", "store", store.Name())
 			continue
 		}
 		break

@@ -46,11 +46,18 @@ type AuthorizerOptions struct {
 	SecureServing  *apiserveroptions.SecureServingOptions
 	ErrorInjection *ErrorInjectionOptions
 	Cedar          *CedarOptions
+	DebugOptions   *DebugOptions
 }
 
 type CedarOptions struct {
 	PolicyDir                 string
 	PolicyDirRrefreshInterval time.Duration
+}
+
+type DebugOptions struct {
+	EnableProfiling bool
+	EnableRecording bool
+	RecordingDir    string
 }
 
 type ErrorInjectionOptions struct {
@@ -68,6 +75,7 @@ func NewCedarAuthorizerOptions() *AuthorizerOptions {
 		SecureServing:   NewAuthorizerSecureServingOptions(),
 		ErrorInjection:  NewErrorInjectionOptions(),
 		Cedar:           NewCedarOptions(),
+		DebugOptions:    NewDebugOptions(),
 	}
 }
 
@@ -99,6 +107,14 @@ func NewCedarOptions() *CedarOptions {
 	}
 }
 
+func NewDebugOptions() *DebugOptions {
+	return &DebugOptions{
+		EnableProfiling: false,
+		EnableRecording: false,
+		RecordingDir:    "",
+	}
+}
+
 // Config creates a runtime config object from the options (command line flags).
 func (o *AuthorizerOptions) Config() (*config.AuthorizationWebhookConfig, error) {
 	// If we ever need to listen on non-localhost, provide the address here
@@ -109,7 +125,9 @@ func (o *AuthorizerOptions) Config() (*config.AuthorizationWebhookConfig, error)
 		return nil, err
 	}
 
-	cfg := &config.AuthorizationWebhookConfig{}
+	cfg := &config.AuthorizationWebhookConfig{
+		DebugOptions: &config.DebugOptions{},
+	}
 	if err := o.ApplyTo(cfg); err != nil {
 		return nil, err
 	}
@@ -134,6 +152,10 @@ func (o *AuthorizerOptions) ApplyTo(cfg *config.AuthorizationWebhookConfig) erro
 	cfg.PolicyDir = o.Cedar.PolicyDir
 	cfg.PolicyDirRefreshInterval = o.Cedar.PolicyDirRrefreshInterval
 
+	if o.DebugOptions != nil {
+		o.DebugOptions.ApplyTo(cfg.DebugOptions)
+	}
+
 	return nil
 }
 
@@ -157,6 +179,15 @@ func (o *ErrorInjectionOptions) ApplyTo(cfg **config.ErrorInjectionConfig) {
 	}
 }
 
+func (o *DebugOptions) ApplyTo(cfg *config.DebugOptions) {
+	if o == nil {
+		return
+	}
+	cfg.EnableProfiling = o.EnableProfiling
+	cfg.EnableRecording = o.EnableRecording
+	cfg.RecordingDir = o.RecordingDir
+}
+
 // Flags adds flags to fs and binds them to the CedarAuthorizerOptions
 func (o *AuthorizerOptions) Flags() *cliflag.NamedFlagSets {
 	fss := cliflag.NamedFlagSets{}
@@ -172,6 +203,11 @@ func (o *AuthorizerOptions) Flags() *cliflag.NamedFlagSets {
 	fs.BoolVar(&o.ErrorInjection.ConfirmNonProdInjectErrors, "confirm-non-prod-inject-errors", false, "Confirm that you are operating in a non production environment and you want to inject artificial errors or denies into authorizer responses when it normally wouldn't")
 	fs.Float64Var(&o.ErrorInjection.ArtificialErrorRate, "artificial-error-rate", o.ErrorInjection.ArtificialErrorRate, "Cause the authorizer to occasionally return errors at the specified rate.  Useful to validate metrics are working as expected.")
 	fs.Float64Var(&o.ErrorInjection.ArtificialDenyRate, "artificial-deny-rate", o.ErrorInjection.ArtificialDenyRate, "Cause the authorizer to occasionally return denies at the specified rate.  Useful to validate metrics are working as expected.")
+
+	fs = fss.FlagSet("debug")
+	fs.BoolVar(&o.DebugOptions.EnableProfiling, "profiling", o.DebugOptions.EnableProfiling, "Enable profiling via web interface host:port/debug/pprof/")
+	fs.BoolVar(&o.DebugOptions.EnableRecording, "enable-request-recording", o.DebugOptions.EnableRecording, "Enable recording of requests")
+	fs.StringVar(&o.DebugOptions.RecordingDir, "request-recording-dir", o.DebugOptions.RecordingDir, "The directory to record requests to")
 
 	o.SecureServing.AddFlags(fss.FlagSet("secure serving"))
 

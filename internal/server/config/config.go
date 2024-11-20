@@ -15,10 +15,19 @@ type AuthorizationWebhookConfig struct {
 
 	ErrorInjection *ErrorInjectionConfig
 	SecureServing  *apiserver.SecureServingInfo
+
+	DebugOptions *DebugOptions
 }
 
 type ErrorInjectionConfig struct {
 	ArtificialErrorRate float64
 	ArtificialDenyRate  float64
 	Enabled             bool
+}
+
+type DebugOptions struct {
+	EnableProfiling bool
+
+	EnableRecording bool
+	RecordingDir    string
 }
