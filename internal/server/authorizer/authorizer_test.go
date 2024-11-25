@@ -882,7 +882,7 @@ forbid (
 				t.Errorf("Failed to create policy store: %s", err)
 				return
 			}
-			authorizer := cedarWebhookAuthorizer{store: policyStore}
+			authorizer := cedarWebhookAuthorizer{stores: []store.PolicyStore{policyStore}}
 			dec, reason, err := authorizer.Authorize(context.Background(), tc.input)
 			if err != nil {
 				t.Fatalf("Unexpected error: %v", err)

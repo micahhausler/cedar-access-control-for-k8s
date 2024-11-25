@@ -10,7 +10,6 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/runtime"
-	"k8s.io/apiserver/pkg/authorization/union"
 	"k8s.io/component-base/cli"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/cli/globalflag"
@@ -27,7 +26,7 @@ import (
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/admission"
-	cedarauthorizer "github.com/awslabs/cedar-access-control-for-k8s/internal/server/authorizer"
+	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/authorizer"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/config"
 	serveroptions "github.com/awslabs/cedar-access-control-for-k8s/internal/server/options"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/store"
@@ -92,32 +91,25 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 	defer func() { cancel() }()
 	klog.InfoS("Starting cedar-webhook", "version", version.Get())
 
+	fileStore := store.NewLocalPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
+
 	crdStore, err := store.NewCRDPolicyStore()
 	if err != nil {
 		klog.Fatal("error creating CRD policy store", "error", err)
 	}
 
-	fileStore := store.NewLocalPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
-
-	cedarauthorizer.NewAuthorizer(crdStore)
-	authorizer := union.New(
-		// file-backed authorizer goes first
-		cedarauthorizer.NewAuthorizer(fileStore),
-		// CRD-backed authorizer goes last
-		cedarauthorizer.NewAuthorizer(crdStore),
-	)
+	authorizer := authorizer.NewAuthorizer(fileStore, crdStore)
 
 	pset := cedar.NewPolicySet()
 	pset.Add("allow-all-admission", admission.AllowAllAdmissionPolicy())
 
-	// We use a unified store for admission because
-	// the we add a default allow-all admission policy.
-	unifiedPolicyStore := store.NewUnifiedStore(
-		store.StaticStore(*pset),
+	// We add a default allow-all admission policy as a static store at the end
+	admissionPolicyStores := store.TieredPolicyStores([]store.PolicyStore{
 		fileStore,
 		crdStore,
-	)
-	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(unifiedPolicyStore, true)}
+		store.StaticStore(*pset),
+	})
+	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(admissionPolicyStores, true)}
 	ctrl.SetLogger(logr.FromSlogHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug})))
 
 	srv := server.NewServer(authorizer, vWebhook, config)

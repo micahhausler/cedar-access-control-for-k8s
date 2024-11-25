@@ -21,13 +21,15 @@ type Authorizer interface {
 	Authorize(context.Context, authorizer.Attributes) (authorizer.Decision, string, error)
 }
 
-// NewAuthorizer creates a Cedar authorizer
-func NewAuthorizer(policyStore store.PolicyStore) Authorizer {
-	return &cedarWebhookAuthorizer{store: policyStore}
+// NewAuthorizer creates a Cedar authorizer.
+// Each store takes priority over the susequent stores
+func NewAuthorizer(stores ...store.PolicyStore) Authorizer {
+	return &cedarWebhookAuthorizer{stores: stores}
 }
 
 type cedarWebhookAuthorizer struct {
-	store store.PolicyStore
+	stores       store.TieredPolicyStores
+	storesLoaded bool
 }
 
 func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttributes authorizer.Attributes) (authorizer.Decision, string, error) {
@@ -46,17 +48,21 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 		// TODO: are there any system users we should always skip? Anonymous probably?
 		return authorizer.DecisionNoOpinion, "", nil
 	}
-
-	if !e.store.InitalPolicyLoadComplete() {
-		klog.V(3).Info("Policy store not yet loaded, issuing no opinion")
-		return authorizer.DecisionNoOpinion, "", nil
+	if !e.storesLoaded {
+		for _, store := range e.stores {
+			if !store.InitalPolicyLoadComplete() {
+				return authorizer.DecisionNoOpinion, "", nil
+			}
+		}
+		e.storesLoaded = true
 	}
 	entities, request := RecordToCedarResource(requestAttributes)
 	entityJson, _ := entities.MarshalJSON()
 	requestJson, _ := json.Marshal(request)
 	klog.V(3).Info("Request entities ", string(entityJson))
 	klog.V(3).Info("Cedar request ", string(requestJson))
-	ok, diagnostic := e.store.PolicySet(ctx).IsAuthorized(entities, request)
+
+	ok, diagnostic := e.stores.IsAuthorized(entities, request)
 	klog.V(9).InfoS("Authorize", "ok", ok, "Diagnostic", diagnosticToReason(diagnostic))
 	if ok {
 		return authorizer.DecisionAllow, diagnosticToReason(diagnostic), nil
@@ -70,14 +76,14 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 	return authorizer.DecisionNoOpinion, "", nil
 }
 
-type entityDerivationFunc = func(attributes authorizer.Attributes) cedartypes.Entity
-
 // mergeMaps merges right into left, overwriting any existing keys in left
 func mergeMaps[Map ~map[K]V, K comparable, V any](left Map, right Map) {
 	for k, v := range right {
 		left[k] = v
 	}
 }
+
+type entityDerivationFunc = func(attributes authorizer.Attributes) cedartypes.Entity
 
 func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.EntityMap, cedar.Request) {
 	action, reqEntities := ActionEntities(attributes.GetVerb())

@@ -1,8 +1,6 @@
 package store
 
 import (
-	"context"
-
 	"github.com/cedar-policy/cedar-go"
 )
 
@@ -28,7 +26,7 @@ func NewMemoryStore(filename string, document []byte, loadComplete bool) (Policy
 	}, nil
 }
 
-func (s *memoryStore) PolicySet(_ context.Context) *cedar.PolicySet {
+func (s *memoryStore) PolicySet() *cedar.PolicySet {
 	return s.policies
 }
 
@@ -42,7 +40,7 @@ func (s *memoryStore) Name() string {
 
 type StaticStore cedar.PolicySet
 
-func (s StaticStore) PolicySet(_ context.Context) *cedar.PolicySet {
+func (s StaticStore) PolicySet() *cedar.PolicySet {
 	ps := cedar.PolicySet(s)
 	return &ps
 }

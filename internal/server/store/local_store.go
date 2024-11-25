@@ -1,7 +1,6 @@
 package store
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -91,7 +90,7 @@ func (s *localPolicyStore) loadPolicies() {
 	s.policies = policySet
 }
 
-func (s *localPolicyStore) PolicySet(_ context.Context) *cedar.PolicySet {
+func (s *localPolicyStore) PolicySet() *cedar.PolicySet {
 	s.policiesMu.RLock()
 	defer s.policiesMu.RUnlock()
 	return s.policies

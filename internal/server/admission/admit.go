@@ -20,15 +20,16 @@ import (
 )
 
 type cedarHandler struct {
-	store        store.PolicyStore
-	allowOnError bool
+	stores         store.TieredPolicyStores
+	allStoresReady bool
+	allowOnError   bool
 }
 
 var _ admission.Handler = &cedarHandler{}
 
-func NewCedarHandler(store store.PolicyStore, allowOnError bool) admission.Handler {
+func NewCedarHandler(stores []store.PolicyStore, allowOnError bool) admission.Handler {
 	return &cedarHandler{
-		store:        store,
+		stores:       stores,
 		allowOnError: allowOnError,
 	}
 }
@@ -45,12 +46,17 @@ func (h *cedarHandler) Handle(ctx context.Context, req admission.Request) admiss
 		return allowedResponse(req.UID)
 	}
 
-	if !h.store.InitalPolicyLoadComplete() {
-		klog.V(2).Info("policy store not ready, emitting allow response")
-		return allowedResponse(req.UID)
+	if !h.allStoresReady {
+		for i, store := range h.stores {
+			if !store.InitalPolicyLoadComplete() {
+				klog.V(2).Infof("policy store [%d] (%s) not ready, emitting allow response", i, store.Name())
+				return allowedResponse(req.UID)
+			}
+		}
+		h.allStoresReady = true
 	}
 
-	allowed, diagnostics, err := h.review(ctx, &req)
+	allowed, diagnostics, err := h.review(req)
 	if err != nil {
 		klog.V(3).ErrorS(err, "error during review")
 		return admission.Errored(http.StatusInternalServerError, err)
@@ -73,7 +79,7 @@ func (h *cedarHandler) Handle(ctx context.Context, req admission.Request) admiss
 	return vResp
 }
 
-func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool, *cedar.Diagnostic, error) {
+func (h *cedarHandler) review(req admission.Request) (bool, *cedar.Diagnostic, error) {
 	if reqJSON, err := json.Marshal(req); err != nil {
 		klog.V(8).Info("Reviewing request ", string(reqJSON))
 	} else {
@@ -92,7 +98,6 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
 		}
 	} else {
-		// Convert the request to a Cedar entity
 		resourceEntity, err = entities.CedarResourceEntityFromAdmissionRequest(req)
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
@@ -139,8 +144,6 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 		"resource", resourceEntity.UID,
 		"context", context,
 	)
-	// Get the policy set from the store
-	policySet := h.store.PolicySet(ctx)
 
 	cedarReq := cedartypes.Request{
 		Principal: *principalEntity,
@@ -149,7 +152,7 @@ func (h *cedarHandler) review(ctx context.Context, req *admission.Request) (bool
 		Context:   cedartypes.NewRecord(context),
 	}
 	klog.V(9).InfoS("Request evaluation input", "uid", req.UID, "request", cedarReq)
-	decision, diagnostics := policySet.IsAuthorized(requestEntities, cedarReq)
+	decision, diagnostics := h.stores.IsAuthorized(requestEntities, cedarReq)
 	klog.V(9).InfoS("Policy decision", "uid", req.UID, "decision", decision, "diagnostics", diagnostics)
 	if decision == cedar.Deny {
 		if len(diagnostics.Reasons) == 0 && len(diagnostics.Errors) == 0 {

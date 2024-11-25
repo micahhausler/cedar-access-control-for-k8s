@@ -12,12 +12,21 @@ import (
 	"github.com/awslabs/cedar-access-control-for-k8s/api/v1alpha1"
 	"github.com/cedar-policy/cedar-go"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	uitlruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog/v2"
-
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 )
+
+var (
+	scheme *runtime.Scheme = runtime.NewScheme()
+)
+
+func init() {
+	uitlruntime.Must(v1alpha1.AddToScheme(scheme))
+}
 
 type crdPolicyStore struct {
 	initalPolicyLoadComplete   bool
@@ -178,7 +187,7 @@ func (s *crdPolicyStore) populatePolicies() {
 	klog.Infof("Cache started")
 }
 
-func (s *crdPolicyStore) PolicySet(ctx context.Context) *cedar.PolicySet {
+func (s *crdPolicyStore) PolicySet() *cedar.PolicySet {
 	s.policiesMu.RLock()
 	defer s.policiesMu.RUnlock()
 	return s.policies

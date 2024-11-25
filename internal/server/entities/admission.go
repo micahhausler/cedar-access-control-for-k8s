@@ -53,15 +53,12 @@ func AdmissionActionEntities() []cedartypes.Entity {
 }
 
 // get the principal UID, and all principal entities from the request
-func CedarPrincipalEntitesFromAdmissionRequest(req *admission.Request) (*cedartypes.EntityUID, cedartypes.EntityMap, error) {
-	if req == nil {
-		return nil, nil, errors.New("request is nil")
-	}
+func CedarPrincipalEntitesFromAdmissionRequest(req admission.Request) (*cedartypes.EntityUID, cedartypes.EntityMap, error) {
 	principalUid, entities := UserToCedarEntity(&UserInfoWrapper{req.UserInfo})
 	return &principalUid, entities, nil
 }
 
-func CedarActionEntityFromAdmissionRequest(req *admission.Request) (cedartypes.EntityUID, error) {
+func CedarActionEntityFromAdmissionRequest(req admission.Request) (cedartypes.EntityUID, error) {
 	resp := cedartypes.EntityUID{Type: schema.AdmissionActionEntityType}
 	switch req.Operation {
 	case "CONNECT":
@@ -141,15 +138,15 @@ func UnstructuredFromAdmissionRequestObject(data []byte) (*unstructured.Unstruct
 	return obj, nil
 }
 
-func CedarResourceEntityFromAdmissionRequest(req *admission.Request) (*cedartypes.Entity, error) {
+func CedarResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, error) {
 	return cedarResourceEntityFromAdmissionRequest(req, req.Object.Raw)
 }
 
-func CedarOldResourceEntityFromAdmissionRequest(req *admission.Request) (*cedartypes.Entity, error) {
+func CedarOldResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, error) {
 	return cedarResourceEntityFromAdmissionRequest(req, req.OldObject.Raw)
 }
 
-func cedarResourceEntityFromAdmissionRequest(req *admission.Request, rawData []byte) (*cedartypes.Entity, error) {
+func cedarResourceEntityFromAdmissionRequest(req admission.Request, rawData []byte) (*cedartypes.Entity, error) {
 	// Convert the request's generator resource to unstructured for expansion
 	obj, err := UnstructuredFromAdmissionRequestObject(rawData)
 	if err != nil {
@@ -177,7 +174,7 @@ func cedarResourceEntityFromAdmissionRequest(req *admission.Request, rawData []b
 		UID: cedartypes.EntityUID{
 			Type: cedartypes.EntityType(cedarResourceType),
 			ID: cedartypes.String(
-				ResourceRequestToPath(AdmissionRequestToAuthorizerAttribute(*req)),
+				ResourceRequestToPath(AdmissionRequestToAuthorizerAttribute(req)),
 			),
 		},
 		Attributes: attributes,
