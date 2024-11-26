@@ -38,11 +38,17 @@ func (s *memoryStore) Name() string {
 	return s.name
 }
 
+// StaticStore is a store type around a cedar.PolicySet
 type StaticStore cedar.PolicySet
 
+// PolicySet returns a pointer to the underlying cedar.PolicySet
 func (s StaticStore) PolicySet() *cedar.PolicySet {
 	ps := cedar.PolicySet(s)
 	return &ps
 }
-func (s StaticStore) Name() string                   { return "StaticStore" }
+
+// Name returns the name "StaticStore"
+func (s StaticStore) Name() string { return "StaticStore" }
+
+// InitialPolicyLoadComplete returns true
 func (s StaticStore) InitalPolicyLoadComplete() bool { return true }

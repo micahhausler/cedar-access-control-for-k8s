@@ -91,7 +91,7 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 	defer func() { cancel() }()
 	klog.InfoS("Starting cedar-webhook", "version", version.Get())
 
-	fileStore := store.NewLocalPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
+	fileStore := store.NewDirectoryPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
 
 	crdStore, err := store.NewCRDPolicyStore()
 	if err != nil {
@@ -109,16 +109,14 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 		crdStore,
 		store.StaticStore(*pset),
 	})
-	vWebhook := &cradmission.Webhook{Handler: admission.NewCedarHandler(admissionPolicyStores, true)}
+	vWebhook := &cradmission.Webhook{Handler: admission.NewHandler(admissionPolicyStores, true)}
 	ctrl.SetLogger(logr.FromSlogHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug})))
 
 	srv := server.NewServer(authorizer, vWebhook, config)
 	serverShutdownCh, listenerStoppedCh, err := config.SecureServing.Serve(srv.GetHandler(), 0, server.DeriveStopChannel(ctx))
-
 	if err != nil {
 		return err
 	}
-
 	go func() {
 		s := server.NewMetricsServer()
 		if err := s.ListenAndServe(); err != nil {

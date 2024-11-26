@@ -18,13 +18,11 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apiserver/pkg/authentication/user"
 	k8sauthorizer "k8s.io/apiserver/pkg/authorization/authorizer"
-	"k8s.io/component-base/metrics/legacyregistry"
 	"k8s.io/klog/v2"
 
 	cedarauthorizer "github.com/awslabs/cedar-access-control-for-k8s/internal/server/authorizer"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/config"
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/metrics"
-	"github.com/awslabs/cedar-access-control-for-k8s/internal/server/options"
 )
 
 // AuthorizerServer is contains the authorization handler
@@ -64,25 +62,6 @@ func NewServer(authorizer cedarauthorizer.Authorizer, admissionHandler http.Hand
 		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 	}
 	return as
-}
-
-func newHealthHandlers() *http.ServeMux {
-	mux := http.NewServeMux()
-	// TODO: actually check health status
-	mux.HandleFunc("/healthz", healthzHandlerFunc())
-	mux.HandleFunc("/readyz", healthzHandlerFunc())
-	mux.Handle("/metrics", legacyregistry.Handler())
-	return mux
-}
-
-// NewMetrics returns a new metrics server.
-func NewMetricsServer() *http.Server {
-	return &http.Server{
-		Addr:         fmt.Sprintf("%s:%d", options.CedarAuthorizerDefaultAddress, options.CedarAuthorizerMetricsPort),
-		Handler:      newHealthHandlers(),
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
-	}
 }
 
 func (as *AuthorizerServer) authorizeHandlerFunc(authorizer cedarauthorizer.Authorizer, errorInjector *ErrorInjector) http.HandlerFunc {
@@ -134,12 +113,6 @@ func (as *AuthorizerServer) authorizeHandlerFunc(authorizer cedarauthorizer.Auth
 		attributes := GetAuthorizerAttributes(sar)
 		authorizationDecision, reason, err = errorInjector.InjectIfEnabled(authorizer.Authorize(r.Context(), attributes))
 		writeResponse(w, requestId, err, authorizationDecision, reason)
-	}
-}
-
-func healthzHandlerFunc() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
 	}
 }
 

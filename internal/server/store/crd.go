@@ -125,7 +125,6 @@ func (s *crdPolicyStore) populatePolicies() {
 	var config *rest.Config
 	var err error
 
-	// TODO: plumb down kubeconfig via flags
 	if kubeconfigPath, ok := os.LookupEnv("KUBECONFIG"); ok {
 		for {
 			fi, err := fs.Stat(os.DirFS("/"), strings.TrimLeft(kubeconfigPath, "/"))
@@ -154,10 +153,7 @@ func (s *crdPolicyStore) populatePolicies() {
 			return
 		}
 	}
-
-	c, err := cache.New(config, cache.Options{
-		Scheme: scheme,
-	})
+	c, err := cache.New(config, cache.Options{Scheme: scheme})
 	if err != nil {
 		klog.Fatalf("Error creating cache: %v", err)
 		return

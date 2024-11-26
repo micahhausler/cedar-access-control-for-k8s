@@ -27,7 +27,7 @@ type cedarHandler struct {
 
 var _ admission.Handler = &cedarHandler{}
 
-func NewCedarHandler(stores []store.PolicyStore, allowOnError bool) admission.Handler {
+func NewHandler(stores []store.PolicyStore, allowOnError bool) admission.Handler {
 	return &cedarHandler{
 		stores:       stores,
 		allowOnError: allowOnError,

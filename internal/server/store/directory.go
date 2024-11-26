@@ -11,8 +11,8 @@ import (
 	"k8s.io/klog/v2"
 )
 
-// policyStore contains the Indexers that stores policies
-type localPolicyStore struct {
+// directoryPolicyStore contains the Indexers that stores policies
+type directoryPolicyStore struct {
 	initalPolicyLoadComplete   bool
 	initalPolicyLoadCompleteMu sync.RWMutex
 
@@ -23,11 +23,11 @@ type localPolicyStore struct {
 	policiesMu      sync.RWMutex
 }
 
-// NewPolicyStore creates a PolicyStore
-func NewLocalPolicyStore(directory string, refreshInterval time.Duration) PolicyStore {
+// NewDirectoryPolicyStore creates a PolicyStore
+func NewDirectoryPolicyStore(directory string, refreshInterval time.Duration) PolicyStore {
 	// TODO: impose some validation (positive, min/max) on refreshInterval
 	// TODO: return an error if directory doesn't exist at startup
-	store := &localPolicyStore{
+	store := &directoryPolicyStore{
 		directory:       directory,
 		refreshInterval: refreshInterval,
 		name:            "FilePolicyStore",
@@ -37,14 +37,14 @@ func NewLocalPolicyStore(directory string, refreshInterval time.Duration) Policy
 	return store
 }
 
-func (s *localPolicyStore) reloadAsync() {
+func (s *directoryPolicyStore) reloadAsync() {
 	ticker := time.NewTicker(s.refreshInterval)
 	for range ticker.C {
 		s.loadPolicies()
 	}
 }
 
-func (s *localPolicyStore) loadPolicies() {
+func (s *directoryPolicyStore) loadPolicies() {
 	s.initalPolicyLoadCompleteMu.Lock()
 	s.initalPolicyLoadComplete = true
 	defer s.initalPolicyLoadCompleteMu.Unlock()
@@ -90,18 +90,18 @@ func (s *localPolicyStore) loadPolicies() {
 	s.policies = policySet
 }
 
-func (s *localPolicyStore) PolicySet() *cedar.PolicySet {
+func (s *directoryPolicyStore) PolicySet() *cedar.PolicySet {
 	s.policiesMu.RLock()
 	defer s.policiesMu.RUnlock()
 	return s.policies
 }
 
-func (s *localPolicyStore) InitalPolicyLoadComplete() bool {
+func (s *directoryPolicyStore) InitalPolicyLoadComplete() bool {
 	s.initalPolicyLoadCompleteMu.RLock()
 	defer s.initalPolicyLoadCompleteMu.RUnlock()
 	return s.initalPolicyLoadComplete
 }
 
-func (s *localPolicyStore) Name() string {
+func (s *directoryPolicyStore) Name() string {
 	return s.name
 }
