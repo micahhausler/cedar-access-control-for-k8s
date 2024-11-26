@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -35,8 +36,16 @@ func RecordRequest(recordingDir string) Middleware {
 	}
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				klog.ErrorS(err, "Failed to read request body")
+				http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+				return
+			}
+			r.Body = io.NopCloser(bytes.NewBuffer(body))
+
 			defer func() {
-				if r.Body == nil {
+				if r.ContentLength == 0 || r.Method != http.MethodPost {
 					return
 				}
 				filename := filepath.Join(
@@ -50,11 +59,10 @@ func RecordRequest(recordingDir string) Middleware {
 					klog.ErrorS(err, "Failed to open file", "filename", filename)
 					return
 				}
-				defer f.Close()      //nolint:all
-				defer r.Body.Close() //nolint:all
-				_, err = io.Copy(f, r.Body)
+				defer f.Close() //nolint:all
+				_, err = f.Write(body)
 				if err != nil {
-					klog.ErrorS(err, "Failed to write request", "filename", filename)
+					klog.ErrorS(err, "Failed to write request file", "filename", filename)
 				}
 				klog.V(8).InfoS("Recorded request", "filename", filename)
 			}()

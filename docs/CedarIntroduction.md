@@ -55,10 +55,10 @@ forbid (
     action == k8s::admission::Action::"create",
     resource is core::v1::ConfigMap
 ) when {
-    principal.metadata.name == "test-user"
+    principal.name == "test-user" &&
+    resource.metadata.name == "test-config"
 };
 ```
-
 
 ## Request Evaluation
 

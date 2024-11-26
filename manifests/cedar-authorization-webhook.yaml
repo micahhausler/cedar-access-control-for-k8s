@@ -11,6 +11,8 @@ spec:
     - command:
         - /cedar-webhook
         - -v=8
+        # - --enable-request-recording=true
+        # - --request-recording-dir=/cedar/logs/request
       image: cedar-webhook:latest
       imagePullPolicy: IfNotPresent
       env:
