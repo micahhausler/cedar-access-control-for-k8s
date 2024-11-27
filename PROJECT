@@ -10,7 +10,7 @@ repo: github.com/awslabs/cedar-access-control-for-k8s
 resources:
 - api:
     crdVersion: v1alpha1
-  controller: true
+  controller: false
   domain: k8s.aws
   group: cedar
   kind: Policy

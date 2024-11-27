@@ -29,6 +29,7 @@ type PolicySpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Content is a string representing the policy content
+	//+required
 	Content string `json:"content"`
 }
 
@@ -47,6 +48,7 @@ type Policy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	//+required
 	Spec   PolicySpec   `json:"spec"`
 	Status PolicyStatus `json:"status,omitempty"`
 }
@@ -58,10 +60,6 @@ type PolicyList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Policy `json:"items"`
-}
-
-func init() {
-	SchemeBuilder.Register(&Policy{}, &PolicyList{})
 }
 
 // E2ELatencyLog represents the log structure to emit when calculating e2e latency

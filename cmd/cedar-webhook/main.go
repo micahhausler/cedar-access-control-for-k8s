@@ -100,7 +100,7 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 		return fmt.Errorf("failed to parse store config: %w", err)
 	}
 
-	stores, err := cfg.TieredPolicyStores()
+	stores, err := store.CedarConfigStores(cfg)
 	if err != nil {
 		return err
 	}

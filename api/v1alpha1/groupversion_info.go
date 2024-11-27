@@ -37,4 +37,5 @@ var (
 
 func init() {
 	SchemeBuilder.Register(&PolicyList{}, &Policy{})
+	SchemeBuilder.Register(&CedarConfig{})
 }
