@@ -67,7 +67,9 @@ clean-kind: ## Delete the kind cluster and clean up genereated files
 		./scratch/webhook.image.tar
 
 .PHONY: sample-user-kubeconfig
-sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-group' and 'requires-labels'
+sample-user-kubeconfig: mount/sample-user-kubeconfig.yaml ## Create a user 'sample-user' in the groups 'sample-group' and 'requires-labels'
+
+mount/sample-user-kubeconfig.yaml:
 	# Create a sample user kubeconfig so devs have an alternate identity to test things with
 	$(CONTAINER_TOOL) exec -it $(KIND_NAME)-control-plane \
 		/bin/sh -c '/usr/bin/kubeadm kubeconfig user \
@@ -77,6 +79,12 @@ sample-user-kubeconfig: ## Create a user 'sample-user' in the groups 'sample-gro
 		--validity-period 744h > /cedar-authorizer/sample-user-kubeconfig.yaml'
 	# Set the sample user kubeconfig's server URL to something useable from the developer's desktop
 	kubectl --kubeconfig ./mount/sample-user-kubeconfig.yaml config set clusters.kubernetes.server $(shell kubectl config view --minify -o jsonpath="{.clusters[0].cluster.server}")
+
+.PHONY: sample-user-exercise
+sample-user-exercise: mount/sample-user-kubeconfig.yaml admission-webhook 
+	kubectl get cm --show-labels
+	KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl get cm -l owner=sample-user --show-labels
+	KUBECONFIG=./mount/sample-user-kubeconfig.yaml kubectl create cm sample-config --from-literal=k1=v1
 
 .PHONY: test-user-kubeconfig
 test-user-kubeconfig: ## Create a user 'test-user' in the groups 'test-group' and 'viewers'

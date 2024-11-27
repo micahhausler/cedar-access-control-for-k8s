@@ -2,7 +2,6 @@ package options
 
 import (
 	"net"
-	"time"
 
 	apiserveroptions "k8s.io/apiserver/pkg/server/options"
 	cliflag "k8s.io/component-base/cli/flag"
@@ -12,10 +11,6 @@ import (
 )
 
 const (
-	// CedarAuthorizerPolicyDir is the location for all the policy, access entry and policy association files
-	CedarAuthorizerPolicyDir                = "/cedar-authorizer/policies"
-	CedarAuthorizerPolicyDirRefreshInterval = time.Minute
-
 	// CedarAuthorizerIdentityName is the name of the authorizer's own identity
 	CedarAuthorizerIdentityName = "system:authorizer:cedar-authorizer"
 	// CedarAuthorizerPairName is the filename of the (optionally pre-generated) certs
@@ -43,15 +38,11 @@ const (
 type AuthorizerOptions struct {
 	ShutdownTimeout int
 
+	StoreConfig string
+
 	SecureServing  *apiserveroptions.SecureServingOptions
 	ErrorInjection *ErrorInjectionOptions
-	Cedar          *CedarOptions
 	DebugOptions   *DebugOptions
-}
-
-type CedarOptions struct {
-	PolicyDir                 string
-	PolicyDirRrefreshInterval time.Duration
 }
 
 type DebugOptions struct {
@@ -74,7 +65,7 @@ func NewCedarAuthorizerOptions() *AuthorizerOptions {
 		ShutdownTimeout: CedarAuthorizerShutdownTimeout,
 		SecureServing:   NewAuthorizerSecureServingOptions(),
 		ErrorInjection:  NewErrorInjectionOptions(),
-		Cedar:           NewCedarOptions(),
+		StoreConfig:     "",
 		DebugOptions:    NewDebugOptions(),
 	}
 }
@@ -97,13 +88,6 @@ func NewErrorInjectionOptions() *ErrorInjectionOptions {
 		ArtificialErrorRate:        CedarAuthorizerDefaultArtificialErrorRate,
 		ArtificialDenyRate:         CedarAuthorizerDefaultArtificialDenyRate,
 		ConfirmNonProdInjectErrors: false,
-	}
-}
-
-func NewCedarOptions() *CedarOptions {
-	return &CedarOptions{
-		PolicyDir:                 CedarAuthorizerPolicyDir,
-		PolicyDirRrefreshInterval: CedarAuthorizerPolicyDirRefreshInterval,
 	}
 }
 
@@ -141,6 +125,8 @@ func (o *AuthorizerOptions) ApplyTo(cfg *config.AuthorizationWebhookConfig) erro
 		return nil
 	}
 
+	cfg.StoreConfig = o.StoreConfig
+
 	cfg.ShutdownTimeout = o.ShutdownTimeout
 
 	if err := o.SecureServing.ApplyTo(&cfg.SecureServing); err != nil {
@@ -148,9 +134,6 @@ func (o *AuthorizerOptions) ApplyTo(cfg *config.AuthorizationWebhookConfig) erro
 	}
 
 	o.ErrorInjection.ApplyTo(&cfg.ErrorInjection)
-
-	cfg.PolicyDir = o.Cedar.PolicyDir
-	cfg.PolicyDirRefreshInterval = o.Cedar.PolicyDirRrefreshInterval
 
 	if o.DebugOptions != nil {
 		o.DebugOptions.ApplyTo(cfg.DebugOptions)
@@ -193,8 +176,7 @@ func (o *AuthorizerOptions) Flags() *cliflag.NamedFlagSets {
 	fss := cliflag.NamedFlagSets{}
 
 	fs := fss.FlagSet("cedar")
-	fs.StringVar(&o.Cedar.PolicyDir, "policies-directory", o.Cedar.PolicyDir, "The directory containing Cedar policy files ending in .cedar")
-	fs.DurationVar(&o.Cedar.PolicyDirRrefreshInterval, "policies-directory-refresh-interval", o.Cedar.PolicyDirRrefreshInterval, "The interval at which to reread the policy directory")
+	fs.StringVar(&o.StoreConfig, "config", o.StoreConfig, "The config for the Cedar policy stores")
 
 	fs = fss.FlagSet("runtime")
 	fs.IntVar(&o.ShutdownTimeout, "shutdown-timeout", o.ShutdownTimeout, "The length of time to wait between stopCh being closed and server shutdown being triggered.")

@@ -1,0 +1,15 @@
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: StoreConfig
+spec:
+  stores:
+    - type: "directory"
+      directoryStore:
+        path: "/cedar-authorizer/policies"
+        refreshInterval: 1m  # optional: defaults to 1m
+    # - type: "verifiedPermissions"
+    #   verifiedPermissionsStore:
+    #     policyStoreId: "F1GpuaUkZYeas3B8TBcXRj"
+    #     refreshInterval: 5m        # optional: defaults to 5m
+    #     awsRegion: "us-west-2"     # optional: uses default chain otherwise
+    #     awsProfile: "profile_name" # optional: uses default profile otherwise
+    - type: "crd"

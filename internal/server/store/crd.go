@@ -32,7 +32,9 @@ type crdPolicyStore struct {
 	initalPolicyLoadComplete   bool
 	initalPolicyLoadCompleteMu sync.RWMutex
 
-	cache cache.Cache
+	// kube context to use, if specified
+	kubeconfigContext string
+	cache             cache.Cache
 
 	// a map of resource name to policyID names
 	policyNames map[string][]cedar.PolicyID
@@ -140,7 +142,9 @@ func (s *crdPolicyStore) populatePolicies() {
 			}
 			time.Sleep(5 * time.Second)
 		}
-		config, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+		config, err = clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+			&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfigPath},
+			&clientcmd.ConfigOverrides{CurrentContext: s.kubeconfigContext}).ClientConfig()
 		if err != nil {
 			klog.Fatalf("Error building kubeconfig: %v", err)
 			return
@@ -193,8 +197,9 @@ func (s *crdPolicyStore) Name() string {
 	return "CRDPolicyStore"
 }
 
-func NewCRDPolicyStore() (PolicyStore, error) {
+func NewCRDPolicyStore(kubeconfigContext string) (PolicyStore, error) {
 	resp := &crdPolicyStore{
+		kubeconfigContext:        kubeconfigContext,
 		initalPolicyLoadComplete: false,
 		policyNames:              map[string][]cedar.PolicyID{},
 		policies:                 cedar.NewPolicySet(),

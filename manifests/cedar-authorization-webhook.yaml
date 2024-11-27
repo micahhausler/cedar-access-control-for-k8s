@@ -8,11 +8,13 @@ metadata:
   namespace: kube-system
 spec:
   containers:
-    - command:
+    - name: cedar-webhook
+      command:
         - /cedar-webhook
         - -v=8
+        - --config=/cedar-authorizer/cedar-config.yaml
         # - --enable-request-recording=true
-        # - --request-recording-dir=/cedar/logs/request
+        # - --request-recording-dir=/cedar-authorizer/logs/request
       image: cedar-webhook:latest
       imagePullPolicy: IfNotPresent
       env:
@@ -28,7 +30,6 @@ spec:
         initialDelaySeconds: 5
         periodSeconds: 10
         timeoutSeconds: 15
-      name: cedar-webhook
       readinessProbe:
         failureThreshold: 3
         httpGet:
@@ -38,13 +39,6 @@ spec:
           scheme: HTTP
         periodSeconds: 1
         timeoutSeconds: 15
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 250m
-          memory: 128Mi
       startupProbe:
         failureThreshold: 24
         httpGet:
@@ -55,9 +49,18 @@ spec:
         initialDelaySeconds: 5
         periodSeconds: 10
         timeoutSeconds: 15
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 250m
+          memory: 128Mi
       volumeMounts:
         - mountPath: /cedar-authorizer
           name: api-server-cedar-authorizer-files
+        - mountPath: /var/run/cedar-authorizer/certs
+          name: var-run-cedar-authorizer-certs
         - mountPath: /etc/ssl/certs
           name: ca-certs
           readOnly: true
@@ -70,10 +73,6 @@ spec:
         - mountPath: /usr/share/ca-certificates
           name: usr-share-ca-certificates
           readOnly: true
-        - mountPath: /var/run/cedar-authorizer/certs
-          name: var-run-cedar-authorizer-certs
-        - mountPath: /cedar/logs
-          name: cedar-logs
   hostNetwork: true
   priority: 2000001000
   priorityClassName: system-node-critical
@@ -82,13 +81,13 @@ spec:
       type: RuntimeDefault
   volumes:
     - hostPath:
-        path: /cedar-authorizer/logs
-        type: ""
-      name: cedar-logs
-    - hostPath:
         path: /cedar-authorizer
         type: ""
       name: api-server-cedar-authorizer-files
+    - hostPath:
+        path: /cedar-authorizer/certs
+        type: DirectoryOrCreate
+      name: var-run-cedar-authorizer-certs
     - hostPath:
         path: /etc/ssl/certs
         type: DirectoryOrCreate
@@ -105,8 +104,4 @@ spec:
         path: /usr/share/ca-certificates
         type: DirectoryOrCreate
       name: usr-share-ca-certificates
-    - hostPath:
-        path: /cedar-authorizer/certs
-        type: DirectoryOrCreate
-      name: var-run-cedar-authorizer-certs
 status: {}

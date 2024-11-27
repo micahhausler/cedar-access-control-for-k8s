@@ -1,0 +1,23 @@
+{
+    "spec": {
+        "stores": [
+            {
+                "type": "directory",
+                "directoryStore": {
+                    "path": "/cedar/policies",
+                    "refreshInterval": "1m"
+                }
+            },
+            {
+                "type": "verifiedPermissions",
+                "verifiedPermissionsStore": {
+                    "policyStoreId": "F1GpuaUkZYeas3B8TBcXRj",
+                    "refreshInterval": "5m"
+                }
+            },
+            {
+                "type": "crd"
+            }
+        ]
+    }
+}

@@ -13,10 +13,6 @@ import (
 
 // directoryPolicyStore contains the Indexers that stores policies
 type directoryPolicyStore struct {
-	initalPolicyLoadComplete   bool
-	initalPolicyLoadCompleteMu sync.RWMutex
-
-	name            string
 	directory       string
 	refreshInterval time.Duration
 	policies        *cedar.PolicySet
@@ -25,12 +21,10 @@ type directoryPolicyStore struct {
 
 // NewDirectoryPolicyStore creates a PolicyStore
 func NewDirectoryPolicyStore(directory string, refreshInterval time.Duration) PolicyStore {
-	// TODO: impose some validation (positive, min/max) on refreshInterval
 	// TODO: return an error if directory doesn't exist at startup
 	store := &directoryPolicyStore{
 		directory:       directory,
 		refreshInterval: refreshInterval,
-		name:            "FilePolicyStore",
 	}
 	store.loadPolicies()
 	go store.reloadAsync()
@@ -45,9 +39,6 @@ func (s *directoryPolicyStore) reloadAsync() {
 }
 
 func (s *directoryPolicyStore) loadPolicies() {
-	s.initalPolicyLoadCompleteMu.Lock()
-	s.initalPolicyLoadComplete = true
-	defer s.initalPolicyLoadCompleteMu.Unlock()
 
 	files, err := os.ReadDir(s.directory)
 	if err != nil {
@@ -97,11 +88,9 @@ func (s *directoryPolicyStore) PolicySet() *cedar.PolicySet {
 }
 
 func (s *directoryPolicyStore) InitalPolicyLoadComplete() bool {
-	s.initalPolicyLoadCompleteMu.RLock()
-	defer s.initalPolicyLoadCompleteMu.RUnlock()
-	return s.initalPolicyLoadComplete
+	return true
 }
 
 func (s *directoryPolicyStore) Name() string {
-	return s.name
+	return "FilePolicyStore"
 }

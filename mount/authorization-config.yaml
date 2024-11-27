@@ -12,7 +12,7 @@ authorizers:
       subjectAccessReviewVersion: v1
       matchConditionSubjectAccessReviewVersion: v1
       # NOTE: NoOpinion is just for development. 
-      # Production workloads should use `Deny`
+      # Production workloads should likely use `Deny`
       failurePolicy: NoOpinion 
       connectionInfo:
         type: KubeConfigFile

@@ -91,25 +91,29 @@ func Run(config *config.AuthorizationWebhookConfig) error {
 	defer func() { cancel() }()
 	klog.InfoS("Starting cedar-webhook", "version", version.Get())
 
-	fileStore := store.NewDirectoryPolicyStore(config.PolicyDir, config.PolicyDirRefreshInterval)
-
-	crdStore, err := store.NewCRDPolicyStore()
+	storeContent, err := os.ReadFile(config.StoreConfig)
 	if err != nil {
-		klog.Fatal("error creating CRD policy store", "error", err)
+		return fmt.Errorf("failed to read store config: %w", err)
+	}
+	cfg, err := store.ParseConfig(storeContent)
+	if err != nil {
+		return fmt.Errorf("failed to parse store config: %w", err)
 	}
 
-	authorizer := authorizer.NewAuthorizer(fileStore, crdStore)
+	stores, err := cfg.TieredPolicyStores()
+	if err != nil {
+		return err
+	}
+	klog.InfoS("Successfully loaded policy store config", "count", len(stores), "file", config.StoreConfig)
+
+	authorizer := authorizer.NewAuthorizer(stores...)
 
 	pset := cedar.NewPolicySet()
 	pset.Add("allow-all-admission", admission.AllowAllAdmissionPolicy())
+	stores = append(stores, store.StaticStore(*pset))
 
 	// We add a default allow-all admission policy as a static store at the end
-	admissionPolicyStores := store.TieredPolicyStores([]store.PolicyStore{
-		fileStore,
-		crdStore,
-		store.StaticStore(*pset),
-	})
-	vWebhook := &cradmission.Webhook{Handler: admission.NewHandler(admissionPolicyStores, true)}
+	vWebhook := &cradmission.Webhook{Handler: admission.NewHandler(store.TieredPolicyStores(stores), true)}
 	ctrl.SetLogger(logr.FromSlogHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug})))
 
 	srv := server.NewServer(authorizer, vWebhook, config)

@@ -2,36 +2,35 @@
 
 The following list of feature ideas are not yet built, but potential candidates for addition.
 
-## Multiple tiered policy stores
+## RBAC-converted policy store
 
-For this prototype, policies are all defined in as Policy custom resources.
-Because all policies are evaluated together and forbids take precedence over permits, its possible to deny all requests by adding
+While RBAC continues to function in a cluster configured with Cedar, it typically is configured as a Kubernetes Authorizer after a Webhook authorizer like Cedar so that Cedar `forbid` policies have precedence over RBAC rules. 
 
-```cedar
-forbid (
-    principal,
-    action,
-    resource
-);
+Many in-tree controllers (scheduler, kube-controller-manager, etc) rely on RBAC for authorization, and it is possible to write a forbid Cedar policy such as `forbid(principal, action, resource);` that can prevent a cluster from working.
+
+Rather than forcing users to convert RBAC policies to Cedar and configure a store with those policies, we could build a policy store that reads RBAC policies and converts them into Cedar policies as a named policy store.
+
+```yaml
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: StoreConfig
+spec:
+  stores:
+    - type: "directory"
+      directoryStore:
+        path: "/cedar-authorizer/priority-policies"
+    - type: "rbac"
+      rbacStore:
+        selector: # key/value labels to filter for on startup
+            kubernetes.io/bootstrapping: rbac-defaults  
+        requiredAnnotations: # required annotations of any RBAC resource to convert
+            rbac.authorization.kubernetes.io/autoupdate: "true"
+    - type: "crd" # CRD-authored policies come after RBAC-converted policies
 ```
 
-To defend against such a policy, we can introduce multiple tiers of policies with each tier evaluated independently.
-If a tier has an explicit `permit` or `forbid`, we'll take that decision and skip successive tiers.
-If there are no matching policies in a tier, we'll move on to the next tier.
-After all Cedar tiers, Kubernetes moves on to RBAC, and then denial by default.
-
-You can conceive of a system with the following tiers
-
-1. Highly trusted policies in a central policy store
-2. Converted policies for built-in RBAC rules, allowing controllers and other resources to function correctly
-3. User-defined policies in CRDs in a cluster
-
-## Amazon Verified Permissions integration
-
-[Amazon Verified Permissions][avp] is an AWS service that offers a fully managed authorization service and policy store based on Cedar.
-While we don't use AVP for authorizing individual Kubernetes requests currently, it could function very well as a central policy store for multiple clusters.
-
-[avp]: https://aws.amazon.com/verified-permissions/
+This could be either once at startup, or rely on a watch cache to auto-update. 
+If this were implemented, anyone with permission to create an RBAC policy could potentially create RBAC policies that could be enforced ahead of CRD-based `forbid` policies. 
+Care will need to be taken to ensure that only cluster-required RBAC policies are converted. 
+This could be either through a label selector/required annotations list as called out above, or through a static list of known policy names, or even bake in RBAC policies into the authorizer (along with the K8s version). 
 
 ## Cluster metadata
 

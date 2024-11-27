@@ -1,8 +1,6 @@
 package config
 
 import (
-	"time"
-
 	apiserver "k8s.io/apiserver/pkg/server"
 )
 
@@ -10,8 +8,7 @@ import (
 type AuthorizationWebhookConfig struct {
 	ShutdownTimeout int
 
-	PolicyDir                string
-	PolicyDirRefreshInterval time.Duration
+	StoreConfig string
 
 	ErrorInjection *ErrorInjectionConfig
 	SecureServing  *apiserver.SecureServingInfo

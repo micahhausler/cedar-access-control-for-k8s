@@ -1,0 +1,14 @@
+apiVersion: cedar.k8s.aws/v1alpha1
+kind: StoreConfig
+spec:
+  stores:
+    - type: "directory"
+      directoryStore:
+        path: "/cedar-authorizer/policies"
+        refreshInterval: 1m
+    - type: "verifiedPermissions"
+      verifiedPermissionsStore:
+        policyStoreId: "F1GpuaUkZYeas3B8TBcXRj"
+        # refreshInterval: 5m # use default interval of 5m
+    - type: "crd"
+    - type: "file" # invalid

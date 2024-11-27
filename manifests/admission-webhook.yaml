@@ -12,9 +12,9 @@ webhooks:
   name: vpolicy.cedar.k8s.aws
   rules:
   - apiGroups:
-    - ""
+    - "*"
     apiVersions:
-    - v1
+    - "*"
     operations:
     - CREATE
     - UPDATE
@@ -22,13 +22,5 @@ webhooks:
     - CONNECT
     resources:
     - "*/*"
-    # - configmaps
-    # - nodes
-    # - pods
-    # - pods/*
-    # - secrets
-    # - serviceaccounts
-    # - services
-    # - services/*
   sideEffects: None
   timeoutSeconds: 30

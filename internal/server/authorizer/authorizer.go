@@ -41,6 +41,12 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 		return authorizer.DecisionAllow, "cedar authorizer is always allowed to access policies", nil
 	}
 
+	if requestAttributes.GetUser().GetName() == options.CedarAuthorizerIdentityName &&
+		requestAttributes.IsReadOnly() &&
+		requestAttributes.GetAPIGroup() == "rbac.authorization.k8s.io" {
+		return authorizer.DecisionAllow, "cedar authorizer is always allowed to read RBAC policies", nil
+	}
+
 	if strings.HasPrefix(requestAttributes.GetUser().GetName(), "system:") &&
 		!strings.HasPrefix(requestAttributes.GetUser().GetName(), "system:serviceaccount:") &&
 		!strings.HasPrefix(requestAttributes.GetUser().GetName(), "system:node:") {
@@ -51,6 +57,7 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 	if !e.storesLoaded {
 		for _, store := range e.stores {
 			if !store.InitalPolicyLoadComplete() {
+				klog.InfoS("Policies not yet loaded, returning no opinion", "store", store.Name())
 				return authorizer.DecisionNoOpinion, "", nil
 			}
 		}

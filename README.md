@@ -140,6 +140,7 @@ This gives administrators powerful and unmatched new tools to secure their clust
 | [Potential Features](./docs/FutureFeatures.md) | A list of potential features to add to this project |
 | [Rejected Features](./docs/RejectedFeatures.md) | Features that were tried but failed to work out |
 | [Development](./docs/Development.md) | A guide to developing and contributing to this project |
+| [Operations](./docs/Operations.md) | A guide to operating the webhook in a cluster |
 
 ## FAQ
 
