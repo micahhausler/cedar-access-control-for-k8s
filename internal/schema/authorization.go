@@ -230,7 +230,7 @@ func GetAuthorizationActions(principalNs, entityNs, actionNs string) map[string]
 				principalPrefix + GroupPrincipalType,
 				principalPrefix + ServiceAccountPrincipalType,
 				principalPrefix + NodePrincipalType,
-				principalPrefix + ExtraValuesType,
+				principalPrefix + ExtraValueType,
 			},
 		},
 	}
@@ -254,7 +254,7 @@ func GetAuthorizationNamespace(principalNs, entityNs, actionNs string) CedarSche
 			NodePrincipalType:           NodeEntity(),
 			NonResourceURLEntityName:    NonResourceURLEntity(),
 			ResourceEntityName:          ResourceEntity(),
-			ExtraValuesType:             ExtraEntity(),
+			ExtraValueType:              ExtraEntity(),
 		},
 		CommonTypes: map[string]EntityShape{
 			FieldRequirementName:     FieldRequirementEntityShape(),

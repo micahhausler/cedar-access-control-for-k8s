@@ -1,0 +1,84 @@
+metadata:
+  creationTimestamp: null
+  name: impersonator
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: impersonator
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: impersonator
+---
+metadata:
+  creationTimestamp: null
+  name: impersonator
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - hoth
+  - tatooine
+  resources:
+  - userextras/planets
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - hoth
+  - tatooine
+  resources:
+  - userextras
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - lukeskywalker
+  resources:
+  - users
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - jedi
+  - padawan
+  resources:
+  - groups
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - DB8EEC53-C32A-4D62-8BB2-A4B6126E9193
+  resources:
+  - uids
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - DB8EEC53-C32A-4D62-8BB2-A4B6126E9193
+  - C41A46B6-4E27-43C4-9664-0A1CB8651DAC
+  resources:
+  - uids
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
+  - hoth
+  - tatooine
+  resources:
+  - userextras/planets
+  - userextras/systems
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - impersonate

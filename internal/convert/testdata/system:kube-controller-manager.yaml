@@ -1,0 +1,29 @@
+metadata:
+  creationTimestamp: null
+  name: system:kube-controller-manager
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: system:kube-controller-manager
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: system:kube-controller-manager
+---
+metadata:
+  creationTimestamp: null
+  name: system:kube-controller-manager
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - servicaccount/token
+  verbs:
+  - create

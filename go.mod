@@ -1,8 +1,6 @@
 module github.com/awslabs/cedar-access-control-for-k8s
 
-go 1.22.0
-
-toolchain go1.22.1
+go 1.23.3
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.32.5

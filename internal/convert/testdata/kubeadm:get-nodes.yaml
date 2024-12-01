@@ -1,0 +1,22 @@
+metadata:
+  creationTimestamp: null
+  name: kubeadm:get-nodes
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: kubeadm:get-nodes
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:bootstrappers:kubeadm:default-node-token
+---
+metadata:
+  creationTimestamp: null
+  name: system:public-info-viewer
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get

@@ -710,6 +710,40 @@ permit (
 			wantReason:    `{"reasons":[{"policy":"policy0","position":{"filename":"Allow Impersonate group","offset":1,"line":2,"column":1}}]}`,
 		},
 		{
+			name: "Allow Impersonate extra",
+			inputPolicy: `
+permit (
+	principal is k8s::User,
+	action == k8s::Action::"impersonate",
+	resource is k8s::Extra
+) when {
+	principal.name == "test-user" &&
+	resource.key == "test-key" &&
+	resource has value &&
+	resource.value == "test-value"
+};`,
+			input: authorizer.AttributesRecord{
+				User: &user.DefaultInfo{
+					UID:    "1234567890",
+					Name:   "test-user",
+					Groups: []string{"test-group"},
+					Extra:  map[string][]string{"attr1": {"value1"}},
+				},
+				Verb:            "impersonate",
+				Namespace:       "",
+				APIGroup:        "",
+				APIVersion:      "",
+				Resource:        "userextras",
+				Subresource:     "test-key",
+				Name:            "test-value",
+				ResourceRequest: true,
+				Path:            "",
+			},
+			storeComplete: true,
+			wantDecision:  authorizer.DecisionAllow,
+			wantReason:    `{"reasons":[{"policy":"policy0","position":{"filename":"Allow Impersonate extra","offset":1,"line":2,"column":1}}]}`,
+		},
+		{
 			name: "Explicit Deny",
 			inputPolicy: `
 forbid (

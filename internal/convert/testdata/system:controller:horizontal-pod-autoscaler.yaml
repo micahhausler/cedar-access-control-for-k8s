@@ -1,0 +1,79 @@
+metadata:
+  creationTimestamp: null
+  name: system:controller:horizontal-pod-autoscaler
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: system:controller:horizontal-pod-autoscaler
+subjects:
+- kind: ServiceAccount
+  name: horizontal-pod-autoscaler
+  namespace: kube-system
+---
+metadata:
+  creationTimestamp: null
+  name: system:controller:horizontal-pod-autoscaler
+rules:
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers/status
+  verbs:
+  - update
+- apiGroups:
+  - '*'
+  resources:
+  - '*/scale'
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - pods/*
+  - nodes
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - list
+- apiGroups:
+  - metrics.k8s.io
+  resources:
+  - pods
+  verbs:
+  - list
+- apiGroups:
+  - custom.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - external.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+  - update

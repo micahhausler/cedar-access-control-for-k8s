@@ -1,0 +1,27 @@
+metadata:
+  creationTimestamp: null
+  name: system:public-info-viewer
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: system:public-info-viewer
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:authenticated
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:unauthenticated
+---
+metadata:
+  creationTimestamp: null
+  name: system:public-info-viewer
+rules:
+- nonResourceURLs:
+  - /healthz
+  - /livez
+  - /readyz
+  - /version
+  - /version/
+  verbs:
+  - get

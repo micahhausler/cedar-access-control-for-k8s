@@ -91,7 +91,7 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 			}
 
 			// if the policy has a "*" and other verbs, we can just use "*"
-			rule.Verbs = reduceIfHasStar(rule.Verbs)
+			rule.Verbs = reduceIfHasStar(reduceToUnique(rule.Verbs))
 
 			switch len(rule.Verbs) {
 			case 1:
@@ -123,45 +123,97 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 				}
 				policyId := cedar.PolicyID(binder.Name() + strconv.Itoa(pi) + strconv.Itoa(ri))
 				resp.Add(policyId, cedar.NewPolicyFromAST(policy))
-			} else {
-				rule.APIGroups = reduceIfHasStar(rule.APIGroups)
-				rule.Resources = reduceIfHasStar(rule.Resources)
-				// RBAC doesn't allow "*" as a resource name: empty slice means "*"
-
-				condition := conditionForAPIGroups(rule)
-				condition = conditionForResources(condition, rule)
-				condition = conditionForResourceNames(condition, rule)
-
-				if namespace != "" {
-					condition = condition.And(ast.Resource().Has("namespace").And(
-						ast.Resource().Access("namespace").Equal(ast.String(namespace))),
-					)
-				}
-
-				if when != emptyNode {
-					if condition != emptyNode {
-						policy = policy.When(when.And(condition))
-					} else {
-						policy = policy.When(when)
-					}
-				} else if condition != emptyNode {
-					policy = policy.When(condition)
-				}
-
-				// if no subresources
-				if !hasSubResources(rule) {
-					policy = policy.Unless(ast.Resource().Has("subresource"))
-				}
-
-				policy = policy.ResourceIs(schema.ResourceEntityType)
-				policyId := cedar.PolicyID(binder.Name() + ":" + binder.Type() + ":" + strconv.Itoa(pi) + strconv.Itoa(ri))
-				resp.Add(policyId, cedar.NewPolicyFromAST(policy))
-
+				continue
 			}
+
+			if (rule.Verbs[0] == "*" && rule.Resources[0] == "*" && rule.APIGroups[0] == "*") || (slices.Contains(rule.Verbs, "impersonate") && slices.Contains(rule.APIGroups, "authentication.k8s.io")) {
+				// var impersonationPolicy *ast.Policy
+				impersonationPolicy := GrossCopyPolicy(policy)
+				impersonationPolicy = impersonationPolicy.ActionEq(cedartypes.EntityUID{
+					Type: schema.AuthorizationActionEntityType,
+					ID:   cedartypes.String("impersonate"),
+				})
+				impersonationPolicy, condition := policyForImpersonate(impersonationPolicy, rule)
+				impersonationPolicy = policyWhenCondition(impersonationPolicy, condition, when)
+
+				policyId := cedar.PolicyID(binder.Name() + ":" + binder.Type() + "/impersonate" + ":" + strconv.Itoa(pi) + strconv.Itoa(ri))
+				resp.Add(policyId, cedar.NewPolicyFromAST(impersonationPolicy))
+
+				if len(rule.Verbs) == 1 && rule.Verbs[0] == "impersonate" {
+					// Skip resource rules for impersonate-only verb
+					continue
+				}
+			}
+
+			rule.APIGroups = reduceIfHasStar(reduceToUnique(rule.APIGroups))
+			rule.Resources = reduceIfHasStar(reduceToUnique(rule.Resources))
+			rule.ResourceNames = reduceToUnique(rule.ResourceNames)
+			// RBAC doesn't allow "*" as a resource name: empty slice means "*"
+
+			condition := conditionForAPIGroups(rule)
+			condition = conditionForResources(condition, rule)
+			condition = conditionForResourceNames(condition, rule)
+
+			if namespace != "" {
+				condition = condition.And(ast.Resource().Has("namespace").And(
+					ast.Resource().Access("namespace").Equal(ast.String(namespace))),
+				)
+			}
+
+			policy = policyWhenCondition(policy, condition, when)
+
+			// if no subresources
+			if !hasSubResources(rule) {
+				policy = policy.Unless(ast.Resource().Has("subresource"))
+			}
+
+			policy = policy.ResourceIs(schema.ResourceEntityType)
+			policyId := cedar.PolicyID(binder.Name() + ":" + binder.Type() + ":" + strconv.Itoa(pi) + strconv.Itoa(ri))
+			resp.Add(policyId, cedar.NewPolicyFromAST(policy))
 		}
 		pi += 1
 	}
 	return resp
+}
+
+func GrossCopyPolicy(policy *ast.Policy) *ast.Policy {
+	p := cedar.NewPolicyFromAST(policy)
+	cp := &cedar.Policy{}
+	_ = cp.UnmarshalCedar(p.MarshalCedar())
+	return cp.AST()
+}
+
+func policyWhenCondition(policy *ast.Policy, condition, when ast.Node) *ast.Policy {
+	if when != emptyNode {
+		if condition != emptyNode {
+			policy = policy.When(when.And(condition))
+		} else {
+			policy = policy.When(when)
+		}
+	} else if condition != emptyNode {
+		policy = policy.When(condition)
+	}
+	return policy
+}
+
+func conditionOr(lhs ast.Node, rhs ast.Node) ast.Node {
+	if lhs != emptyNode {
+		if rhs != emptyNode {
+			return lhs.Or(rhs)
+		}
+		return lhs
+	}
+	return rhs
+}
+
+func reduceToUnique(slice []string) []string {
+	unique := []string{}
+	for _, s := range slice {
+		if !slices.Contains(unique, s) {
+			unique = append(unique, s)
+		}
+	}
+	return unique
 }
 
 func reduceIfHasStar(slice []string) []string {
@@ -177,9 +229,7 @@ func conditionForNonResourceURLs(rule rbacv1.PolicyRule) ast.Node {
 			return emptyNode
 		}
 		if strings.HasSuffix(rule.NonResourceURLs[0], "*") {
-			return ast.Resource().Has("path").And(
-				ast.Resource().Access("path").Like(cedartypes.NewPattern(rule.NonResourceURLs[0])),
-			)
+			return ast.Resource().Access("path").Like(cedartypes.NewPattern(rule.NonResourceURLs[0]))
 		}
 		return ast.Resource().Access("path").Equal(ast.String(rule.NonResourceURLs[0]))
 	}
@@ -198,11 +248,8 @@ func conditionForNonResourceURLs(rule rbacv1.PolicyRule) ast.Node {
 
 	if len(wildCardUrls) > 0 {
 		if len(wildCardUrls) == 1 {
-			condition = ast.Resource().Has("path").And(
-				ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[0])),
-			)
+			condition = ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[0]))
 		} else {
-			condition = ast.Resource().Has("path")
 			localCondition := ast.Node{}
 			for wi := range wildCardUrls {
 				if wi == 0 {
@@ -213,20 +260,17 @@ func conditionForNonResourceURLs(rule rbacv1.PolicyRule) ast.Node {
 					ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[wi])),
 				)
 			}
-			condition = condition.And(localCondition)
+			condition = localCondition
 		}
 	}
 
 	if len(nonWildCardUrls) > 0 {
 		if len(nonWildCardUrls) == 1 {
 			if condition != emptyNode {
-				condition = condition.And(
+				condition = condition.Or(
 					ast.Resource().Access("path").Equal(ast.String(nonWildCardUrls[0])),
 				)
-			} else {
-				condition = ast.Resource().Access("path").Equal(ast.String(nonWildCardUrls[0]))
 			}
-
 		} else {
 			nonWildCardUrlNodes := []ast.Node{}
 			for _, nonWildCardUrl := range nonWildCardUrls {
@@ -240,7 +284,6 @@ func conditionForNonResourceURLs(rule rbacv1.PolicyRule) ast.Node {
 			}
 		}
 	}
-
 	return condition
 }
 
@@ -269,9 +312,183 @@ func hasSubResources(rule rbacv1.PolicyRule) bool {
 	return false
 }
 
+func policyForImpersonate(policy *ast.Policy, rule rbacv1.PolicyRule) (*ast.Policy, ast.Node) {
+
+	var condition ast.Node
+
+	allSameResourceType := true
+	r0 := rule.Resources[0]
+	for _, r := range rule.Resources {
+		if strings.HasPrefix(r0, "userextras") {
+			if !strings.HasPrefix(r, "userextras") {
+				allSameResourceType = false
+				break
+			}
+			continue
+		}
+		if r != r0 {
+			allSameResourceType = false
+			break
+		}
+	}
+
+	if len(rule.Resources) == 1 || allSameResourceType {
+		switch rule.Resources[0] {
+		case "users":
+			policy = policy.ResourceIs(schema.UserEntityType)
+			condition = conditionForNamedGroupUserImpersonation(condition, rule)
+		case "groups":
+			policy = policy.ResourceIs(schema.GroupEntityType)
+			condition = conditionForNamedGroupUserImpersonation(condition, rule)
+		case "uids":
+			policy = policy.ResourceIs(schema.PrincipalUIDEntityType)
+			condition = conditionForUidImpersonation(condition, rule)
+			if len(rule.ResourceNames) == 1 {
+				policy = policy.ResourceEq(cedartypes.EntityUID{
+					Type: schema.PrincipalUIDEntityType,
+					ID:   cedartypes.String(rule.ResourceNames[0]),
+				})
+				return policy, condition
+			}
+		}
+		if strings.HasPrefix(rule.Resources[0], "userextras") {
+			policy = policy.ResourceIs(schema.ExtraValueEntityType)
+			condition = conditionForExtraImpersonation(condition, rule)
+		}
+		return policy, condition
+	}
+	for _, resource := range rule.Resources {
+		var localCondition ast.Node
+		switch resource {
+		case "users":
+			localCondition = ast.Resource().Is(schema.UserEntityType)
+			localCondition = conditionForNamedGroupUserImpersonation(localCondition, rule)
+		case "groups":
+			localCondition = ast.Resource().Is(schema.GroupEntityType)
+			localCondition = conditionForNamedGroupUserImpersonation(localCondition, rule)
+		case "uids":
+			localCondition = ast.Resource().Is(schema.PrincipalUIDEntityType)
+			if len(rule.ResourceNames) == 1 {
+				localCondition = ast.Resource().Equal(ast.EntityUID(
+					cedartypes.Ident(schema.PrincipalUIDEntityType),
+					cedartypes.String(rule.ResourceNames[0]),
+				))
+			}
+			localCondition = conditionForUidImpersonation(localCondition, rule)
+		}
+		if strings.HasPrefix(resource, "userextras") {
+			localCondition = ast.Resource().Is(schema.ExtraValueEntityType)
+			localCondition = conditionForExtraImpersonation(localCondition, rule)
+		}
+		condition = conditionOr(localCondition, condition)
+	}
+
+	return policy, condition
+}
+
+func conditionForUidImpersonation(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
+	if len(rule.ResourceNames) == 1 {
+		return condition
+	}
+
+	entities := []ast.Node{}
+	for _, name := range rule.ResourceNames {
+		entities = append(entities, ast.EntityUID(
+			cedartypes.Ident(schema.PrincipalUIDEntityType),
+			cedartypes.String(name),
+		))
+	}
+
+	localCondition := ast.Resource().In(ast.Set(entities...))
+	if condition != emptyNode {
+		condition = condition.And(localCondition)
+	} else {
+		condition = localCondition
+	}
+	return condition
+}
+
+func conditionForNamedGroupUserImpersonation(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
+	if len(rule.ResourceNames) == 1 {
+		localCondition := ast.Resource().Access("name").Equal(ast.String(rule.ResourceNames[0]))
+		if condition != emptyNode {
+			condition = condition.And(localCondition)
+		} else {
+			condition = localCondition
+		}
+	} else if len(rule.ResourceNames) > 1 {
+		nameNodes := []ast.Node{}
+		for _, name := range rule.ResourceNames {
+			nameNodes = append(nameNodes, ast.String(name))
+		}
+		localCondition := ast.Set(nameNodes...).Contains(ast.Resource().Access("name"))
+		if condition != emptyNode {
+			condition = condition.And(localCondition)
+		} else {
+			condition = localCondition
+		}
+	}
+	return condition
+}
+
+func conditionForExtraImpersonation(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
+	if len(rule.Resources) == 1 {
+		if strings.Contains(rule.Resources[0], "/") {
+			keyName := strings.SplitN(rule.Resources[0], "/", 2)[1]
+			localCondition := ast.Resource().Access("key").Equal(ast.String(keyName))
+			if condition != emptyNode {
+				condition = condition.And(localCondition)
+			} else {
+				condition = localCondition
+			}
+		}
+	} else if len(rule.Resources) > 1 {
+		keyNodes := []ast.Node{}
+		for _, resource := range rule.Resources {
+			if strings.Contains(resource, "/") {
+				keyName := strings.SplitN(resource, "/", 2)[1]
+				keyNodes = append(keyNodes, ast.String(keyName))
+			}
+		}
+		localCondition := ast.Set(keyNodes...).Contains(ast.Resource().Access("key"))
+		if condition != emptyNode {
+			condition = condition.And(localCondition)
+		} else {
+			condition = localCondition
+		}
+	}
+
+	if len(rule.ResourceNames) == 1 {
+		localCondition := ast.Resource().Has("value").And(
+			ast.Resource().Access("value").Equal(ast.String(rule.ResourceNames[0])),
+		)
+		if condition != emptyNode {
+			condition = condition.And(localCondition)
+		} else {
+			condition = localCondition
+		}
+	} else if len(rule.ResourceNames) > 1 {
+		nameNodes := []ast.Node{}
+		for _, name := range rule.ResourceNames {
+			nameNodes = append(nameNodes, ast.String(name))
+		}
+		localCondition :=
+			ast.Resource().Has("value").And(
+				ast.Set(nameNodes...).Contains(ast.Resource().Access("value")),
+			)
+		if condition != emptyNode {
+			condition = condition.And(localCondition)
+		} else {
+			condition = localCondition
+		}
+	}
+	return condition
+}
+
 func conditionForResources(condition ast.Node, rule rbacv1.PolicyRule) (when ast.Node) {
 	if len(rule.Resources) == 1 {
 		if rule.Resources[0] == "*" {
+			// TODO: This is incorrect, we need to restrict this for named resources
 			return condition
 		}
 

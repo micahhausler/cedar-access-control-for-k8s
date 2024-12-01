@@ -1,0 +1,36 @@
+metadata:
+  creationTimestamp: null
+  name: system:controller:token-cleaner
+  namespace: kube-system
+roleRef:
+  apiGroup: ""
+  kind: Role
+  name: system:controller:token-cleaner
+subjects:
+- kind: ServiceAccount
+  name: token-cleaner
+  namespace: kube-system
+---
+metadata:
+  creationTimestamp: null
+  name: system:controller:token-cleaner
+  namespace: kube-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  verbs:
+  - "delete"
+  - "get"
+  - "list"
+  - "watch"
+- apiGroups:
+  - ""
+  - "events.k8s.io"
+  resources:
+  - "events"
+  verbs:
+  - "create"
+  - "patch"
+  - "update"

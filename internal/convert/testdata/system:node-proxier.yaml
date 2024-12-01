@@ -1,0 +1,48 @@
+metadata:
+  creationTimestamp: null
+  name: system:node-proxier
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: system:node-proxier
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: system:kube-proxy
+---
+metadata:
+  creationTimestamp: null
+  name: system:node-proxier
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - services
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+  - update
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch

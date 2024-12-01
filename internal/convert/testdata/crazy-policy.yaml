@@ -1,0 +1,101 @@
+metadata:
+  creationTimestamp: null
+  name: crazy-policy
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: crazy-policy
+subjects:
+- kind: ServiceAccount
+  name: crazy-service-account
+  namespace: default
+---
+metadata:
+  creationTimestamp: null
+  name: crazy-policy
+rules:
+- apiGroups:
+  - batch
+  - batch.k8s.aws
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - '*'
+  - ""
+  resources:
+  - something
+  verbs:
+  - watch
+  - '*'
+- apiGroups:
+  - '*'
+  resources:
+  - '*/scale'
+  - '*/status'
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  - apps
+  resources:
+  - pods/*
+  - nodes/status
+  - nodes/proxy
+  - deployments/*
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - pods/*
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - custom.metrics.k8s.io
+  - external.metrics.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - pods/logs
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resourceNames:
+  - aws-auth
+  resources:
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resourceNames:
+  - kubeadm-config
+  - kube-proxy
+  - coredns
+  resources:
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/*
+  - node
+  - '*'
+  verbs:
+  - get

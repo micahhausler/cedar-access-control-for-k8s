@@ -1,0 +1,26 @@
+metadata:
+  creationTimestamp: null
+  name: cluster-admin
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:masters
+---
+metadata:
+  creationTimestamp: null
+  name: cluster-admin
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - '*'

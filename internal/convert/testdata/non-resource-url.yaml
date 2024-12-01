@@ -1,0 +1,51 @@
+metadata:
+  creationTimestamp: null
+  name: non-resource-url-group
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: non-resource-url-group
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: non-resource-url-actor
+---
+metadata:
+  creationTimestamp: null
+  name: non-resource-url-group
+rules:
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - get
+  - options
+- nonResourceURLs:
+  - /healthz/*
+  verbs:
+  - get
+- nonResourceURLs:
+  - /readyz/*
+  - /version/*
+  - /version
+  - /version/
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+- nonResourceURLs:
+  - /openapi/v3/*
+  - /openid/v1/*
+  verbs:
+  - get
+- nonResourceURLs:
+  - /openapi/v3
+  - /openapi/v3/*
+  verbs:
+  - get
+- nonResourceURLs:
+  - /openapi/v3
+  - /openapi/v2
+  verbs:
+  - get

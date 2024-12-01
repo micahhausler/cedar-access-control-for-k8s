@@ -9435,12 +9435,9 @@
 							"type": "String",
 							"required": true
 						},
-						"values": {
-							"type": "Set",
-							"required": true,
-							"element": {
-								"type": "String"
-							}
+						"value": {
+							"type": "String",
+							"required": false
 						}
 					}
 				}
