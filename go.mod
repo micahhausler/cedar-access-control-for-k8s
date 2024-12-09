@@ -120,3 +120,5 @@ require (
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 )
+
+replace github.com/cedar-policy/cedar-go v1.0.2 => github.com/strongdm/cedar-go v0.1.1-0.20241206191258-7c8694eb40de

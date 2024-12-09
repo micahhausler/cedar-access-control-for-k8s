@@ -26,21 +26,18 @@ This project supports the following Principal entities:
     ```
 * `k8s::User`. Users are identified by the user's UID as reported by the authenticator.
     The group list comes in from the Kubernetes authenticator (webhook, serviceaccount, OIDC, etc), so we dynamically build the list of group Entities for a request.
-    Kubernetes authenticators can also includes extra key/value information on a user, and that is encoded in the 'extra' attribute.
+    Kubernetes authenticators can also includes extra key/value information on a user, and that is encoded in the 'extra' attribute's tags.
     ```cedarschema
     entity User in [Group] = {
-        "extra"?: Set < ExtraAttribute >,
+        "extra"?: Extras,
         "name": __cedar::String
     };
-    type Extra = {
-        "key": __cedar::String,
-        "values"?: Set < __cedar::String >
-    };
+    entity Extras tags Set < __cedar::String >;
     ```
 * `k8s::ServiceAccount`. When a user's name in a [SubjectAccessReview] starts with `system:serviceaccount:`, the authorizer sets the principal type to `k8s::ServiceAccount` with the following attributes.
     ```cedarschema
     entity ServiceAccount in [Group] = {
-        "extra"?: Set < ExtraAttribute >,
+        "extra"?: Extras,
         "name": __cedar::String,
         "namespace": __cedar::String
     };
@@ -50,7 +47,7 @@ This project supports the following Principal entities:
     Cedar can allow or forbid any of those reqeusts.
     ```cedarschema
     entity Node in [Group] = {
-        "extra"?: Set < ExtraAttribute >,
+        "extra"?: Extras,
         "name": __cedar::String
     };
     ```
@@ -165,7 +162,7 @@ We define two primary resource types for this authorizer:
         resource.resource == "deployments" &&
         resource.apiGroup == "apps" &&
         // require a namespace name so cluster-scoped collection requests are not permitted
-        resource has namespace 
+        resource has namespace
     } unless {
         // permit does not apply under these conditions
         resource has namespace &&
@@ -230,6 +227,10 @@ other-example-secret   Opaque   1      2d20h   owner=prod-user
 To make an impersonated request as another user, Kubernetes sends multiple authorization requests to an authorizer: one for each attribute being impersonated: The user's name, the UID (if set), the groups (if set), and the userInfo extra key/value map. To support this, we define a few types:
 
 * `Group`. This structure is the same from the principal type. This only functions if the user can also impersonate the requested username.:
+    ```bash
+    kubectl get pods --as-group superheroes --as-user foo
+    ```
+    Cedar policy:
     ```cedar
     permit (
         principal in k8s::Group::"actors",
@@ -238,6 +239,10 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     );
     ```
 * `User`. This structure is the same from the principal type:
+    ```bash
+    kubectl get pods --as-user lukeskywalker
+    ```
+    Cedar policy:
     ```cedar
     permit (
         principal is k8s::User,
@@ -249,10 +254,21 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     };
     ```
 * `PrincipalUID`: To allow impersonating a Principal's UID, the policy's resource type must be `PrincipalUID`. This only functions if the user can also impersonate the requested username.
+    Kubeconfig:
+    ```yaml
+    # ...
+    users:
+    - name: your-user-entry
+      user:
+        as-uid: 86A13CEC-C75E-460B-812D-D4F7DF951F61
+        client-certificate-data: DATA+OMITTED
+        client-key-data: DATA+OMITTED
+    ```
+    Cedar Schema:
     ```cedarschema
     entity PrincipalUID;
     ```
-    Examples:
+    Cedar policy:
     ```cedar
     permit (
         principal in k8s::Group::"actors",
@@ -261,11 +277,21 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
     );
     ```
 * `Extra`: To allow impersonating a principal's key/values extra info, the policy's resource type must be `Extra`. This only functions if the user can also impersonate the requested username.
+    Kubeconfig:
+    ```yaml
+    # ...
+    users:
+    - name: your-user-entry
+      user:
+        as-user-extra:
+          order:
+          - jedi
+        client-certificate-data: DATA+OMITTED
+        client-key-data: DATA+OMITTED
+    ```
+    Cedar Schema:
     ```cedarschema
-    entity Extra = {
-        "key": __cedar::String,
-        "values"?: Set < __cedar::String >
-    };
+    entity Extra tags __cedar::String;
     ```
     Examples:
     ```cedar
@@ -274,9 +300,8 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
         action == k8s::Action::"impersonate",
         resource is k8s::Extra
     ) when {
-        resource.key == "order" &&
-        resource has values &&
-        ["jedi"].containsAll(resource.values)
+        resource.hasTag("order") &&
+        resource.getTag("order") == "jedi"
     };
     ```
 * `ServiceAccount` This structure is the same from the principal type:
@@ -309,9 +334,8 @@ To make an impersonated request as another user, Kubernetes sends multiple autho
         principal.name == "default" &&
         principal.namespace == "default" &&
         principal has extra &&
-        principal.extra.contains({
-            "key": "authentication.kubernetes.io/node-name",
-            "values": [resource.name]})
+        principal.extra.hasTag("authentication.kubernetes.io/node-name") &&
+        principal.extra.getTag("authentication.kubernetes.io/node-name") == [resource.name]
     };
     ```
 
@@ -347,8 +371,8 @@ Admission actions exist in a different Cedar namespace than Authorization, and a
 forbid (
     principal in k8s::Group::"system:viewers",
     action in [
-        k8s::admission::Action::"create", 
-        k8s::admission::Action::"update", 
+        k8s::admission::Action::"create",
+        k8s::admission::Action::"update",
         k8s::admission::Action::"delete"],
     resource
 );
@@ -382,32 +406,88 @@ forbid (
 };
 ```
 
-Until [cedar-go supports entity maps][go-entity-maps], we've manually added `KeyValue` and `KeyValueStringSlice` types into the `meta::v1` namespace to support key/value labels.
-Any Kubernetes types that consist of `map[string]string{}` or `map[string][]string{}` are converted to a Set of KeyValue or KeyValueStringSlice.
+To support Cedar's entity tag semantics of [`.hasTag()`][hasTag] and [`.getTag()`][getTag], key/value string map types (or string to []string) use an entity with no attributes other than tags.
+
+[hasTag]: https://docs.cedarpolicy.com/policies/syntax-operators.html#operator-hasTag
+[getTag]: https://docs.cedarpolicy.com/policies/syntax-operators.html#operator-getTag
+
 ```cedarschema
 namespace meta::v1 {
-    type KeyValue = {
-        "key": __cedar::String,
-        "value"?: __cedar::String
-    };
-    type KeyValueStringSlice = {
-        "key": __cedar::String,
-        "value"?: Set < __cedar::String >
-    };
     // ...
-    entity ObjectMeta = {
-        "annotations"?: Set < meta::v1::KeyValue >,
-        "labels"?: Set < meta::v1::KeyValue >,
+    type ObjectMeta = {
+		"annotations"?: KeyValue,
         // ...
-        "name"?: __cedar::String,
-        "namespace"?: __cedar::String,
+		"labels"?: KeyValue,
+		"name"?: __cedar::String,
+		"namespace"?: __cedar::String,
         // ...
-    };
+	};
+	entity KeyValue tags __cedar::String;
+	entity KeyValues tags Set < __cedar::String >;
+}
+namespace authentication::v1 {
+    // ...
+	type UserInfo = {
+		"extra"?: meta::v1::KeyValues,
+		"groups"?: Set < __cedar::String >,
+		"uid"?: __cedar::String,
+		"username"?: __cedar::String
+	};
+}
+namespace k8s {
+    // ...
+	entity Extra tags __cedar::String;
+	entity Extras tags Set < __cedar::String >;
+	entity Node in [Group] = {
+		"extra"?: Extras,
+		"name": __cedar::String
+	};
+	entity ServiceAccount in [Group] = {
+		"extra"?: Extras,
+		"name": __cedar::String,
+		"namespace": __cedar::String
+	};
+	entity User in [Group] = {
+		"extra"?: Extras,
+		"name": __cedar::String
+	};
     // ...
 }
 ```
 
-[go-entity-maps]: https://github.com/cedar-policy/cedar-go/issues/47
+Presence of keys or values can be checked in policy:
+```cedar
+// Admission policy ensuring that users in the "requires-labels" group can only mutate
+// resources where their name is the value of the "owner" label
+forbid (
+    principal is k8s::User in k8s::Group::"requires-labels",
+    action in [
+        k8s::admission::Action::"create",
+        k8s::admission::Action::"update",
+        k8s::admission::Action::"delete"],
+    resource
+) unless {
+    resource has metadata &&
+    resource.metadata has labels &&
+    resource.metadata.labels.hasTag("owner") &&
+    resource.metadata.labels.getTag("owner") == principal.name
+};
+
+// Authorization policy allowing users with the extra key "team"
+// to access resources in the namespace of their team
+permit (
+    principal is k8s::User,
+    action == k8s::Action::"get",
+    resource is k8s::Resource
+) when {
+    resource has namespace &&
+    principal.extra.hasTag("team") &&
+    principal.extra.getTag("team").contains(resource.namespace)
+} unless {
+    // prevent access to subresources like pod logs
+    resource has subresource
+};
+```
 
 The Kubernetes `CONNECT` admission action only applies to a small set of structures that don't appear in the Kubernetes OpenAPI Schema, so we inject them manually:
 ```cedarschema

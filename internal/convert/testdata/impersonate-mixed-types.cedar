@@ -28,9 +28,8 @@ when
   principal.name == "impersonator" &&
   (resource == k8s::PrincipalUID::"jedi" ||
    resource is k8s::Extra &&
-   ["mykey"].contains(resource.key) &&
-   resource has value &&
-   resource.value == "jedi")
+   resource.hasTag("mykey") &&
+   resource.getTag("mykey") == "jedi")
 };
 
 @clusterRoleBinding("impersonator")
@@ -47,7 +46,6 @@ when
   (resource is k8s::PrincipalUID &&
    resource in [k8s::PrincipalUID::"jedi", k8s::PrincipalUID::"sith"] ||
    resource is k8s::Extra &&
-   ["mykey"].contains(resource.key) &&
-   resource has value &&
-   ["jedi", "sith"].contains(resource.value))
+   resource.hasTag("mykey") &&
+   (resource.getTag("mykey") == "jedi" || resource.getTag("mykey") == "sith"))
 };

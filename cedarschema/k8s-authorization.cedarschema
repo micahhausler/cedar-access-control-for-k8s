@@ -1,8 +1,4 @@
 namespace k8s {
-	type ExtraAttribute = {
-		"key": __cedar::String,
-		"values": Set < __cedar::String >
-	};
 	type FieldRequirement = {
 		"field": __cedar::String,
 		"operator": __cedar::String,
@@ -13,15 +9,13 @@ namespace k8s {
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
-	entity Extra = {
-		"key": __cedar::String,
-		"value"?: __cedar::String
-	};
+	entity Extra tags __cedar::String;
+	entity Extras tags Set < __cedar::String >;
 	entity Group = {
 		"name": __cedar::String
 	};
 	entity Node in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String
 	};
 	entity NonResourceURL = {
@@ -38,12 +32,12 @@ namespace k8s {
 		"subresource"?: __cedar::String
 	};
 	entity ServiceAccount in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
 	entity User in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String
 	};
 	action "approve" appliesTo {

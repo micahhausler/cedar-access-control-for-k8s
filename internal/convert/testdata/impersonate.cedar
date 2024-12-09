@@ -9,9 +9,9 @@ permit (
 when
 {
   principal.name == "impersonator" &&
-  resource.key == "planets" &&
-  resource has value &&
-  ["hoth", "tatooine"].contains(resource.value)
+  resource.hasTag("planets") &&
+  (resource.getTag("planets") == "hoth" ||
+   resource.getTag("planets") == "tatooine")
 };
 
 @clusterRoleBinding("impersonator")
@@ -25,13 +25,23 @@ permit (
 when
 {
   principal.name == "impersonator" &&
-  resource has value &&
-  ["hoth", "tatooine"].contains(resource.value)
+  resource.hasTag("father") &&
+  resource.getTag("father") == "anakin"
 };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
 @policyRule("02")
+permit (
+  principal is k8s::User,
+  action == k8s::Action::"impersonate",
+  resource is k8s::Extra
+)
+when { principal.name == "impersonator" };
+
+@clusterRoleBinding("impersonator")
+@clusterRole("impersonator")
+@policyRule("03")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -41,7 +51,7 @@ when { principal.name == "impersonator" && resource.name == "lukeskywalker" };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("03")
+@policyRule("04")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -55,7 +65,7 @@ when
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("04")
+@policyRule("05")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -65,7 +75,7 @@ when { principal.name == "impersonator" };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("05")
+@policyRule("06")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -80,7 +90,7 @@ when
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("06")
+@policyRule("07")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -89,17 +99,34 @@ permit (
 when
 {
   principal.name == "impersonator" &&
-  ["planets", "systems"].contains(resource.key) &&
-  resource has value &&
-  ["hoth", "tatooine"].contains(resource.value)
+  (resource.hasTag("planets") &&
+   (resource.getTag("planets") == "hoth" ||
+    resource.getTag("planets") == "tatooine") ||
+   resource.hasTag("systems") &&
+   (resource.getTag("systems") == "hoth" ||
+    resource.getTag("systems") == "tatooine"))
 };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("07")
+@policyRule("08")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
   resource
 )
 when { principal.name == "impersonator" };
+
+@clusterRoleBinding("impersonator")
+@clusterRole("impersonator")
+@policyRule("09")
+permit (
+  principal is k8s::User,
+  action == k8s::Action::"impersonate",
+  resource
+)
+when
+{
+  principal.name == "impersonator" &&
+  (resource is k8s::Extra || resource is k8s::User)
+};

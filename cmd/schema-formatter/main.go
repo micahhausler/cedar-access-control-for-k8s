@@ -50,6 +50,7 @@ func main() {
 			fmt.Println(line + "\n")
 		} else if (strings.HasSuffix(line, "};") && !strings.HasSuffix(line, "{};")) ||
 			strings.HasSuffix(line, "},") ||
+			strings.HasPrefix(line, "} tags ") && strings.HasSuffix(line, ";") ||
 			strings.HasSuffix(line, "}") &&
 				!strings.HasSuffix(line, "{}") {
 			// handle end of entity

@@ -54,9 +54,8 @@ spec:
         resource has subresource &&
         resource.subresource == "status" &&
         resource has name &&
-        principal.extra.contains({
-            "key": "authentication.kubernetes.io/node-name",
-            "values": [resource.name]})
+        principal.extra.hasTag("authentication.kubernetes.io/node-name") &&
+        principal.extra.getTag("authentication.kubernetes.io/node-name") == [resource.name]
     };
     // allow get node on for the node a sa's pod is running on
     permit (
@@ -69,9 +68,8 @@ spec:
         resource.apiGroup == "" &&
         resource.resource == "nodes" &&
         resource has name &&
-        principal.extra.contains({
-            "key": "authentication.kubernetes.io/node-name",
-            "values": [resource.name]})
+        principal.extra.hasTag("authentication.kubernetes.io/node-name") &&
+        principal.extra.getTag("authentication.kubernetes.io/node-name") == [resource.name]
     };
 
 ---
@@ -121,7 +119,8 @@ spec:
     ) unless {
         resource has metadata &&
         resource.metadata has labels &&
-        resource.metadata.labels.contains({"key": "owner", "value": principal.name})
+        resource.metadata.labels.hasTag("owner") &&
+        resource.metadata.labels.getTag("owner") == principal.name
     };
 
     // admission policy forbidding users in "requires-labels" group from updating a
@@ -134,5 +133,6 @@ spec:
         resource has oldObject &&
         resource.oldObject has metadata &&
         resource.oldObject.metadata has labels &&
-        resource.oldObject.metadata.labels.contains({"key": "owner", "value": principal.name})
+        resource.oldObject.metadata.labels.hasTag("owner") &&
+        resource.oldObject.metadata.labels.getTag("owner") == principal.name
     };

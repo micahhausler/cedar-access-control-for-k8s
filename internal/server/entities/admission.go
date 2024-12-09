@@ -99,32 +99,6 @@ func (a *authorizerAttributeWrapper) GetPath() string                           
 func (a *authorizerAttributeWrapper) GetFieldSelector() (fields.Requirements, error) { return nil, nil }
 func (a *authorizerAttributeWrapper) GetLabelSelector() (labels.Requirements, error) { return nil, nil }
 
-// type cedarEntityValueWrapper struct {
-// 	cedartypes.Entity
-// }
-
-// var _ cedartypes.Value = &cedarEntityValueWrapper{}
-
-// func (e cedarEntityValueWrapper) Equal(v cedartypes.Value) bool {
-// 	return false
-// }
-
-// func (e cedarEntityValueWrapper) ExplicitMarshalJSON() ([]byte, error) {
-// 	return json.Marshal(e.Entity)
-// }
-
-// func (e cedarEntityValueWrapper) MarshalCedar() []byte {
-// 	return []byte{}
-// }
-
-// func (e cedarEntityValueWrapper) String() string {
-// 	return ""
-// }
-
-// func (e cedarEntityValueWrapper) hash() uint64 {
-// 	return 0
-// }
-
 func UnstructuredFromAdmissionRequestObject(data []byte) (*unstructured.Unstructured, error) {
 	if data == nil {
 		return nil, errors.New("unstructured data is nil")
@@ -138,19 +112,19 @@ func UnstructuredFromAdmissionRequestObject(data []byte) (*unstructured.Unstruct
 	return obj, nil
 }
 
-func CedarResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, error) {
+func CedarResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, []cedartypes.Entity, error) {
 	return cedarResourceEntityFromAdmissionRequest(req, req.Object.Raw)
 }
 
-func CedarOldResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, error) {
+func CedarOldResourceEntityFromAdmissionRequest(req admission.Request) (*cedartypes.Entity, []cedartypes.Entity, error) {
 	return cedarResourceEntityFromAdmissionRequest(req, req.OldObject.Raw)
 }
 
-func cedarResourceEntityFromAdmissionRequest(req admission.Request, rawData []byte) (*cedartypes.Entity, error) {
+func cedarResourceEntityFromAdmissionRequest(req admission.Request, rawData []byte) (*cedartypes.Entity, []cedartypes.Entity, error) {
 	// Convert the request's generator resource to unstructured for expansion
 	obj, err := UnstructuredFromAdmissionRequestObject(rawData)
 	if err != nil {
-		return nil, fmt.Errorf("error getting unstructured resource %s: %w", req.Name, err)
+		return nil, nil, fmt.Errorf("error getting unstructured resource %s: %w", req.Name, err)
 	}
 
 	// TODO: entity list construction based on the schema
@@ -163,30 +137,25 @@ func cedarResourceEntityFromAdmissionRequest(req admission.Request, rawData []by
 		resourceGroup = "core"
 	}
 
-	attributes, err := UnstructuredToRecord(obj, resourceGroup, req.Kind.Version, req.Kind.Kind)
-	if err != nil {
-		return nil, fmt.Errorf("error converting unstructured object to Cedar entity: %w", err)
-	}
-
 	cedarResourceType := strings.Join([]string{resourceGroup, req.Kind.Version, req.Kind.Kind}, "::")
-
+	identifier := ResourceRequestToPath(AdmissionRequestToAuthorizerAttribute(req))
 	resp := cedartypes.Entity{
-		UID: cedartypes.EntityUID{
-			Type: cedartypes.EntityType(cedarResourceType),
-			ID: cedartypes.String(
-				ResourceRequestToPath(AdmissionRequestToAuthorizerAttribute(req)),
-			),
-		},
-		Attributes: attributes,
+		UID: cedartypes.NewEntityUID(cedartypes.EntityType(cedarResourceType), cedartypes.String(identifier)),
 	}
+	attributes, extraEntities, err := UnstructuredToRecord(obj, identifier, resourceGroup, req.Kind.Version, req.Kind.Kind)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error converting unstructured object to Cedar entity: %w", err)
+	}
+	resp.Attributes = attributes
 
-	return &resp, nil
+	return &resp, extraEntities, nil
 }
 
-func UnstructuredToRecord(obj *unstructured.Unstructured, group, version, kind string) (cedartypes.Record, error) {
+func UnstructuredToRecord(obj *unstructured.Unstructured, identifier, group, version, kind string) (cedartypes.Record, []cedartypes.Entity, error) {
 	if obj == nil {
-		return cedartypes.NewRecord(nil), errors.New("unstructured object is nil")
+		return cedartypes.NewRecord(nil), nil, errors.New("unstructured object is nil")
 	}
+	entities := []cedartypes.Entity{}
 	attributes := map[cedartypes.String]cedartypes.Value{}
 	for k, v := range obj.Object {
 		if v == nil {
@@ -194,29 +163,31 @@ func UnstructuredToRecord(obj *unstructured.Unstructured, group, version, kind s
 			continue
 		}
 		// Try not to blow the stack, limit CRDs to 32 fields deep
-		val, err := walkObject(32, group, version, kind, k, v)
+		val, nestedEntities, err := walkObject(32, identifier, group, version, kind, k, v)
 		if err != nil {
-			return cedartypes.NewRecord(nil), err
+			return cedartypes.NewRecord(nil), nil, err
 		}
 		if val == nil {
 			// skip empty return values, such as empty objects
 			continue
 		}
+		if len(nestedEntities) > 0 {
+			entities = append(entities, nestedEntities...)
+		}
 		attributes[cedartypes.String(k)] = val
 	}
-	return cedartypes.NewRecord(cedartypes.RecordMap(attributes)), nil
+	return cedartypes.NewRecord(cedartypes.RecordMap(attributes)), entities, nil
 }
 
-func walkObject(i int, group, version, kind, keyName string, obj any) (cedartypes.Value, error) {
+func walkObject(i int, identifier, group, version, kind, keyName string, obj any) (cedartypes.Value, []cedartypes.Entity, error) {
 	if i == 0 {
-		return nil, errors.New("max depth reached")
+		return nil, nil, errors.New("max depth reached")
 	}
 	if obj == nil {
 		// skip empty values
-		return nil, nil
+		return nil, nil, nil
 	}
 
-	// TODO: ENTITY TAGS: This is a hack until key/value objects are supported
 	// g/v/k/attrNames
 	knownKeyValueStringMapAttributes := map[string]map[string]map[string][]string{
 		"core": {
@@ -257,20 +228,27 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 		if apiVersion, ok := apiGroup[version]; ok {
 			if attrNames, ok := apiVersion[kind]; ok {
 				if slices.Contains(attrNames, keyName) {
-					set := []cedartypes.Value{}
-					for kk, vv := range obj.(map[string]interface{}) {
+					kvEntity := cedartypes.Entity{
+						UID: cedartypes.EntityUID{
+							Type: schema.MetaV1KeyValueEntity,
+							ID:   cedartypes.String(fmt.Sprintf("%s#%s", identifier, keyName)),
+						},
+					}
 
+					tags := cedartypes.RecordMap{}
+					for kk, vv := range obj.(map[string]interface{}) {
 						val, ok := vv.(string)
 						if !ok {
-							klog.ErrorS(nil, "Error converting label/annotation value to string", "key", kk, "value", vv)
+							klog.ErrorS(nil, "Error converting key/value to string/string", "key", kk, "value", vv)
 							break
 						}
-						set = append(set, cedartypes.NewRecord(cedartypes.RecordMap{
-							cedartypes.String("key"):   cedartypes.String(kk),
-							cedartypes.String("value"): cedartypes.String(val),
-						}))
+						tags[cedartypes.String(kk)] = cedartypes.String(val)
 					}
-					return cedartypes.NewSet(set...), nil
+					if len(tags) == 0 {
+						return nil, nil, nil
+					}
+					kvEntity.Tags = cedartypes.NewRecord(tags)
+					return cedartypes.NewEntityUID(schema.MetaV1KeyValueEntity, kvEntity.UID.ID), []cedartypes.Entity{kvEntity}, nil
 				}
 			}
 		}
@@ -297,99 +275,120 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 		if apiVersion, ok := apiGroup[version]; ok {
 			if attrNames, ok := apiVersion[kind]; ok {
 				if slices.Contains(attrNames, keyName) {
-					set := []cedartypes.Value{}
+					kvEntity := cedartypes.Entity{
+						UID: cedartypes.EntityUID{
+							Type: schema.MetaV1KeyValuesEntity,
+							ID:   cedartypes.String(fmt.Sprintf("%s#%s", identifier, keyName)),
+						},
+					}
+					tags := cedartypes.RecordMap{}
 					for kk, vv := range obj.(map[string]interface{}) {
-
 						val, ok := vv.([]string)
 						if !ok {
-							klog.ErrorS(nil, "Error converting label/annotation value to slice of string", "key", kk, "value", vv)
+							klog.ErrorS(nil, "Error converting key/value to string/slice of string", "key", kk, "value", vv)
 							break
 						}
 						valSet := []cedartypes.Value{}
 						for _, v := range val {
 							valSet = append(valSet, cedartypes.String(v))
 						}
-						set = append(set, cedartypes.NewRecord(cedartypes.RecordMap{
-							cedartypes.String("key"):   cedartypes.String(kk),
-							cedartypes.String("value"): cedartypes.NewSet(valSet...),
-						}))
+						tags[cedartypes.String(kk)] = cedartypes.NewSet(valSet...)
 					}
-					return cedartypes.NewSet(set...), nil
+					if len(tags) == 0 {
+						return nil, nil, nil
+					}
+					kvEntity.Tags = cedartypes.NewRecord(tags)
+					return cedartypes.NewEntityUID(schema.MetaV1KeyValueEntity, kvEntity.UID.ID), []cedartypes.Entity{kvEntity}, nil
 				}
 			}
 		}
 	}
 
 	if _, ok := obj.(map[string]interface{}); (keyName == "labels" || keyName == "annotations") && ok {
-		set := []cedartypes.Value{}
-		for kk, vv := range obj.(map[string]interface{}) {
+		kvEntity := cedartypes.Entity{
+			UID: cedartypes.EntityUID{
+				Type: schema.MetaV1KeyValueEntity,
+				ID:   cedartypes.String(fmt.Sprintf("%s#%s", identifier, keyName)),
+			},
+		}
 
+		tags := cedartypes.RecordMap{}
+		for kk, vv := range obj.(map[string]interface{}) {
 			val, ok := vv.(string)
 			if !ok {
-				klog.ErrorS(nil, "Error converting label/annotation value to string", "key", kk, "value", vv)
+				klog.ErrorS(nil, "Error converting key/value to string/string", "key", kk, "value", vv)
 				break
 			}
-			set = append(set, cedartypes.NewRecord(cedartypes.RecordMap{
-				cedartypes.String("key"):   cedartypes.String(kk),
-				cedartypes.String("value"): cedartypes.String(val),
-			}))
+			tags[cedartypes.String(kk)] = cedartypes.String(val)
 		}
-		return cedartypes.NewSet(set...), nil
+		if len(tags) == 0 {
+			return nil, nil, nil
+		}
+		kvEntity.Tags = cedartypes.NewRecord(tags)
+		return cedartypes.NewEntityUID(schema.MetaV1KeyValueEntity, kvEntity.UID.ID), []cedartypes.Entity{kvEntity}, nil
 	}
 	// End gross hack for key/value maps
-
+	respEntities := []cedartypes.Entity{}
 	switch t := obj.(type) {
 	case map[string]interface{}:
 		rec := cedartypes.RecordMap{}
 		for kk, vv := range obj.(map[string]interface{}) {
-			val, err := walkObject(i-1, group, version, kind, kk, vv)
+			// var val cedartypes.Value
+			// var err error
+			val, nestedEntities, err := walkObject(i-1, identifier, group, version, kind, kk, vv)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			if val == nil {
 				// skip empty values
 				continue
 			}
+			if len(nestedEntities) > 0 {
+				respEntities = append(respEntities, nestedEntities...)
+			}
 			rec[cedartypes.String(kk)] = val
 		}
 		if len(rec) == 0 {
 			// skip empty records
-			return nil, nil
+			return nil, nil, nil
 		}
-		return cedartypes.NewRecord(rec), nil
+		return cedartypes.NewRecord(rec), respEntities, nil
 	case []interface{}:
 		set := []cedartypes.Value{}
 		for _, item := range obj.([]interface{}) {
-			val, err := walkObject(i-1, group, version, kind, keyName, item)
+			val, nestedEntities, err := walkObject(i-1, identifier, group, version, kind, keyName, item)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
+			}
+			if len(nestedEntities) > 0 {
+				respEntities = append(respEntities, nestedEntities...)
 			}
 			set = append(set, val)
 		}
-		return cedartypes.NewSet(set...), nil
+		return cedartypes.NewSet(set...), respEntities, nil
 	case string:
 		// Try to parse the string as an IP address for
 		// known IP address keys
 		if slices.Contains([]string{"podIP", "clusterIP", "loadBalancerIP", "hostIP", "ip", "podIPs", "hostIPs"}, keyName) {
 			addr, err := cedartypes.ParseIPAddr(obj.(string))
 			if err != nil {
-				return cedartypes.String(obj.(string)), nil
+				return cedartypes.String(obj.(string)), nil, nil
 			}
-			return addr, nil
+			return addr, nil, nil
 		}
-		return cedartypes.String(obj.(string)), nil
+		return cedartypes.String(obj.(string)), nil, nil
 	case int:
-		return cedartypes.Long(obj.(int)), nil
+		return cedartypes.Long(obj.(int)), nil, nil
 	case int64:
-		return cedartypes.Long(obj.(int64)), nil
+		return cedartypes.Long(obj.(int64)), nil, nil
 	case uint:
-		return cedartypes.Long(obj.(uint)), nil
+		return cedartypes.Long(obj.(uint)), nil, nil
 	case uint64:
-		return cedartypes.Long(obj.(uint64)), nil
+		return cedartypes.Long(obj.(uint64)), nil, nil
 	case bool:
-		return cedartypes.Boolean(obj.(bool)), nil
+		return cedartypes.Boolean(obj.(bool)), nil, nil
 	default:
-		return nil, fmt.Errorf("unsupported type %T", t)
+		return nil, nil, fmt.Errorf("unsupported type %T", t)
 	}
 
 }

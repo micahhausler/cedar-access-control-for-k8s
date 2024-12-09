@@ -66,10 +66,16 @@ type CedarSchemaNamespace struct {
 	CommonTypes map[string]EntityShape `json:"commonTypes,omitempty"`
 }
 
+type Tags struct {
+	Type    string                  `json:"type"`
+	Element *EntityAttributeElement `json:"element,omitempty"`
+}
+
 // Entity represents a Cedar entity that defines principals and resources
 type Entity struct {
 	Shape         EntityShape `json:"shape"`
 	MemberOfTypes []string    `json:"memberOfTypes,omitempty"`
+	Tags          *Tags       `json:"tags,omitempty"`
 }
 
 // EntityShape represents the shape of a Cedar entity

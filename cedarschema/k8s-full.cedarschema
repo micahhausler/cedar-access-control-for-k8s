@@ -27,10 +27,6 @@ namespace k8s::admission {
 }
 
 namespace k8s {
-	type ExtraAttribute = {
-		"key": __cedar::String,
-		"values": Set < __cedar::String >
-	};
 	type FieldRequirement = {
 		"field": __cedar::String,
 		"operator": __cedar::String,
@@ -41,15 +37,13 @@ namespace k8s {
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
-	entity Extra = {
-		"key": __cedar::String,
-		"value"?: __cedar::String
-	};
+	entity Extra tags __cedar::String;
+	entity Extras tags Set < __cedar::String >;
 	entity Group = {
 		"name": __cedar::String
 	};
 	entity Node in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String
 	};
 	entity NonResourceURL = {
@@ -66,12 +60,12 @@ namespace k8s {
 		"subresource"?: __cedar::String
 	};
 	entity ServiceAccount in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
 	entity User in [Group] = {
-		"extra"?: Set < ExtraAttribute >,
+		"extra"?: Extras,
 		"name": __cedar::String
 	};
 	action "approve" appliesTo {
@@ -534,7 +528,7 @@ namespace authentication::v1 {
 		"user"?: UserInfo
 	};
 	type UserInfo = {
-		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"extra"?: meta::v1::KeyValues,
 		"groups"?: Set < __cedar::String >,
 		"uid"?: __cedar::String,
 		"username"?: __cedar::String
@@ -603,7 +597,7 @@ namespace authorization::v1 {
 		"namespace"?: __cedar::String
 	};
 	type SubjectAccessReviewSpec = {
-		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"extra"?: meta::v1::KeyValues,
 		"groups"?: Set < __cedar::String >,
 		"nonResourceAttributes"?: NonResourceAttributes,
 		"resourceAttributes"?: ResourceAttributes,
@@ -812,7 +806,7 @@ namespace certificates::v1 {
 	};
 	type CertificateSigningRequestSpec = {
 		"expirationSeconds"?: __cedar::Long,
-		"extra"?: Set < meta::v1::KeyValueStringSlice >,
+		"extra"?: meta::v1::KeyValues,
 		"groups"?: Set < __cedar::String >,
 		"request": __cedar::String,
 		"signerName": __cedar::String,
@@ -901,7 +895,7 @@ namespace core::v1 {
 		"nodePublishSecretRef"?: SecretReference,
 		"nodeStageSecretRef"?: SecretReference,
 		"readOnly"?: __cedar::Bool,
-		"volumeAttributes"?: Set < meta::v1::KeyValue >,
+		"volumeAttributes"?: meta::v1::KeyValue,
 		"volumeHandle": __cedar::String
 	};
 	type CSIVolumeSource = {
@@ -909,7 +903,7 @@ namespace core::v1 {
 		"fsType"?: __cedar::String,
 		"nodePublishSecretRef"?: LocalObjectReference,
 		"readOnly"?: __cedar::Bool,
-		"volumeAttributes"?: Set < meta::v1::KeyValue >
+		"volumeAttributes"?: meta::v1::KeyValue
 	};
 	type Capabilities = {
 		"add"?: Set < __cedar::String >,
@@ -1171,14 +1165,14 @@ namespace core::v1 {
 	type FlexPersistentVolumeSource = {
 		"driver": __cedar::String,
 		"fsType"?: __cedar::String,
-		"options"?: Set < meta::v1::KeyValue >,
+		"options"?: meta::v1::KeyValue,
 		"readOnly"?: __cedar::Bool,
 		"secretRef"?: SecretReference
 	};
 	type FlexVolumeSource = {
 		"driver": __cedar::String,
 		"fsType"?: __cedar::String,
-		"options"?: Set < meta::v1::KeyValue >,
+		"options"?: meta::v1::KeyValue,
 		"readOnly"?: __cedar::Bool,
 		"secretRef"?: LocalObjectReference
 	};
@@ -1454,7 +1448,7 @@ namespace core::v1 {
 	};
 	type PersistentVolumeClaimStatus = {
 		"accessModes"?: Set < __cedar::String >,
-		"allocatedResourceStatuses"?: Set < meta::v1::KeyValue >,
+		"allocatedResourceStatuses"?: meta::v1::KeyValue,
 		"allocatedResources"?: __cedar::String,
 		"capacity"?: __cedar::String,
 		"conditions"?: Set < PersistentVolumeClaimCondition >,
@@ -1599,7 +1593,7 @@ namespace core::v1 {
 		"imagePullSecrets"?: Set < LocalObjectReference >,
 		"initContainers"?: Set < Container >,
 		"nodeName"?: __cedar::String,
-		"nodeSelector"?: Set < meta::v1::KeyValue >,
+		"nodeSelector"?: meta::v1::KeyValue,
 		"os"?: PodOS,
 		"overhead"?: __cedar::String,
 		"preemptionPolicy"?: __cedar::String,
@@ -1712,7 +1706,7 @@ namespace core::v1 {
 	type ReplicationControllerSpec = {
 		"minReadySeconds"?: __cedar::Long,
 		"replicas"?: __cedar::Long,
-		"selector"?: Set < meta::v1::KeyValue >,
+		"selector"?: meta::v1::KeyValue,
 		"template"?: PodTemplateSpec
 	};
 	type ReplicationControllerStatus = {
@@ -1863,7 +1857,7 @@ namespace core::v1 {
 		"loadBalancerSourceRanges"?: Set < __cedar::String >,
 		"ports"?: Set < ServicePort >,
 		"publishNotReadyAddresses"?: __cedar::Bool,
-		"selector"?: Set < meta::v1::KeyValue >,
+		"selector"?: meta::v1::KeyValue,
 		"sessionAffinity"?: __cedar::String,
 		"sessionAffinityConfig"?: SessionAffinityConfig,
 		"trafficDistribution"?: __cedar::String,
@@ -2038,8 +2032,8 @@ namespace core::v1 {
 	};
 	entity ConfigMap = {
 		"apiVersion"?: __cedar::String,
-		"binaryData"?: Set < meta::v1::KeyValue >,
-		"data"?: Set < meta::v1::KeyValue >,
+		"binaryData"?: meta::v1::KeyValue,
+		"data"?: meta::v1::KeyValue,
 		"immutable"?: __cedar::Bool,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
@@ -2179,12 +2173,12 @@ namespace core::v1 {
 	};
 	entity Secret = {
 		"apiVersion"?: __cedar::String,
-		"data"?: Set < meta::v1::KeyValue >,
+		"data"?: meta::v1::KeyValue,
 		"immutable"?: __cedar::Bool,
 		"kind"?: __cedar::String,
 		"metadata"?: meta::v1::ObjectMeta,
 		"oldObject"?: Secret,
-		"stringData"?: Set < meta::v1::KeyValue >,
+		"stringData"?: meta::v1::KeyValue,
 		"type"?: __cedar::String
 	};
 	entity Service = {
@@ -2215,7 +2209,7 @@ namespace discovery::v1 {
 	type Endpoint = {
 		"addresses": Set < __cedar::String >,
 		"conditions"?: EndpointConditions,
-		"deprecatedTopology"?: Set < meta::v1::KeyValue >,
+		"deprecatedTopology"?: meta::v1::KeyValue,
 		"hints"?: EndpointHints,
 		"hostname"?: __cedar::String,
 		"nodeName"?: __cedar::String,
@@ -2426,17 +2420,9 @@ namespace meta::v1 {
 		"values"?: Set < __cedar::String >
 	};
 	type FieldsV1 = {};
-	type KeyValue = {
-		"key": __cedar::String,
-		"value": __cedar::String
-	};
-	type KeyValueStringSlice = {
-		"key": __cedar::String,
-		"value": Set < __cedar::String >
-	};
 	type LabelSelector = {
 		"matchExpressions"?: Set < LabelSelectorRequirement >,
-		"matchLabels"?: Set < KeyValue >
+		"matchLabels"?: KeyValue
 	};
 	type LabelSelectorRequirement = {
 		"key": __cedar::String,
@@ -2459,14 +2445,14 @@ namespace meta::v1 {
 		"time"?: __cedar::String
 	};
 	type ObjectMeta = {
-		"annotations"?: Set < KeyValue >,
+		"annotations"?: KeyValue,
 		"creationTimestamp"?: __cedar::String,
 		"deletionGracePeriodSeconds"?: __cedar::Long,
 		"deletionTimestamp"?: __cedar::String,
 		"finalizers"?: Set < __cedar::String >,
 		"generateName"?: __cedar::String,
 		"generation"?: __cedar::Long,
-		"labels"?: Set < KeyValue >,
+		"labels"?: KeyValue,
 		"managedFields"?: Set < ManagedFieldsEntry >,
 		"name"?: __cedar::String,
 		"namespace"?: __cedar::String,
@@ -2515,6 +2501,8 @@ namespace meta::v1 {
 		"object": __cedar::String,
 		"type": __cedar::String
 	};
+	entity KeyValue tags __cedar::String;
+	entity KeyValues tags Set < __cedar::String >;
 }
 
 namespace networking::v1 {
@@ -2635,7 +2623,7 @@ namespace node::v1 {
 		"podFixed"?: __cedar::String
 	};
 	type Scheduling = {
-		"nodeSelector"?: Set < meta::v1::KeyValue >,
+		"nodeSelector"?: meta::v1::KeyValue,
 		"tolerations"?: Set < core::v1::Toleration >
 	};
 	entity RuntimeClass = {
@@ -2785,7 +2773,7 @@ namespace storage::v1 {
 	type VolumeAttachmentStatus = {
 		"attachError"?: VolumeError,
 		"attached": __cedar::Bool,
-		"attachmentMetadata"?: Set < meta::v1::KeyValue >,
+		"attachmentMetadata"?: meta::v1::KeyValue,
 		"detachError"?: VolumeError
 	};
 	type VolumeError = {
@@ -2827,7 +2815,7 @@ namespace storage::v1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"mountOptions"?: Set < __cedar::String >,
 		"oldObject"?: StorageClass,
-		"parameters"?: Set < meta::v1::KeyValue >,
+		"parameters"?: meta::v1::KeyValue,
 		"provisioner": __cedar::String,
 		"reclaimPolicy"?: __cedar::String,
 		"volumeBindingMode"?: __cedar::String

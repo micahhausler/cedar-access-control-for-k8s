@@ -4,15 +4,21 @@
 			"Extra": {
 				"shape": {
 					"type": "Record",
-					"attributes": {
-						"key": {
-							"type": "String",
-							"required": true
-						},
-						"value": {
-							"type": "String",
-							"required": false
-						}
+					"attributes": {}
+				},
+				"tags": {
+					"type": "String"
+				}
+			},
+			"Extras": {
+				"shape": {
+					"type": "Record",
+					"attributes": {}
+				},
+				"tags": {
+					"type": "Set",
+					"element": {
+						"type": "String"
 					}
 				}
 			},
@@ -32,11 +38,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -111,11 +115,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -136,11 +138,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -439,22 +439,6 @@
 			}
 		},
 		"commonTypes": {
-			"ExtraAttribute": {
-				"type": "Record",
-				"attributes": {
-					"key": {
-						"type": "String",
-						"required": true
-					},
-					"values": {
-						"type": "Set",
-						"required": true,
-						"element": {
-							"type": "String"
-						}
-					}
-				}
-			},
 			"FieldRequirement": {
 				"type": "Record",
 				"attributes": {

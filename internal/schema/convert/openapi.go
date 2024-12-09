@@ -437,7 +437,6 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					continue
 				}
 
-				// TODO: ENTITY TAGS: this is just here until we get real key/value map support
 				// for string/string maps, hack to use custom KeyValue or KeyValueSlice types
 				knownKeyValueStringMapAttributes := map[string][]string{
 					"io.k8s.api.core.v1.ConfigMap":                       {"data", "binaryData"}, // format is []byte, should we exclude?
@@ -461,10 +460,8 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					slices.Contains(attrs, attrName) &&
 					len(attrDef.AdditionalProperties.Schema.Type) > 0 && attrDef.AdditionalProperties.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type: schema.SetType,
-						Element: &schema.EntityAttributeElement{
-							Type: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValue"),
-						},
+						Type: schema.EntityType,
+						Name: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValue"),
 					}
 					continue
 				}
@@ -482,10 +479,8 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					len(attrDef.AdditionalProperties.Schema.Items.Schema.Type) > 0 &&
 					attrDef.AdditionalProperties.Schema.Items.Schema.Type[0] == "string" {
 					entityShape.Attributes[attrName] = schema.EntityAttribute{
-						Type: schema.SetType,
-						Element: &schema.EntityAttributeElement{
-							Type: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValueStringSlice"),
-						},
+						Type: schema.EntityType,
+						Name: refToRelativeTypeName(schemaKind, "io.k8s.apimachinery.pkg.apis.meta.v1.KeyValues"),
 					}
 					continue
 				}
