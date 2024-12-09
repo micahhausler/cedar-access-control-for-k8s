@@ -1470,11 +1470,9 @@
 				"type": "Record",
 				"attributes": {
 					"extra": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValueStringSlice"
-						}
+						"name": "meta::v1::KeyValues",
+						"type": "Entity",
+						"required": false
 					},
 					"groups": {
 						"type": "Set",
@@ -1772,11 +1770,9 @@
 				"type": "Record",
 				"attributes": {
 					"extra": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValueStringSlice"
-						}
+						"name": "meta::v1::KeyValues",
+						"type": "Entity",
+						"required": false
 					},
 					"groups": {
 						"type": "Set",
@@ -2971,11 +2967,9 @@
 						"required": false
 					},
 					"extra": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValueStringSlice"
-						}
+						"name": "meta::v1::KeyValues",
+						"type": "Entity",
+						"required": false
 					},
 					"groups": {
 						"type": "Set",
@@ -3155,18 +3149,14 @@
 							"required": false
 						},
 						"binaryData": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "meta::v1::KeyValue"
-							}
+							"name": "meta::v1::KeyValue",
+							"type": "Entity",
+							"required": false
 						},
 						"data": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "meta::v1::KeyValue"
-							}
+							"name": "meta::v1::KeyValue",
+							"type": "Entity",
+							"required": false
 						},
 						"immutable": {
 							"type": "Boolean",
@@ -3732,11 +3722,9 @@
 							"required": false
 						},
 						"data": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "meta::v1::KeyValue"
-							}
+							"name": "meta::v1::KeyValue",
+							"type": "Entity",
+							"required": false
 						},
 						"immutable": {
 							"type": "Boolean",
@@ -3756,11 +3744,9 @@
 							"required": false
 						},
 						"stringData": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "meta::v1::KeyValue"
-							}
+							"name": "meta::v1::KeyValue",
+							"type": "Entity",
+							"required": false
 						},
 						"type": {
 							"type": "String",
@@ -4032,11 +4018,9 @@
 						"required": false
 					},
 					"volumeAttributes": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"volumeHandle": {
 						"type": "String",
@@ -4064,11 +4048,9 @@
 						"required": false
 					},
 					"volumeAttributes": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					}
 				}
 			},
@@ -5091,11 +5073,9 @@
 						"required": false
 					},
 					"options": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"readOnly": {
 						"type": "Boolean",
@@ -5119,11 +5099,9 @@
 						"required": false
 					},
 					"options": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"readOnly": {
 						"type": "Boolean",
@@ -6154,11 +6132,9 @@
 						}
 					},
 					"allocatedResourceStatuses": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"allocatedResources": {
 						"type": "String",
@@ -6740,11 +6716,9 @@
 						"required": false
 					},
 					"nodeSelector": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"os": {
 						"type": "PodOS",
@@ -7207,11 +7181,9 @@
 						"required": false
 					},
 					"selector": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"template": {
 						"type": "PodTemplateSpec",
@@ -7784,11 +7756,9 @@
 						"required": false
 					},
 					"selector": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"sessionAffinity": {
 						"type": "String",
@@ -8432,11 +8402,9 @@
 						"required": false
 					},
 					"deprecatedTopology": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"hints": {
 						"type": "EndpointHints",
@@ -9430,15 +9398,21 @@
 			"Extra": {
 				"shape": {
 					"type": "Record",
-					"attributes": {
-						"key": {
-							"type": "String",
-							"required": true
-						},
-						"value": {
-							"type": "String",
-							"required": false
-						}
+					"attributes": {}
+				},
+				"tags": {
+					"type": "String"
+				}
+			},
+			"Extras": {
+				"shape": {
+					"type": "Record",
+					"attributes": {}
+				},
+				"tags": {
+					"type": "Set",
+					"element": {
+						"type": "String"
 					}
 				}
 			},
@@ -9458,11 +9432,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -9537,11 +9509,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -9562,11 +9532,9 @@
 					"type": "Record",
 					"attributes": {
 						"extra": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "ExtraAttribute"
-							}
+							"name": "Extras",
+							"type": "Entity",
+							"required": false
 						},
 						"name": {
 							"type": "String",
@@ -9865,22 +9833,6 @@
 			}
 		},
 		"commonTypes": {
-			"ExtraAttribute": {
-				"type": "Record",
-				"attributes": {
-					"key": {
-						"type": "String",
-						"required": true
-					},
-					"values": {
-						"type": "Set",
-						"required": true,
-						"element": {
-							"type": "String"
-						}
-					}
-				}
-			},
 			"FieldRequirement": {
 				"type": "Record",
 				"attributes": {
@@ -10241,7 +10193,29 @@
 		}
 	},
 	"meta::v1": {
-		"entityTypes": {},
+		"entityTypes": {
+			"KeyValue": {
+				"shape": {
+					"type": "Record",
+					"attributes": {}
+				},
+				"tags": {
+					"type": "String"
+				}
+			},
+			"KeyValues": {
+				"shape": {
+					"type": "Record",
+					"attributes": {}
+				},
+				"tags": {
+					"type": "Set",
+					"element": {
+						"type": "String"
+					}
+				}
+			}
+		},
 		"actions": {},
 		"commonTypes": {
 			"APIResource": {
@@ -10412,35 +10386,6 @@
 				"type": "Record",
 				"attributes": {}
 			},
-			"KeyValue": {
-				"type": "Record",
-				"attributes": {
-					"key": {
-						"type": "String",
-						"required": true
-					},
-					"value": {
-						"type": "String",
-						"required": true
-					}
-				}
-			},
-			"KeyValueStringSlice": {
-				"type": "Record",
-				"attributes": {
-					"key": {
-						"type": "String",
-						"required": true
-					},
-					"value": {
-						"type": "Set",
-						"required": true,
-						"element": {
-							"type": "String"
-						}
-					}
-				}
-			},
 			"LabelSelector": {
 				"type": "Record",
 				"attributes": {
@@ -10452,11 +10397,9 @@
 						}
 					},
 					"matchLabels": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "KeyValue"
-						}
+						"name": "KeyValue",
+						"type": "Entity",
+						"required": false
 					}
 				}
 			},
@@ -10538,11 +10481,9 @@
 				"type": "Record",
 				"attributes": {
 					"annotations": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "KeyValue"
-						}
+						"name": "KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"creationTimestamp": {
 						"type": "String",
@@ -10572,11 +10513,9 @@
 						"required": false
 					},
 					"labels": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "KeyValue"
-						}
+						"name": "KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"managedFields": {
 						"type": "Set",
@@ -11244,11 +11183,9 @@
 				"type": "Record",
 				"attributes": {
 					"nodeSelector": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"tolerations": {
 						"type": "Set",
@@ -11796,11 +11733,9 @@
 							"required": false
 						},
 						"parameters": {
-							"type": "Set",
-							"required": false,
-							"element": {
-								"type": "meta::v1::KeyValue"
-							}
+							"name": "meta::v1::KeyValue",
+							"type": "Entity",
+							"required": false
 						},
 						"provisioner": {
 							"type": "String",
@@ -11986,11 +11921,9 @@
 						"required": true
 					},
 					"attachmentMetadata": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "meta::v1::KeyValue"
-						}
+						"name": "meta::v1::KeyValue",
+						"type": "Entity",
+						"required": false
 					},
 					"detachError": {
 						"type": "VolumeError",

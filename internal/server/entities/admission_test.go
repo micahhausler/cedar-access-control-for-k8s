@@ -4,6 +4,7 @@ import (
 	"net/netip"
 	"testing"
 
+	"github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
 	cedartypes "github.com/cedar-policy/cedar-go/types"
 	"github.com/google/go-cmp/cmp"
 	corev1 "k8s.io/api/core/v1"
@@ -14,16 +15,25 @@ import (
 
 func TestUnstructuredToEntity(t *testing.T) {
 	cases := []struct {
-		name        string
-		input       any
-		expected    cedartypes.Record
-		expectedErr error
+		name                  string
+		identifier            string
+		input                 any
+		expected              cedartypes.Record
+		expectedExtraEntities []cedartypes.Entity
+		expectedErr           error
 	}{
 		{
-			name: "valid pod",
+			name:       "valid pod",
+			identifier: "/core/v1/namespaces/default/pods/test-pod",
 			input: &corev1.Pod{
-				TypeMeta:   metav1.TypeMeta{APIVersion: "v1", Kind: "Pod"},
-				ObjectMeta: metav1.ObjectMeta{Name: "test-pod", Namespace: "default"},
+				TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Pod"},
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "test-pod",
+					Namespace: "default",
+					Labels: map[string]string{
+						"owner": "test-user",
+					},
+				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{ // slice
 						{
@@ -46,6 +56,10 @@ func TestUnstructuredToEntity(t *testing.T) {
 				cedartypes.String("metadata"): cedartypes.NewRecord(cedartypes.RecordMap{
 					cedartypes.String("name"):      cedartypes.String("test-pod"),
 					cedartypes.String("namespace"): cedartypes.String("default"),
+					cedartypes.String("labels"): cedartypes.NewEntityUID(
+						schema.MetaV1KeyValueEntity,
+						cedartypes.String("/core/v1/namespaces/default/pods/test-pod#labels"),
+					),
 				}),
 				cedartypes.String("spec"): cedartypes.NewRecord(cedartypes.RecordMap{
 					cedartypes.String("containers"): cedartypes.NewSet(
@@ -62,6 +76,17 @@ func TestUnstructuredToEntity(t *testing.T) {
 					cedartypes.String("podIP"): cedartypes.IPAddr(netip.MustParsePrefix("10.10.1.4/32")),
 				}),
 			}),
+			expectedExtraEntities: []cedartypes.Entity{
+				{
+					UID: cedartypes.NewEntityUID(
+						schema.MetaV1KeyValueEntity,
+						cedartypes.String("/core/v1/namespaces/default/pods/test-pod#labels"),
+					),
+					Tags: cedartypes.NewRecord(cedartypes.RecordMap{
+						cedartypes.String("owner"): cedartypes.String("test-user"),
+					}),
+				},
+			},
 		},
 	}
 
@@ -72,7 +97,8 @@ func TestUnstructuredToEntity(t *testing.T) {
 				t.Fatalf("failed to convert input to unstructured: %v", err)
 			}
 			unst := &unstructured.Unstructured{Object: unstMap}
-			got, err := UnstructuredToRecord(unst, "core", "v1", "Pod")
+
+			got, extraEntities, err := UnstructuredToRecord(unst, tc.identifier, "core", "v1", "Pod")
 			if err != nil {
 				if tc.expectedErr == nil {
 					t.Fatalf("got unexpected error. wanted %v, got %v", tc.expectedErr, err)
@@ -84,6 +110,10 @@ func TestUnstructuredToEntity(t *testing.T) {
 				expectedJSON, _ := tc.expected.MarshalJSON()
 				t.Errorf("expected: %s", string(expectedJSON))
 				t.Errorf("actual:   %s", string(actualJSON))
+			}
+
+			if diff := cmp.Diff(tc.expectedExtraEntities, extraEntities); diff != "" {
+				t.Errorf("unexpected extra entities (-want +got):\n%s", diff)
 			}
 		})
 	}

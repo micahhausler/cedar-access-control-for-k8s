@@ -56,8 +56,6 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 		}
 	}
 	for pi, principal := range principals {
-
-		// TODO: Aggregation rules?
 		for ri, rule := range ruler.Rules() {
 			policy := ast.Permit().Annotate(
 				cedartypes.Ident(binder.Type()), cedartypes.String(binder.Name()),

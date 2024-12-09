@@ -61,17 +61,18 @@ func TestRecordToCedarResource(t *testing.T) {
 			},
 			cedartypes.EntityMap{
 				getAction.UID: getAction,
+				cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"}: {
+					UID: cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"},
+					Tags: cedartypes.NewRecord(cedartypes.RecordMap{
+						cedartypes.String("attr1"): cedartypes.NewSet(cedartypes.String("value1")),
+					}),
+				},
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
-						"name": cedartypes.String("test-user"),
-						"extra": cedartypes.NewSet(
-							cedartypes.NewRecord(cedartypes.RecordMap{
-								"key":    cedartypes.String("attr1"),
-								"values": cedartypes.NewSet(cedartypes.String("value1")),
-							}),
-						),
+						"name":  cedartypes.String("test-user"),
+						"extra": cedartypes.NewEntityUID(schema.ExtraValuesEntityType, cedartypes.String("1234567890#extras")),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}: {
@@ -128,17 +129,18 @@ func TestRecordToCedarResource(t *testing.T) {
 			cedartypes.EntityMap{
 				listAction.UID:     listAction,
 				readOnlyAction.UID: readOnlyAction,
+				cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"}: {
+					UID: cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"},
+					Tags: cedartypes.NewRecord(cedartypes.RecordMap{
+						cedartypes.String("attr1"): cedartypes.NewSet(cedartypes.String("value1")),
+					}),
+				},
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
-						"name": cedartypes.String("test-user"),
-						"extra": cedartypes.NewSet(
-							cedartypes.NewRecord(cedartypes.RecordMap{
-								"key":    cedartypes.String("attr1"),
-								"values": cedartypes.NewSet(cedartypes.String("value1")),
-							}),
-						),
+						"name":  cedartypes.String("test-user"),
+						"extra": cedartypes.NewEntityUID(schema.ExtraValuesEntityType, cedartypes.String("1234567890#extras")),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}: {
@@ -192,17 +194,18 @@ func TestRecordToCedarResource(t *testing.T) {
 			cedartypes.EntityMap{
 				getAction.UID:      getAction,
 				readOnlyAction.UID: readOnlyAction,
+				cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"}: {
+					UID: cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"},
+					Tags: cedartypes.NewRecord(cedartypes.RecordMap{
+						cedartypes.String("attr1"): cedartypes.NewSet(cedartypes.String("value1")),
+					}),
+				},
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
-						"name": cedartypes.String("test-user"),
-						"extra": cedartypes.NewSet(
-							cedartypes.NewRecord(cedartypes.RecordMap{
-								"key":    cedartypes.String("attr1"),
-								"values": cedartypes.NewSet(cedartypes.String("value1")),
-							}),
-						),
+						"name":  cedartypes.String("test-user"),
+						"extra": cedartypes.NewEntityUID(schema.ExtraValuesEntityType, cedartypes.String("1234567890#extras")),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}: {
@@ -251,17 +254,18 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
+				cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"}: {
+					UID: cedartypes.EntityUID{Type: schema.ExtraValuesEntityType, ID: "1234567890#extras"},
+					Tags: cedartypes.NewRecord(cedartypes.RecordMap{
+						cedartypes.String("attr1"): cedartypes.NewSet(cedartypes.String("value1")),
+					}),
+				},
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
-						"name": cedartypes.String("test-user"),
-						"extra": cedartypes.NewSet(
-							cedartypes.NewRecord(cedartypes.RecordMap{
-								"key":    cedartypes.String("attr1"),
-								"values": cedartypes.NewSet(cedartypes.String("value1")),
-							}),
-						),
+						"name":  cedartypes.String("test-user"),
+						"extra": cedartypes.NewEntityUID(schema.ExtraValuesEntityType, cedartypes.String("1234567890#extras")),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}: {
@@ -301,9 +305,6 @@ func TestRecordToCedarResource(t *testing.T) {
 					UID:    "1234567890",
 					Name:   "system:serviceaccount:foo:bar",
 					Groups: []string{"system:serviceaccounts", "system:serviceaccounts:default", "system:authenticated"},
-					Extra: map[string][]string{
-						"attr1": {"value1"},
-					},
 				},
 				Verb:            "get",
 				Namespace:       "default",
@@ -328,12 +329,6 @@ func TestRecordToCedarResource(t *testing.T) {
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
 						"name":      cedartypes.String("bar"),
 						"namespace": cedartypes.String("foo"),
-						"extra": cedartypes.NewSet(
-							cedartypes.NewRecord(cedartypes.RecordMap{
-								"key":    cedartypes.String("attr1"),
-								"values": cedartypes.NewSet(cedartypes.String("value1")),
-							}),
-						),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "system:serviceaccounts"}: {
@@ -380,7 +375,6 @@ func TestRecordToCedarResource(t *testing.T) {
 					UID:    "1234567890",
 					Name:   "test-user",
 					Groups: []string{"test-group"},
-					Extra:  map[string][]string{"attr1": {"value1"}},
 				},
 				Verb:            "list",
 				Namespace:       "default",
@@ -413,10 +407,6 @@ func TestRecordToCedarResource(t *testing.T) {
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
 					Attributes: cedartypes.NewRecord(cedartypes.RecordMap{
 						"name": cedartypes.String("test-user"),
-						"extra": cedartypes.NewSet(cedartypes.NewRecord(cedartypes.RecordMap{
-							"key":    cedartypes.String("attr1"),
-							"values": cedartypes.NewSet(cedartypes.String("value1")),
-						})),
 					}),
 				},
 				cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}: {
@@ -718,9 +708,8 @@ permit (
 	resource is k8s::Extra
 ) when {
 	principal.name == "test-user" &&
-	resource.key == "test-key" &&
-	resource has value &&
-	resource.value == "test-value"
+	resource.hasTag("test-key") &&
+	resource.getTag("test-key") == "test-value"
 };`,
 			input: authorizer.AttributesRecord{
 				User: &user.DefaultInfo{

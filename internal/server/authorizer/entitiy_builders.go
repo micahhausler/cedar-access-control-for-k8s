@@ -35,6 +35,7 @@ func ActionEntities(verb string) (cedartypes.EntityUID, cedartypes.EntityMap) {
 // inferred from https://github.com/kubernetes/kubernetes/blob/v1.31.1/staging/src/k8s.io/apiserver/pkg/endpoints/filters/impersonation.go#L84-L110
 func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedartypes.Entity {
 	respAttributes := cedartypes.RecordMap(map[cedartypes.String]cedartypes.Value{})
+
 	var uid cedartypes.EntityUID
 	switch attributes.GetResource() {
 	case "serviceaccounts":
@@ -70,15 +71,16 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 			ID:   cedartypes.String(attributes.GetName()),
 		}
 		respAttributes[cedartypes.String("name")] = cedartypes.String(attributes.GetName())
-	// TODO: ENTITY TAGS: Migrate to entity tags
 	case "userextras":
 		uid = cedartypes.EntityUID{
 			Type: schema.ExtraValueEntityType,
 			ID:   cedartypes.String(attributes.GetSubresource()),
 		}
-		respAttributes[cedartypes.String("key")] = cedartypes.String(attributes.GetSubresource())
-		if attributes.GetName() != "" {
-			respAttributes[cedartypes.String("value")] = cedartypes.String(attributes.GetName())
+		respAttributes[cedartypes.String(attributes.GetSubresource())] = cedartypes.String(attributes.GetName())
+
+		return cedartypes.Entity{
+			UID:  uid,
+			Tags: cedartypes.NewRecord(respAttributes),
 		}
 	}
 	return cedartypes.Entity{

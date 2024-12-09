@@ -90,15 +90,18 @@ func (h *cedarHandler) review(req admission.Request) (bool, *cedar.Diagnostic, e
 	if err != nil {
 		return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar principal entity: %w", err)
 	}
-	var resourceEntity *cedartypes.Entity
+	var (
+		resourceEntity *cedartypes.Entity
+		extraEntities  []cedartypes.Entity
+	)
 
 	if req.Operation == "DELETE" {
-		resourceEntity, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
+		resourceEntity, extraEntities, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
 		}
 	} else {
-		resourceEntity, err = entities.CedarResourceEntityFromAdmissionRequest(req)
+		resourceEntity, extraEntities, err = entities.CedarResourceEntityFromAdmissionRequest(req)
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting request to Cedar resource entity: %w", err)
 		}
@@ -106,7 +109,7 @@ func (h *cedarHandler) review(req admission.Request) (bool, *cedar.Diagnostic, e
 
 	var oldObject *cedartypes.Entity
 	if req.OldObject.Raw != nil && req.Operation != "DELETE" {
-		oldObject, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
+		oldObject, extraEntities, err = entities.CedarOldResourceEntityFromAdmissionRequest(req)
 		if err != nil {
 			return h.allowOnError, nil, fmt.Errorf("error converting oldObject to Cedar entity: %w", err)
 		}
@@ -121,6 +124,7 @@ func (h *cedarHandler) review(req admission.Request) (bool, *cedar.Diagnostic, e
 		resourceEntity.Attributes = cedartypes.NewRecord(attrMap)
 		entities.MergeIntoEntities(requestEntities, *oldObject)
 	}
+	entities.MergeIntoEntities(requestEntities, extraEntities...)
 
 	klog.V(7).InfoS("Admission resource entity", "entity", resourceEntity)
 	entities.MergeIntoEntities(requestEntities, *resourceEntity)

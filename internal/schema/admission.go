@@ -1,30 +1,33 @@
 package schema
 
+import cedartypes "github.com/cedar-policy/cedar-go/types"
+
+const (
+	MetaV1KeyValueEntity  = cedartypes.EntityType("meta::v1::KeyValue")
+	MetaV1KeyValuesEntity = cedartypes.EntityType("meta::v1::KeyValues")
+)
+
 // ModifyObjectMetaMaps modifies the ObjectMeta maps in the schema
-//
-// TODO: ENTITY TAGS: This is a hack until Cedar supports maps in the schema
 func ModifyObjectMetaMaps(schema CedarSchema) {
 	ns, ok := schema["meta::v1"]
 	if !ok {
 		return
 	}
-	keyValEntity := EntityShape{
-		Type: RecordType,
-		Attributes: map[string]EntityAttribute{
-			"key":   {Type: StringType, Required: true},
-			"value": {Type: StringType, Required: true},
+	ns.EntityTypes["KeyValue"] = Entity{
+		MemberOfTypes: []string{},
+		Shape: EntityShape{
+			Type:       RecordType,
+			Attributes: map[string]EntityAttribute{},
 		},
+		Tags: &Tags{Type: StringType},
 	}
-	ns.CommonTypes["KeyValue"] = keyValEntity
-
-	keyValStringSliceEntity := EntityShape{
-		Type: RecordType,
-		Attributes: map[string]EntityAttribute{
-			"key":   {Type: StringType, Required: true},
-			"value": {Type: SetType, Element: &EntityAttributeElement{Type: StringType}, Required: true},
+	ns.EntityTypes["KeyValues"] = Entity{
+		MemberOfTypes: []string{},
+		Shape: EntityShape{
+			Type:       RecordType,
+			Attributes: map[string]EntityAttribute{},
 		},
+		Tags: &Tags{Type: SetType, Element: &EntityAttributeElement{Type: StringType}},
 	}
-	ns.CommonTypes["KeyValueStringSlice"] = keyValStringSliceEntity
-
 	schema["meta::v1"] = ns
 }

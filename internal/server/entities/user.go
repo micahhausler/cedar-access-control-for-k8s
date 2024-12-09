@@ -71,31 +71,43 @@ func UserToCedarEntity(user user.Info) (cedartypes.EntityUID, cedartypes.EntityM
 		attributes[cedartypes.String("name")] = cedartypes.String(parts[3])
 	}
 
-	// TODO: ENTITY TAGS: use entity tags once supported
-	extraValues := []cedartypes.Value{}
-	for k, v := range user.GetExtra() {
-		extraVV := []cedartypes.Value{}
-		for _, vv := range v {
-			extraVV = append(extraVV, cedartypes.String(vv))
-		}
-		extraValues = append(extraValues, cedartypes.NewRecord(cedartypes.RecordMap{
-			"key":    cedartypes.String(k),
-			"values": cedartypes.NewSet(extraVV...),
-		}))
-	}
-	if len(extraValues) > 0 {
-		attributes["extra"] = cedartypes.NewSet(extraValues...)
-	}
-
 	principalUID := cedartypes.EntityUID{
 		Type: principalEntityType,
 		ID:   cedartypes.String(user.GetUID()),
 	}
 
-	resp[principalUID] = cedartypes.Entity{
-		UID:        principalUID,
-		Parents:    cedartypes.NewEntityUIDSet(groupEntityUids...),
-		Attributes: cedartypes.NewRecord(attributes),
+	principalEntity := cedartypes.Entity{
+		UID:     principalUID,
+		Parents: cedartypes.NewEntityUIDSet(groupEntityUids...),
 	}
+
+	// create extras tag-holding entity
+	extrasEntity := cedartypes.Entity{
+		UID: cedartypes.EntityUID{
+			Type: schema.ExtraValuesEntityType,
+			ID:   principalUID.ID + "#extras",
+		},
+	}
+
+	extraValues := cedartypes.RecordMap{}
+	for k, v := range user.GetExtra() {
+		extraVV := []cedartypes.Value{}
+		for _, vv := range v {
+			extraVV = append(extraVV, cedartypes.String(vv))
+		}
+		extraValues[cedartypes.String(k)] = cedartypes.NewSet(extraVV...)
+	}
+
+	// If extras values are present,
+	// * set the extra entity's tags
+	// * add the tag entity to the response
+	// * set the extra entity as the "extra" attr on the principal
+	if len(extraValues) > 0 {
+		extrasEntity.Tags = cedartypes.NewRecord(extraValues)
+		resp[extrasEntity.UID] = extrasEntity
+		attributes[cedartypes.String("extra")] = extrasEntity.UID
+	}
+	principalEntity.Attributes = cedartypes.NewRecord(attributes)
+	resp[principalUID] = principalEntity
 	return principalUID, resp
 }

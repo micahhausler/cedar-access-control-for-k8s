@@ -10,11 +10,12 @@ const (
 	ServiceAccountPrincipalType = "ServiceAccount"
 	NodePrincipalType           = "Node"
 	ExtraValueType              = "Extra"
-	ExtraValuesAttributeType    = "ExtraAttribute"
+	ExtraValuesType             = "Extras"
 
 	UserEntityType           = cedartypes.EntityType("k8s::" + UserPrincipalType)
 	GroupEntityType          = cedartypes.EntityType("k8s::" + GroupPrincipalType)
 	ExtraValueEntityType     = cedartypes.EntityType("k8s::" + ExtraValueType)
+	ExtraValuesEntityType    = cedartypes.EntityType("k8s::" + ExtraValuesType)
 	ServiceAccountEntityType = cedartypes.EntityType("k8s::" + ServiceAccountPrincipalType)
 	NodeEntityType           = cedartypes.EntityType("k8s::" + NodePrincipalType)
 )
@@ -28,11 +29,9 @@ func UserEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
 				"extra": {
-					Type:     SetType,
-					Required: false,
-					Element: &EntityAttributeElement{
-						Type: ExtraValuesAttributeType,
-					}},
+					Type: EntityType,
+					Name: ExtraValuesType,
+				},
 			},
 		},
 	}
@@ -57,11 +56,9 @@ func ServiceAccountEntity() Entity {
 				"name":      {Type: StringType, Required: true},
 				"namespace": {Type: StringType, Required: true},
 				"extra": {
-					Type:     SetType,
-					Required: false,
-					Element: &EntityAttributeElement{
-						Type: ExtraValuesAttributeType,
-					}},
+					Type: EntityType,
+					Name: ExtraValuesType,
+				},
 			},
 		},
 	}
@@ -75,41 +72,33 @@ func NodeEntity() Entity {
 			Attributes: map[string]EntityAttribute{
 				"name": {Type: StringType, Required: true},
 				"extra": {
-					Type:     SetType,
-					Required: false,
-					Element: &EntityAttributeElement{
-						Type: ExtraValuesAttributeType,
-					}},
+					Type: EntityType,
+					Name: ExtraValuesType,
+				},
 			},
 		},
 	}
 }
 
-// TODO: ENTITY TAGS: this is just here until we get real key/value map support
-func ExtraEntityShape() EntityShape {
-	return EntityShape{
-		Type: RecordType,
-		Attributes: map[string]EntityAttribute{
-			"key":    {Type: StringType, Required: true},
-			"values": {Type: SetType, Required: true, Element: &EntityAttributeElement{Type: StringType}},
-		},
-	}
-}
-
-// TODO: ENTITY TAGS: this is just here until we get real key/value map support
 func ExtraEntity() Entity {
 	return Entity{
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
-			Type: RecordType,
-			Attributes: map[string]EntityAttribute{
-				"key": {Type: StringType, Required: true},
-				// Kube-API sends a SAR for each individual value with a given key
-				// SAR's resource name is not a required field, which is where a value
-				// is encoded, so value cannot be a required field.
-				"value": {Type: StringType, Required: false},
-			},
+			Type:       RecordType,
+			Attributes: map[string]EntityAttribute{},
 		},
+		Tags: &Tags{Type: StringType},
+	}
+}
+
+func ExtrasEntity() Entity {
+	return Entity{
+		MemberOfTypes: []string{},
+		Shape: EntityShape{
+			Type:       RecordType,
+			Attributes: map[string]EntityAttribute{},
+		},
+		Tags: &Tags{Type: SetType, Element: &EntityAttributeElement{Type: StringType}},
 	}
 }
 
@@ -127,7 +116,7 @@ func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
 	schema[namespace].EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
 	schema[namespace].EntityTypes[NodePrincipalType] = NodeEntity()
 	schema[namespace].EntityTypes[ExtraValueType] = ExtraEntity()
-	schema[namespace].CommonTypes[ExtraValuesAttributeType] = ExtraEntityShape()
+	schema[namespace].EntityTypes[ExtraValuesType] = ExtrasEntity()
 }
 
 // AdmissionPrincipalTypes returns the list of principal types from the
