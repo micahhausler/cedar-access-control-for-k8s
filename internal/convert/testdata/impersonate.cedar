@@ -25,13 +25,29 @@ permit (
 when
 {
   principal.name == "impersonator" &&
+  resource.key == "father" &&
+  resource has value &&
+  resource.value == "anakin"
+};
+
+@clusterRoleBinding("impersonator")
+@clusterRole("impersonator")
+@policyRule("02")
+permit (
+  principal is k8s::User,
+  action == k8s::Action::"impersonate",
+  resource is k8s::Extra
+)
+when
+{
+  principal.name == "impersonator" &&
   resource has value &&
   ["hoth", "tatooine"].contains(resource.value)
 };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("02")
+@policyRule("03")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -41,7 +57,7 @@ when { principal.name == "impersonator" && resource.name == "lukeskywalker" };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("03")
+@policyRule("04")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -55,7 +71,7 @@ when
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("04")
+@policyRule("05")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -65,7 +81,7 @@ when { principal.name == "impersonator" };
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("05")
+@policyRule("06")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -80,7 +96,7 @@ when
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("06")
+@policyRule("07")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
@@ -96,10 +112,24 @@ when
 
 @clusterRoleBinding("impersonator")
 @clusterRole("impersonator")
-@policyRule("07")
+@policyRule("08")
 permit (
   principal is k8s::User,
   action == k8s::Action::"impersonate",
   resource
 )
 when { principal.name == "impersonator" };
+
+@clusterRoleBinding("impersonator")
+@clusterRole("impersonator")
+@policyRule("09")
+permit (
+  principal is k8s::User,
+  action == k8s::Action::"impersonate",
+  resource
+)
+when
+{
+  principal.name == "impersonator" &&
+  (resource is k8s::Extra || resource is k8s::User)
+};

@@ -1,5 +1,6 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
-  creationTimestamp: null
   name: impersonator
 roleRef:
   apiGroup: ""
@@ -10,8 +11,9 @@ subjects:
   kind: User
   name: impersonator
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
-  creationTimestamp: null
   name: impersonator
 rules:
 - apiGroups:
@@ -26,10 +28,18 @@ rules:
 - apiGroups:
   - authentication.k8s.io
   resourceNames:
+  - anakin
+  resources:
+  - userextras/father
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resourceNames:
   - hoth
   - tatooine
   resources:
-  - userextras
+  - userextras # <-- all keys are permitted
   verbs:
   - impersonate
 - apiGroups:
@@ -80,5 +90,12 @@ rules:
   - authentication.k8s.io
   resources:
   - '*'
+  verbs:
+  - impersonate
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - users # any users
+  - userextras # any extra
   verbs:
   - impersonate

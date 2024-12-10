@@ -28,7 +28,7 @@ when
   principal.name == "impersonator" &&
   (resource == k8s::PrincipalUID::"jedi" ||
    resource is k8s::Extra &&
-   ["mykey"].contains(resource.key) &&
+   resource.key == "mykey" &&
    resource has value &&
    resource.value == "jedi")
 };
@@ -47,7 +47,7 @@ when
   (resource is k8s::PrincipalUID &&
    resource in [k8s::PrincipalUID::"jedi", k8s::PrincipalUID::"sith"] ||
    resource is k8s::Extra &&
-   ["mykey"].contains(resource.key) &&
+   resource.key == "mykey" &&
    resource has value &&
    ["jedi", "sith"].contains(resource.value))
 };
