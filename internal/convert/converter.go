@@ -56,8 +56,6 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 		}
 	}
 	for pi, principal := range principals {
-
-		// TODO: Aggregation rules?
 		for ri, rule := range ruler.Rules() {
 			policy := ast.Permit().Annotate(
 				cedartypes.Ident(binder.Type()), cedartypes.String(binder.Name()),
@@ -90,45 +88,32 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 				when = ast.Principal().Access("name").Equal(ast.String(principal.ID))
 			}
 
-			// if the policy has a "*" and other verbs, we can just use "*"
-			rule.Verbs = reduceIfHasStar(reduceToUnique(rule.Verbs))
+			rule.Verbs = reduceIfHasStar(uniqueElements(rule.Verbs))
 
-			switch len(rule.Verbs) {
-			case 1:
-				if rule.Verbs[0] != "*" {
-					policy = policy.ActionEq(cedartypes.EntityUID{
-						Type: schema.AuthorizationActionEntityType,
-						ID:   cedartypes.String(rule.Verbs[0]),
-					})
-				}
-				// * verb encompases all actions, so no policy specification required
-			default:
+			// '*' verb encompases all actions, so no action specification required
+			if len(rule.Verbs) == 1 && rule.Verbs[0] != "*" {
+				policy = policy.ActionEq(cedartypes.EntityUID{
+					Type: schema.AuthorizationActionEntityType,
+					ID:   cedartypes.String(rule.Verbs[0]),
+				})
+			} else if len(rule.Verbs) > 1 {
 				actions := []cedartypes.EntityUID{}
 				for _, verb := range rule.Verbs {
-					actions = append(actions, cedartypes.EntityUID{
-						Type: schema.AuthorizationActionEntityType,
-						ID:   cedartypes.String(verb),
-					})
+					actions = append(actions, cedartypes.NewEntityUID(schema.AuthorizationActionEntityType, cedartypes.String(verb)))
 				}
 				policy = policy.ActionInSet(actions...)
 			}
 
 			if len(rule.NonResourceURLs) > 0 {
 				policy = policy.ResourceIs(schema.NonResourceURLEntityType)
-
-				when = conditionForNonResourceURLs(rule)
-
-				if when != emptyNode {
-					policy = policy.When(when)
-				}
+				policy = policyWhenCondition(policy, conditionForNonResourceURLs(rule), emptyNode)
 				policyId := cedar.PolicyID(binder.Name() + strconv.Itoa(pi) + strconv.Itoa(ri))
 				resp.Add(policyId, cedar.NewPolicyFromAST(policy))
 				continue
 			}
 
 			if (rule.Verbs[0] == "*" && rule.Resources[0] == "*" && rule.APIGroups[0] == "*") || (slices.Contains(rule.Verbs, "impersonate") && slices.Contains(rule.APIGroups, "authentication.k8s.io")) {
-				// var impersonationPolicy *ast.Policy
-				impersonationPolicy := GrossCopyPolicy(policy)
+				impersonationPolicy := grossCopyPolicy(policy)
 				impersonationPolicy = impersonationPolicy.ActionEq(cedartypes.EntityUID{
 					Type: schema.AuthorizationActionEntityType,
 					ID:   cedartypes.String("impersonate"),
@@ -145,9 +130,9 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 				}
 			}
 
-			rule.APIGroups = reduceIfHasStar(reduceToUnique(rule.APIGroups))
-			rule.Resources = reduceIfHasStar(reduceToUnique(rule.Resources))
-			rule.ResourceNames = reduceToUnique(rule.ResourceNames)
+			rule.APIGroups = reduceIfHasStar(uniqueElements(rule.APIGroups))
+			rule.Resources = reduceIfHasStar(uniqueElements(rule.Resources))
+			rule.ResourceNames = uniqueElements(rule.ResourceNames)
 			// RBAC doesn't allow "*" as a resource name: empty slice means "*"
 
 			condition := conditionForAPIGroups(rule)
@@ -155,8 +140,11 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 			condition = conditionForResourceNames(condition, rule)
 
 			if namespace != "" {
-				condition = condition.And(ast.Resource().Has("namespace").And(
-					ast.Resource().Access("namespace").Equal(ast.String(namespace))),
+				condition = conditionAnd(
+					condition,
+					ast.Resource().Has("namespace").And(
+						ast.Resource().Access("namespace").Equal(ast.String(namespace)),
+					),
 				)
 			}
 
@@ -176,26 +164,25 @@ func rbacToCedar(binder Binder, ruler Ruler, namespace string) *cedar.PolicySet 
 	return resp
 }
 
-func GrossCopyPolicy(policy *ast.Policy) *ast.Policy {
+// grossCopyPolicy serializes an *ast.Cedar policy to serialized Cedar, and unmarshals that to a new *ast.Policy.
+// This is useful for a deep copy of a policy.
+func grossCopyPolicy(policy *ast.Policy) *ast.Policy {
 	p := cedar.NewPolicyFromAST(policy)
 	cp := &cedar.Policy{}
-	_ = cp.UnmarshalCedar(p.MarshalCedar())
+	cp.UnmarshalCedar(p.MarshalCedar())
 	return cp.AST()
 }
 
+// policyWhenCondition adds a `when {}` clause to a policy by ANDing the condition and when nodes, if they're present
 func policyWhenCondition(policy *ast.Policy, condition, when ast.Node) *ast.Policy {
-	if when != emptyNode {
-		if condition != emptyNode {
-			policy = policy.When(when.And(condition))
-		} else {
-			policy = policy.When(when)
-		}
-	} else if condition != emptyNode {
-		policy = policy.When(condition)
+	if n := conditionAnd(when, condition); n != emptyNode {
+		return policy.When(n)
 	}
 	return policy
 }
 
+// conditionOr returns an `lhs.Or(rhs)` if both nodes are not empty, otherwise
+// just returns the non empty node. If both are empty, returns an empty node.
 func conditionOr(lhs ast.Node, rhs ast.Node) ast.Node {
 	if lhs != emptyNode {
 		if rhs != emptyNode {
@@ -206,7 +193,30 @@ func conditionOr(lhs ast.Node, rhs ast.Node) ast.Node {
 	return rhs
 }
 
-func reduceToUnique(slice []string) []string {
+// conditionAnd returns an `lhs.And(rhs)` if both nodes are not empty, otherwise
+// just returns the non empty node. If both are empty, returns an empty node.
+func conditionAnd(lhs ast.Node, rhs ast.Node) ast.Node {
+	if lhs != emptyNode {
+		if rhs != emptyNode {
+			return lhs.And(rhs)
+		}
+		return lhs
+	}
+	return rhs
+}
+
+// stringSliceToSet returns an ast.Set() for a given strin slice
+func stringSliceToSet(slice []string) ast.Node {
+	elements := []ast.Node{}
+	for _, s := range slice {
+		elements = append(elements, ast.String(s))
+	}
+	return ast.Set(elements...)
+}
+
+// uniqueElements returns a slice of deduplicated items.
+// Only the first of any duplicate is included, in order.
+func uniqueElements(slice []string) []string {
 	unique := []string{}
 	for _, s := range slice {
 		if !slices.Contains(unique, s) {
@@ -216,6 +226,7 @@ func reduceToUnique(slice []string) []string {
 	return unique
 }
 
+// reduceIfHasStar returns a `*` minus all other entries if `*` is present
 func reduceIfHasStar(slice []string) []string {
 	if slices.Contains(slice, "*") {
 		return []string{"*"}
@@ -245,44 +256,16 @@ func conditionForNonResourceURLs(rule rbacv1.PolicyRule) ast.Node {
 	}
 
 	condition := ast.Node{}
-
-	if len(wildCardUrls) > 0 {
-		if len(wildCardUrls) == 1 {
-			condition = ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[0]))
-		} else {
-			localCondition := ast.Node{}
-			for wi := range wildCardUrls {
-				if wi == 0 {
-					localCondition = ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[wi]))
-					continue
-				}
-				localCondition = localCondition.Or(
-					ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[wi])),
-				)
-			}
-			condition = localCondition
-		}
+	for wi := range wildCardUrls {
+		condition = conditionOr(
+			condition,
+			ast.Resource().Access("path").Like(cedartypes.NewPattern(wildCardUrls[wi])),
+		)
 	}
-
-	if len(nonWildCardUrls) > 0 {
-		if len(nonWildCardUrls) == 1 {
-			if condition != emptyNode {
-				condition = condition.Or(
-					ast.Resource().Access("path").Equal(ast.String(nonWildCardUrls[0])),
-				)
-			}
-		} else {
-			nonWildCardUrlNodes := []ast.Node{}
-			for _, nonWildCardUrl := range nonWildCardUrls {
-				nonWildCardUrlNodes = append(nonWildCardUrlNodes, ast.String(nonWildCardUrl))
-			}
-			localCondition := ast.Set(nonWildCardUrlNodes...).Contains(ast.Resource().Access("path"))
-			if condition != emptyNode {
-				condition = condition.Or(localCondition)
-			} else {
-				condition = localCondition
-			}
-		}
+	if len(nonWildCardUrls) == 1 {
+		condition = conditionOr(condition, ast.Resource().Access("path").Equal(ast.String(nonWildCardUrls[0])))
+	} else if len(nonWildCardUrls) > 1 {
+		condition = conditionOr(condition, stringSliceToSet(nonWildCardUrls).Contains(ast.Resource().Access("path")))
 	}
 	return condition
 }
@@ -293,12 +276,7 @@ func conditionForAPIGroups(rule rbacv1.PolicyRule) ast.Node {
 		return emptyNode
 	}
 	if len(rule.APIGroups) > 1 {
-		apiGroups := []ast.Node{}
-		for _, apiGroup := range rule.APIGroups {
-			apiGroups = append(apiGroups, ast.String(apiGroup))
-		}
-		condition = ast.Set(apiGroups...).Contains(ast.Resource().Access("apiGroup"))
-
+		condition = stringSliceToSet(rule.APIGroups).Contains(ast.Resource().Access("apiGroup"))
 	}
 	return condition
 }
@@ -313,7 +291,6 @@ func hasSubResources(rule rbacv1.PolicyRule) bool {
 }
 
 func policyForImpersonate(policy *ast.Policy, rule rbacv1.PolicyRule) (*ast.Policy, ast.Node) {
-
 	var condition ast.Node
 
 	allSameResourceType := true
@@ -332,7 +309,7 @@ func policyForImpersonate(policy *ast.Policy, rule rbacv1.PolicyRule) (*ast.Poli
 		}
 	}
 
-	if len(rule.Resources) == 1 || allSameResourceType {
+	if allSameResourceType {
 		switch rule.Resources[0] {
 		case "users":
 			policy = policy.ResourceIs(schema.UserEntityType)
@@ -399,88 +376,46 @@ func conditionForUidImpersonation(condition ast.Node, rule rbacv1.PolicyRule) as
 		))
 	}
 
-	localCondition := ast.Resource().In(ast.Set(entities...))
-	if condition != emptyNode {
-		condition = condition.And(localCondition)
-	} else {
-		condition = localCondition
-	}
-	return condition
+	return conditionAnd(condition, ast.Resource().In(ast.Set(entities...)))
 }
 
 func conditionForNamedGroupUserImpersonation(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
 	if len(rule.ResourceNames) == 1 {
-		localCondition := ast.Resource().Access("name").Equal(ast.String(rule.ResourceNames[0]))
-		if condition != emptyNode {
-			condition = condition.And(localCondition)
-		} else {
-			condition = localCondition
-		}
+		return conditionAnd(condition, ast.Resource().Access("name").Equal(ast.String(rule.ResourceNames[0])))
 	} else if len(rule.ResourceNames) > 1 {
-		nameNodes := []ast.Node{}
-		for _, name := range rule.ResourceNames {
-			nameNodes = append(nameNodes, ast.String(name))
-		}
-		localCondition := ast.Set(nameNodes...).Contains(ast.Resource().Access("name"))
-		if condition != emptyNode {
-			condition = condition.And(localCondition)
-		} else {
-			condition = localCondition
-		}
+		return conditionAnd(condition, stringSliceToSet(rule.ResourceNames).Contains(ast.Resource().Access("name")))
 	}
 	return condition
 }
 
 func conditionForExtraImpersonation(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
-	if len(rule.Resources) == 1 {
-		if strings.Contains(rule.Resources[0], "/") {
-			keyName := strings.SplitN(rule.Resources[0], "/", 2)[1]
-			localCondition := ast.Resource().Access("key").Equal(ast.String(keyName))
-			if condition != emptyNode {
-				condition = condition.And(localCondition)
-			} else {
-				condition = localCondition
-			}
-		}
-	} else if len(rule.Resources) > 1 {
-		keyNodes := []ast.Node{}
-		for _, resource := range rule.Resources {
-			if strings.Contains(resource, "/") {
-				keyName := strings.SplitN(resource, "/", 2)[1]
-				keyNodes = append(keyNodes, ast.String(keyName))
-			}
-		}
-		localCondition := ast.Set(keyNodes...).Contains(ast.Resource().Access("key"))
-		if condition != emptyNode {
-			condition = condition.And(localCondition)
-		} else {
-			condition = localCondition
+	impersonatedKeys := []string{}
+	for _, resource := range rule.Resources {
+		if strings.Contains(resource, "/") {
+			impersonatedKeys = append(impersonatedKeys, strings.SplitN(resource, "/", 2)[1])
 		}
 	}
 
+	if len(impersonatedKeys) == 1 {
+		condition = conditionAnd(condition, ast.Resource().Access("key").Equal(ast.String(impersonatedKeys[0])))
+	} else if len(impersonatedKeys) > 1 {
+		condition = conditionAnd(condition, stringSliceToSet(impersonatedKeys).Contains(ast.Resource().Access("key")))
+	}
+
 	if len(rule.ResourceNames) == 1 {
-		localCondition := ast.Resource().Has("value").And(
-			ast.Resource().Access("value").Equal(ast.String(rule.ResourceNames[0])),
-		)
-		if condition != emptyNode {
-			condition = condition.And(localCondition)
-		} else {
-			condition = localCondition
-		}
-	} else if len(rule.ResourceNames) > 1 {
-		nameNodes := []ast.Node{}
-		for _, name := range rule.ResourceNames {
-			nameNodes = append(nameNodes, ast.String(name))
-		}
-		localCondition :=
+		condition = conditionAnd(
+			condition,
 			ast.Resource().Has("value").And(
-				ast.Set(nameNodes...).Contains(ast.Resource().Access("value")),
-			)
-		if condition != emptyNode {
-			condition = condition.And(localCondition)
-		} else {
-			condition = localCondition
-		}
+				ast.Resource().Access("value").Equal(ast.String(rule.ResourceNames[0])),
+			),
+		)
+	} else if len(rule.ResourceNames) > 1 {
+		condition = conditionAnd(
+			condition,
+			ast.Resource().Has("value").And(
+				stringSliceToSet(rule.ResourceNames).Contains(ast.Resource().Access("value")),
+			),
+		)
 	}
 	return condition
 }
@@ -494,44 +429,29 @@ func conditionForResources(condition ast.Node, rule rbacv1.PolicyRule) (when ast
 
 		if !strings.Contains(rule.Resources[0], "/") {
 			// handle single resource without subresource
-			localCondition := ast.Resource().Access("resource").Equal(ast.String(rule.Resources[0]))
-			if condition != emptyNode {
-				condition = condition.And(ast.Resource().Access("resource").Equal(ast.String(rule.Resources[0])))
-			} else {
-				condition = localCondition
-			}
+			condition = conditionAnd(
+				condition,
+				ast.Resource().Access("resource").Equal(ast.String(rule.Resources[0])),
+			)
 		} else {
 			// handle subresources
 			left, right := strings.SplitN(rule.Resources[0], "/", 2)[0], strings.SplitN(rule.Resources[0], "/", 2)[1]
 
 			// "*" means all .resources unconditionally, so no condition needed
 			if left != "*" {
-				localCondition := ast.Resource().Access("resource").Equal(ast.String(left))
-				if condition != emptyNode {
-					condition = condition.And(localCondition)
-				} else {
-					condition = localCondition
-				}
+				condition = conditionAnd(condition, ast.Resource().Access("resource").Equal(ast.String(left)))
 			}
 
 			if right == "*" {
-				// TODO: Do we need the `resource.subresource != ""` check? Or does presence mean non-empty
-				localCondition := ast.Resource().Has("subresource").And(ast.Resource().Access("subresource").NotEqual(ast.String("")))
-				// has subresource and subresource is not empty
-				if condition != emptyNode {
-					condition = condition.And(localCondition)
-				} else {
-					condition = localCondition
-				}
+				// TODO: Do we need the `resource.subresource != ""` check? Or does presence mean non-empty?
+				// Has subresource and subresource is not empty
+				condition = conditionAnd(condition, ast.Resource().Has("subresource").And(ast.Resource().Access("subresource").NotEqual(ast.String(""))))
 			} else {
-				localCondition := ast.Resource().Has("subresource").And(
-					ast.Resource().Access("subresource").Equal(ast.String(right)),
+				condition = conditionAnd(condition,
+					ast.Resource().Has("subresource").And(
+						ast.Resource().Access("subresource").Equal(ast.String(right)),
+					),
 				)
-				if condition != emptyNode {
-					condition = condition.And(localCondition)
-				} else {
-					condition = localCondition
-				}
 			}
 		}
 	} else {
@@ -565,33 +485,23 @@ func conditionForResources(condition ast.Node, rule rbacv1.PolicyRule) (when ast
 		}
 
 		var resourceCondition ast.Node
-		regularEntryResources := []ast.Node{}
-		for _, resource := range regularEntries {
-			regularEntryResources = append(regularEntryResources, ast.String(resource))
-		}
-		if len(regularEntryResources) == 1 {
-			resourceCondition = ast.Resource().Access("resource").Equal(regularEntryResources[0])
-		} else if len(regularEntryResources) > 1 {
-			resourceCondition = ast.Set(regularEntryResources...).Contains(ast.Resource().Access("resource"))
+		if len(regularEntries) == 1 {
+			resourceCondition = ast.Resource().Access("resource").Equal(ast.String(regularEntries[0]))
+		} else if len(regularEntries) > 1 {
+			resourceCondition = stringSliceToSet(regularEntries).Contains(ast.Resource().Access("resource"))
 		}
 
-		// OR the subresource condition with restouces if it exists
-		if subResourceCondition != emptyNode && resourceCondition != emptyNode {
-			resourceCondition = resourceCondition.Or(subResourceCondition)
-		} else if subResourceCondition != emptyNode && resourceCondition == emptyNode {
-			// if there are only subresources, use that as the condition
-			resourceCondition = subResourceCondition
-		}
-		if condition != emptyNode {
-			// AND the resource condition with the existing policy conditions
-			condition = condition.And(resourceCondition)
-		} else {
-			condition = resourceCondition
-		}
+		// OR the subresource condition with restouces if it exists.
+		// If there are only subresources, use that as the condition
+		condition = conditionAnd(
+			condition,
+			conditionOr(resourceCondition, subResourceCondition),
+		)
 	}
 	return condition
 }
 
+// conditionForResourceNames returns a condition for resource names.
 // RBAC doesn't allow globs in names, so we're safe to always use `Equal()` or `Set().Contains()`
 func conditionForResourceNames(condition ast.Node, rule rbacv1.PolicyRule) ast.Node {
 	if len(rule.ResourceNames) == 1 {
@@ -601,13 +511,9 @@ func conditionForResourceNames(condition ast.Node, rule rbacv1.PolicyRule) ast.N
 			),
 		)
 	} else if len(rule.ResourceNames) > 1 {
-		resourceNames := []ast.Node{}
-		for _, resourceName := range rule.ResourceNames {
-			resourceNames = append(resourceNames, ast.String(resourceName))
-		}
 		condition = condition.And(
 			ast.Resource().Has("name").And(
-				ast.Set(resourceNames...).Contains(ast.Resource().Access("name")),
+				stringSliceToSet(rule.ResourceNames).Contains(ast.Resource().Access("name")),
 			),
 		)
 	}
