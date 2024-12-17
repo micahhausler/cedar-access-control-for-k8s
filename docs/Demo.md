@@ -317,12 +317,8 @@ These types of admission rules are already possible today with general purpose t
 
 
 #### Key/Value maps
-<!-- TODO: ENTITY TAGS -->
-For now, the webhook modifies labels and annotations into a list of structure with the fields "key" and "value", so policy can be written against it.
-Once cedar-go [adds support for entity tags][cedar-go-entity-tags], we'll refactor to use that structure and syntax.
-That will be a breaking change to any policy using the current key/value structure.
 
-[cedar-go-entity-tags]: https://github.com/cedar-policy/cedar-go/issues/47
+The webhook modifies labels, annotations, and other key/value string pairs into a set of structure with the fields "key" and "value", so policy can be written against it.
 
 ```cedar
 // authorization policy allowing sample-user to make actions on configmaps in default namespace

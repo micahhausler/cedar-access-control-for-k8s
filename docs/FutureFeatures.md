@@ -65,8 +65,9 @@ forbid (
     action in k8s::admission::Action::"update",
     resource is core::v1::Pod
 ) when {
-    context has cluster.tags.stage &&
-    context.cluster.tags.stage == "prod" &&
+    context has cluster &&
+    context.cluster.hasTag("stage") &&
+    context.cluster.getTag("stage") == "prod" &&
     resource.spec has ephemeralContainers
 };
 ```

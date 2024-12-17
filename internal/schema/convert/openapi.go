@@ -437,8 +437,6 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 					continue
 				}
 
-				// TODO: ENTITY TAGS: this is just here until we get real key/value map support
-				// for string/string maps, hack to use custom KeyValue or KeyValueSlice types
 				knownKeyValueStringMapAttributes := map[string][]string{
 					"io.k8s.api.core.v1.ConfigMap":                       {"data", "binaryData"}, // format is []byte, should we exclude?
 					"io.k8s.api.core.v1.CSIPersistentVolumeSource":       {"volumeAttributes"},
@@ -491,7 +489,7 @@ func RefToEntityShape(api *spec3.OpenAPI, schemaKind string) (schema.EntityShape
 				}
 
 				klog.V(5).InfoS("Skipping object type", "kind", schemaKind, "attribute", attrName, "attrDef", attrDef)
-				// skip until k/v objects are supported
+				// skip until k/v objects are supported?
 				continue
 			default:
 				klog.V(5).Infof("Skipping %s attr %s type %s", schemaKind, attrName, attrDef.Type[0])

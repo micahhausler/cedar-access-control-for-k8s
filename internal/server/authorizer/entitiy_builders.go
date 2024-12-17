@@ -70,7 +70,6 @@ func ImpersonatedResourceToCedarEntity(attributes authorizer.Attributes) cedarty
 			ID:   cedartypes.String(attributes.GetName()),
 		}
 		respAttributes[cedartypes.String("name")] = cedartypes.String(attributes.GetName())
-	// TODO: ENTITY TAGS: Migrate to entity tags
 	case "userextras":
 		uid = cedartypes.EntityUID{
 			Type: schema.ExtraValueEntityType,

@@ -62,50 +62,6 @@ permit (
 };
 ```
 
-## Entity Tags (key/value maps)
-
-Cedar's Rust implementation and CLI gained support for entity tags (key/value maps) in [Cedar v4.2.0][4.2].
-Until [cedar-go supports entity tags][go-entity-tags], we've manually added `KeyValue` and `KeyValues` types into the `meta::v1` namespace to support key/value labels.
-Any Kubernetes types in admission that consist of `map[string]string{}` or `map[string][]string{}` are converted to a Set of KeyValue or KeyValueStringSlice.
-```cedarschema
-namespace meta::v1 {
-    type KeyValue = {
-        "key": __cedar::String,
-        "value"?: __cedar::String
-    };
-    type KeyValueStringSlice = {
-        "key": __cedar::String,
-        "value"?: Set < __cedar::String >
-    };
-    entity ObjectMeta = {
-        "annotations"?: Set < meta::v1::KeyValue >,
-        "labels"?: Set < meta::v1::KeyValue >,
-        "name"?: __cedar::String,
-        "namespace"?: __cedar::String,
-        // ...
-    };
-    // ...
-}
-```
-
-Similarly, the Authorization namespace `k8s::` includes a custom `Extra` type to support key/value maps on Users, ServiceAccounts, and Nodes.
-```cedarschema
-namespace k8s {
-	type Extra = {
-		"key": __cedar::String,
-		"values"?: Set < __cedar::String >
-	};
-    entity User in [Group] = {
-		"extra"?: Set < Extra >,
-		"name": __cedar::String
-	};
-    // ...
-}
-```
-
-[4.2]: https://github.com/cedar-policy/cedar/releases/tag/v4.2.0
-[go-entity-tags]: https://github.com/cedar-policy/cedar-go/issues/47
-
 ## Expressiveness limitations
 
 A core tenet of Cedar is to be analyzable, meaning that the language can verify that a policy is valid and will not error.

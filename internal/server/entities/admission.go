@@ -99,32 +99,6 @@ func (a *authorizerAttributeWrapper) GetPath() string                           
 func (a *authorizerAttributeWrapper) GetFieldSelector() (fields.Requirements, error) { return nil, nil }
 func (a *authorizerAttributeWrapper) GetLabelSelector() (labels.Requirements, error) { return nil, nil }
 
-// type cedarEntityValueWrapper struct {
-// 	cedartypes.Entity
-// }
-
-// var _ cedartypes.Value = &cedarEntityValueWrapper{}
-
-// func (e cedarEntityValueWrapper) Equal(v cedartypes.Value) bool {
-// 	return false
-// }
-
-// func (e cedarEntityValueWrapper) ExplicitMarshalJSON() ([]byte, error) {
-// 	return json.Marshal(e.Entity)
-// }
-
-// func (e cedarEntityValueWrapper) MarshalCedar() []byte {
-// 	return []byte{}
-// }
-
-// func (e cedarEntityValueWrapper) String() string {
-// 	return ""
-// }
-
-// func (e cedarEntityValueWrapper) hash() uint64 {
-// 	return 0
-// }
-
 func UnstructuredFromAdmissionRequestObject(data []byte) (*unstructured.Unstructured, error) {
 	if data == nil {
 		return nil, errors.New("unstructured data is nil")
@@ -216,7 +190,7 @@ func walkObject(i int, group, version, kind, keyName string, obj any) (cedartype
 		return nil, nil
 	}
 
-	// TODO: ENTITY TAGS: This is a hack until key/value objects are supported
+	// TODO: This is a hack of referencing attribute names until walking schema for nested entities is supported
 	// g/v/k/attrNames
 	knownKeyValueStringMapAttributes := map[string]map[string]map[string][]string{
 		"core": {
