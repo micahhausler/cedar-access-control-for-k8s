@@ -92,17 +92,17 @@ func main() {
 				}
 				ruler = convert.NewRoleRuler(*role)
 			}
-			if i > 0 {
-				fmt.Println()
-				fmt.Println("// ----------------------------------------------------------------------------------------------------------------")
-			}
-			fmt.Println("// " + binding.Name)
 			ps := convert.RoleBindingRulerToCedar(binding, ruler)
 			switch *format {
 			case "json":
 				data, _ := ps.MarshalJSON()
 				fmt.Println(string(data))
 			case "cedar":
+				if i > 0 {
+					fmt.Println()
+					fmt.Printf("// %s\n", strings.Repeat("-", 80))
+				}
+				fmt.Println("// " + binding.Name)
 				fmt.Println(string(ps.MarshalCedar()))
 			case "crd":
 				crd := CRDForCedarPolicy(binding.Name, ps)
@@ -110,6 +110,7 @@ func main() {
 				if err != nil {
 					klog.Fatalf("Error marshalling CRD: %v", err)
 				}
+				fmt.Println("# " + binding.Name)
 				fmt.Println(string(data))
 				if i != len(rbs.Items)-1 {
 					fmt.Println("---")
@@ -144,17 +145,17 @@ func main() {
 				klog.Errorf("Error getting ClusterRole %s: %v. Skipping this one", crb.RoleRef.Name, err)
 				continue
 			}
-			if i > 0 {
-				fmt.Println()
-				fmt.Println("// ----------------------------------------------------------------------------------------------------------------")
-			}
-			fmt.Println("// " + crb.Name)
 			ps := convert.ClusterRoleBindingToCedar(crb, *cr)
 			switch *format {
 			case "json":
 				data, _ := ps.MarshalJSON()
 				fmt.Println(string(data))
 			case "cedar":
+				if i > 0 {
+					fmt.Println()
+					fmt.Printf("// %s\n", strings.Repeat("-", 80))
+				}
+				fmt.Println("// " + crb.Name)
 				fmt.Println(string(ps.MarshalCedar()))
 			case "crd":
 				crd := CRDForCedarPolicy(crb.Name, ps)
@@ -162,6 +163,7 @@ func main() {
 				if err != nil {
 					klog.Fatalf("Error marshalling CRD: %v", err)
 				}
+				fmt.Println("# " + crb.Name)
 				fmt.Println(string(data))
 				if i != len(crbs.Items)-1 {
 					fmt.Println("---")
