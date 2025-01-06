@@ -3,6 +3,8 @@ kind: Policy
 metadata:
   name: combined-policy
 spec:
+  validation:
+    enforced: false
   content: |
     // Authorization policy
     // test-user can do Action::"*" on configmaps in the default namespace
@@ -34,6 +36,8 @@ kind: Policy
 metadata:
   name: self-node-policy
 spec:
+  validation:
+    enforced: false
   content: |
     // On Kubernetes versions 1.29+ with the `ServiceAccountTokenPodNodeInfo` flag enabled,
     // Kubernetes injects a node name into the Service Account token, which gets propagated
@@ -80,6 +84,8 @@ kind: Policy
 metadata:
   name: label-enforcement-policy
 spec:
+  validation:
+    enforced: false
   content: |
     // authz policy allowing sample-user to do anything on configmaps in default namespace
     permit (

@@ -42,8 +42,29 @@ spec:
               content:
                 description: Content is a string representing the policy content
                 type: string
+              validation:
+                description: Validation
+                properties:
+                  enforced:
+                    default: false
+                    description: Enforced indicates if creation or updates to the
+                      policy require schema validation
+                    type: boolean
+                  validationMode:
+                    description: |-
+                      ValidationMode indicates which validation mode to use.
+                      A value of `strict` requires that only literals are passed to extension functions (IP, decimal, datetime), and not entity attributes.
+                      See https://docs.cedarpolicy.com/policies/validation.html#validation-benefits-of-schema for more details.
+                    enum:
+                    - strict
+                    - permissive
+                    type: string
+                required:
+                - enforced
+                type: object
             required:
             - content
+            - validation
             type: object
           status:
             description: PolicyStatus defines the observed state of Policy

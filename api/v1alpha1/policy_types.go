@@ -20,8 +20,26 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+const (
+	StrictValidationMode     = "strict"
+	PermissiveValidationMode = "permissive"
+)
+
+// PolicyValidation defines the
+type PolicyValidation struct {
+	// Enforced indicates if creation or updates to the policy require schema validation
+	//+required
+	//+kubebuilder:default:value=false
+	Enforced bool `json:"enforced"`
+
+	// ValidationMode indicates which validation mode to use.
+	// A value of `strict` requires that only literals are passed to extension functions (IP, decimal, datetime), and not entity attributes.
+	// See https://docs.cedarpolicy.com/policies/validation.html#validation-benefits-of-schema for more details.
+	//+kubebuilder:validation:Enum=strict;permissive
+	//+default:value=strict
+	//+optional
+	ValidationMode string `json:"validationMode"`
+}
 
 // PolicySpec defines the desired state of Policy
 type PolicySpec struct {
@@ -31,6 +49,10 @@ type PolicySpec struct {
 	// Content is a string representing the policy content
 	//+required
 	Content string `json:"content"`
+
+	// Validation
+	//+required
+	Validation PolicyValidation `json:"validation"`
 }
 
 // PolicyStatus defines the observed state of Policy

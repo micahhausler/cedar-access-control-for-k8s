@@ -3,6 +3,8 @@ kind: Policy
 metadata:
   name: first-policy
 spec:
+  validation:
+    enforced: false
   content: |
     // test-user can get/list/watch pods at cluster scope
     permit (
@@ -29,6 +31,8 @@ kind: Policy
 metadata:
   name: viewer-group
 spec:
+  validation:
+    enforced: false
   content: |
     // viewer group members can get/list/watch any Resource other than secrets
     permit (
@@ -47,6 +51,8 @@ metadata:
   annotations:
     cedar.k8s.aws/description: "Grants access to public information, equivalent to RBAC CR/CRB system:public-info-viewer"
 spec:
+  validation:
+    enforced: false
   content: |
     permit (
         principal in k8s::Group::"system:authenticated",
@@ -98,6 +104,8 @@ kind: Policy
 metadata:
   name: secrets-label-selector-example
 spec:
+  validation:
+    enforced: false
   content: |
     permit (
         principal is k8s::User,
@@ -133,6 +141,8 @@ kind: Policy
 metadata:
   name: service-account-impersonate-example
 spec:
+  validation:
+    enforced: false
   content: |
     // test-user can impersonate the service-manager service account in the default namespace
     permit (

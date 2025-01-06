@@ -186,6 +186,10 @@ func CRDForCedarPolicy(name string, policies *cedar.PolicySet) *cedarv1alpha1.Po
 			Name: strings.ReplaceAll(name, ":", "."),
 		},
 		Spec: cedarv1alpha1.PolicySpec{
+			Validation: cedarv1alpha1.PolicyValidation{
+				Enforced:       true,
+				ValidationMode: cedarv1alpha1.StrictValidationMode,
+			},
 			Content: string(marshalled),
 		},
 	}
