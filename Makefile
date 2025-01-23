@@ -11,11 +11,12 @@ GOBIN=$(shell go env GOBIN)
 endif
 
 # CONTAINER_TOOL defines the container tool to be used for building images.
-# Be aware that the target commands are only tested with finch.
-# However, you may be able to replace this with docker
-CONTAINER_TOOL ?= finch
-
-FINCH_FEATURE ?= KIND_EXPERIMENTAL_PROVIDER=finch
+ifneq ($(wildcard .finch),)
+	CONTAINER_TOOL ?= finch
+	KIND_FEATURE = KIND_EXPERIMENTAL_PROVIDER=finch
+else
+	CONTAINER_TOOL ?= docker
+endif
 
 # Setting SHELL to bash allows bash commands to be executed by recipes.
 # Options are set to exit when a recipe line exits non-zero or a piped command fails.
@@ -45,7 +46,7 @@ kind-image: image-build ## Build the kind node image
 
 .PHONY: kind
 kind: kind-image ## Start a kind cluster configured to use the local authorization webhook
-	$(FINCH_FEATURE) kind create cluster --config kind.yaml -v2
+	$(KIND_FEATURE) kind create cluster --config kind.yaml -v2
 	kubectl apply -f config/crd/bases/cedar.k8s.aws_policies.yaml
 	kubectl apply -f demo/authorization-policy.yaml
 	kubectl apply -f demo/admission-policy.yaml
@@ -58,7 +59,7 @@ kind: kind-image ## Start a kind cluster configured to use the local authorizati
 
 .PHONY: clean-kind
 clean-kind: ## Delete the kind cluster and clean up genereated files
-	$(FINCH_FEATURE) kind delete cluster --name $(KIND_NAME)
+	$(KIND_FEATURE) kind delete cluster --name $(KIND_NAME)
 	rm \
 		./mount/policies/cedar-kubeconfig.yaml \
 		./mount/*-user-kubeconfig.yaml \

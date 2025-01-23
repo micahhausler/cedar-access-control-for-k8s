@@ -24,9 +24,13 @@ webhook.image.tar
 
 # Go workspace file
 go.work
+go.work.sum
 
 # Kubernetes Generated files - skip generated files, except for vendored files
 !vendor/**/zz_generated.*
+
+# Flags
+.finch
 
 # editor and IDE paraphernalia
 .idea
@@ -39,6 +43,3 @@ go.work
 /build
 gen
 bin
-go.work
-go.work.sum
-

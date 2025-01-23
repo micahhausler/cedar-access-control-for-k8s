@@ -10,7 +10,7 @@ COPY go.sum go.sum
 
 # :oldmanshakesfistatcloud:
 # Amazon's internal networks block the Go module proxy, so for now we set to direct
-ENV GOPROXY direct
+ENV GOPROXY=direct
 # cache deps before building and copying source so that we don't need to re-download as much
 # and so that source changes don't invalidate our downloaded layer
 RUN go mod download

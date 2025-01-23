@@ -4,13 +4,14 @@
 
 ### Prerequisites
 
-To run this project locally, you'll need to install [finch][finch], [Go][go], [kubectl][kubectl], [kind][kind], and [kubebuilder][kubebuilder] (if creating/modifying CRDs).
+To run this project locally, you'll need to install [Go][go], [kubectl][kubectl], [kind][kind], [kubebuilder][kubebuilder] (if creating/modifying CRDs), and either [finch][finch] or [docker][docker].
 
-[finch]: https://github.com/runfinch/finch
 [go]: https://go.dev/dl
 [kubectl]: https://kubernetes.io/docs/tasks/tools/
 [kind]: https://kind.sigs.k8s.io/
 [kubebuilder]: https://book.kubebuilder.io/quick-start
+[finch]: https://github.com/runfinch/finch
+[docker]: https://docs.docker.com/desktop/
 
 ### Kind
 
@@ -37,6 +38,7 @@ kind --version
 
 ### Finch
 
+You can optionally use Finch as an alternative to Docker.
 Use `brew` to install Finch, other installation options can be found [here](https://github.com/runfinch/finch?tab=readme-ov-file#installing-finch).
 
 ```bash
@@ -63,6 +65,11 @@ finch vm start
 # INFO[0019] Finch virtual machine started successfully   
 finch vm status
 # Running
+```
+
+Finally, signal to the Makefile that you want to use Finch by creating a `.finch` file.
+```bash
+touch .finch
 ```
 
 ## Local Quickstart
@@ -146,7 +153,7 @@ For tearing down the Kind cluster.
 make clean-kind
 ```
 
-And to cleanup the Finch VM.
+And if you're using Finch, in order to cleanup the Finch VM run:
 
 ```bash
 finch vm stop                                                                                               
