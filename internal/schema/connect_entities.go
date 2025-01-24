@@ -12,19 +12,29 @@ func proxyOptionEntityShape() EntityShape {
 }
 
 func NodeProxyOptions() Entity {
-	return Entity{Shape: proxyOptionEntityShape()}
+	return Entity{
+		Annotations: docAnnotation("NodeProxyOptions represents options for proxying to a Kubernetes node"),
+		Shape:       proxyOptionEntityShape(),
+	}
 }
 
 func ServiceProxyOptions() Entity {
-	return Entity{Shape: proxyOptionEntityShape()}
+	return Entity{
+		Annotations: docAnnotation("ServiceProxyOptions represents options for proxying to a Kubernetes service"),
+		Shape:       proxyOptionEntityShape(),
+	}
 }
 
 func PodProxyOptions() Entity {
-	return Entity{Shape: proxyOptionEntityShape()}
+	return Entity{
+		Annotations: docAnnotation("PodProxyOptions represents options for proxying to a Kubernetes pod"),
+		Shape:       proxyOptionEntityShape(),
+	}
 }
 
 func PodPortForwardOptions() Entity {
 	return Entity{
+		Annotations: docAnnotation("PodPortForwardOptions represents options for port forwarding to a Kubernetes pod"),
 		Shape: EntityShape{
 			Type: RecordType,
 			Attributes: map[string]EntityAttribute{
@@ -61,11 +71,17 @@ func podExecAttachEntityShape() EntityShape {
 }
 
 func PodExecOptions() Entity {
-	return Entity{Shape: podExecAttachEntityShape()}
+	return Entity{
+		Annotations: docAnnotation("PodExecOptions represents options for executing a command in a Kubernetes pod"),
+		Shape:       podExecAttachEntityShape(),
+	}
 }
 
 func PodAttachOptions() Entity {
-	return Entity{Shape: podExecAttachEntityShape()}
+	return Entity{
+		Annotations: docAnnotation("PodAttachOptions represents options for attaching to a Kubernetes pod"),
+		Shape:       podExecAttachEntityShape(),
+	}
 }
 
 func AddConnectEntities(schema CedarSchema) {

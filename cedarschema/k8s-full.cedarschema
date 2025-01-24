@@ -27,35 +27,44 @@ namespace k8s::admission {
 }
 
 namespace k8s {
+	@doc("ExtraAttribute represents a set of key-value pairs for an idenitty")
 	type ExtraAttribute = {
 		"key": __cedar::String,
 		"values": Set < __cedar::String >
 	};
+	@doc("FieldRequirement represents a requirement on a field")
 	type FieldRequirement = {
 		"field": __cedar::String,
 		"operator": __cedar::String,
 		"value": __cedar::String
 	};
+	@doc("LabelRequirement represents a requirement on a label")
 	type LabelRequirement = {
 		"key": __cedar::String,
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
+	@doc("Extra represents a set of key-value pairs for an idenitty")
 	entity Extra = {
 		"key": __cedar::String,
 		"value"?: __cedar::String
 	};
+	@doc("Group represents a Kubernetes group")
 	entity Group = {
 		"name": __cedar::String
 	};
+	@doc("Node represents a Kubernetes node identity")
 	entity Node in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String
 	};
+	@doc("NonResourceURL represents a URL that is not associated with a Kubernetes resource")
 	entity NonResourceURL = {
 		"path": __cedar::String
 	};
+	@doc("PrincipalUID represents an impersonatable identifier for a principal")
 	entity PrincipalUID;
+	@doc("Resource represents an authorizable Kubernetes resource")
 	entity Resource = {
 		"apiGroup": __cedar::String,
 		"fieldSelector"?: Set < FieldRequirement >,
@@ -65,11 +74,13 @@ namespace k8s {
 		"resource": __cedar::String,
 		"subresource"?: __cedar::String
 	};
+	@doc("ServiceAccount represents a Kubernetes service account identity")
 	entity ServiceAccount in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
+	@doc("User represents a Kubernetes user identity")
 	entity User in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String
@@ -2095,6 +2106,7 @@ namespace core::v1 {
 		"spec"?: NodeSpec,
 		"status"?: NodeStatus
 	};
+	@doc("NodeProxyOptions represents options for proxying to a Kubernetes node")
 	entity NodeProxyOptions = {
 		"apiVersion": __cedar::String,
 		"kind": __cedar::String,
@@ -2124,6 +2136,7 @@ namespace core::v1 {
 		"spec"?: PodSpec,
 		"status"?: PodStatus
 	};
+	@doc("PodAttachOptions represents options for attaching to a Kubernetes pod")
 	entity PodAttachOptions = {
 		"apiVersion": __cedar::String,
 		"command": Set < __cedar::String >,
@@ -2134,6 +2147,7 @@ namespace core::v1 {
 		"stdout": __cedar::Bool,
 		"tty": __cedar::Bool
 	};
+	@doc("PodExecOptions represents options for executing a command in a Kubernetes pod")
 	entity PodExecOptions = {
 		"apiVersion": __cedar::String,
 		"command": Set < __cedar::String >,
@@ -2144,11 +2158,13 @@ namespace core::v1 {
 		"stdout": __cedar::Bool,
 		"tty": __cedar::Bool
 	};
+	@doc("PodPortForwardOptions represents options for port forwarding to a Kubernetes pod")
 	entity PodPortForwardOptions = {
 		"apiVersion": __cedar::String,
 		"kind": __cedar::String,
 		"ports"?: Set < __cedar::String >
 	};
+	@doc("PodProxyOptions represents options for proxying to a Kubernetes pod")
 	entity PodProxyOptions = {
 		"apiVersion": __cedar::String,
 		"kind": __cedar::String,
@@ -2204,6 +2220,7 @@ namespace core::v1 {
 		"oldObject"?: ServiceAccount,
 		"secrets"?: Set < ObjectReference >
 	};
+	@doc("ServiceProxyOptions represents options for proxying to a Kubernetes service")
 	entity ServiceProxyOptions = {
 		"apiVersion": __cedar::String,
 		"kind": __cedar::String,
@@ -2849,7 +2866,11 @@ namespace aws::k8s::cedar::v1alpha1 {
 		"metadata"?: meta::v1::ObjectMeta,
 		"oldObject"?: Policy,
 		"spec": {
-			"content"?: __cedar::String
+			"content"?: __cedar::String,
+			"validation"?: {
+				"enforced"?: __cedar::Bool,
+				"validationMode"?: __cedar::String
+			}
 		}
 	};
 }

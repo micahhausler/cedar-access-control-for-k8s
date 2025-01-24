@@ -29,6 +29,7 @@ const (
 // PrincipalUIDEntity returns a Cedar Entity for a PrincipalUID
 func PrincipalUIDEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("PrincipalUID represents an impersonatable identifier for a principal"),
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
 			Type:       RecordType,
@@ -40,6 +41,7 @@ func PrincipalUIDEntity() Entity {
 // NonResourceURLEntity returns a Cedar Entity for a NonResourceURL
 func NonResourceURLEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("NonResourceURL represents a URL that is not associated with a Kubernetes resource"),
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
 			Type: RecordType,
@@ -53,7 +55,8 @@ func NonResourceURLEntity() Entity {
 // FieldRequirementEntityShape returns a Cedar EntityShape for a FieldRequirement
 func FieldRequirementEntityShape() EntityShape {
 	return EntityShape{
-		Type: RecordType,
+		Annotations: docAnnotation("FieldRequirement represents a requirement on a field"),
+		Type:        RecordType,
 		Attributes: map[string]EntityAttribute{
 			"field":    {Type: StringType, Required: true},
 			"operator": {Type: StringType, Required: true},
@@ -65,7 +68,8 @@ func FieldRequirementEntityShape() EntityShape {
 // LabelRequirementEntityShape returns a Cedar EntityShape for a LabelRequirement
 func LabelRequirementEntityShape() EntityShape {
 	return EntityShape{
-		Type: RecordType,
+		Annotations: docAnnotation("LabelRequirement represents a requirement on a label"),
+		Type:        RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":      {Type: StringType, Required: true},
 			"operator": {Type: StringType, Required: true},
@@ -77,6 +81,7 @@ func LabelRequirementEntityShape() EntityShape {
 // ResourceEntity returns a Cedar Entity for a Kubernetes Authorization Resource
 func ResourceEntity() Entity {
 	return Entity{
+		Annotations: docAnnotation("Resource represents an authorizable Kubernetes resource"),
 		Shape: EntityShape{
 			Type: RecordType,
 			Attributes: map[string]EntityAttribute{

@@ -22,6 +22,7 @@ const (
 // UserEntity returns the Cedar schema entity for a user
 func UserEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("User represents a Kubernetes user identity"),
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
 			Type: RecordType,
@@ -41,6 +42,7 @@ func UserEntity() Entity {
 // GroupEntity returns the Cedar schema entity for a group
 func GroupEntity() Entity {
 	return Entity{
+		Annotations: docAnnotation("Group represents a Kubernetes group"),
 		Shape: EntityShape{Type: RecordType, Attributes: map[string]EntityAttribute{
 			"name": {Type: StringType, Required: true},
 		}},
@@ -50,6 +52,7 @@ func GroupEntity() Entity {
 // ServiceAccountEntity returns the Cedar schema entity for a service account
 func ServiceAccountEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("ServiceAccount represents a Kubernetes service account identity"),
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
 			Type: RecordType,
@@ -69,6 +72,7 @@ func ServiceAccountEntity() Entity {
 
 func NodeEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("Node represents a Kubernetes node identity"),
 		MemberOfTypes: []string{GroupPrincipalType},
 		Shape: EntityShape{
 			Type: RecordType,
@@ -87,7 +91,8 @@ func NodeEntity() Entity {
 
 func ExtraEntityShape() EntityShape {
 	return EntityShape{
-		Type: RecordType,
+		Annotations: docAnnotation("ExtraAttribute represents a set of key-value pairs for an idenitty"),
+		Type:        RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":    {Type: StringType, Required: true},
 			"values": {Type: SetType, Required: true, Element: &EntityAttributeElement{Type: StringType}},
@@ -97,6 +102,7 @@ func ExtraEntityShape() EntityShape {
 
 func ExtraEntity() Entity {
 	return Entity{
+		Annotations:   docAnnotation("Extra represents a set of key-value pairs for an idenitty"),
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
 			Type: RecordType,
@@ -113,19 +119,22 @@ func ExtraEntity() Entity {
 
 // AddPrincipalsToSchema adds the user, group, and service account entities to the schema
 func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
-	if _, ok := schema[namespace]; !ok {
+	ns, ok := schema[namespace]
+	if !ok {
 		schema[namespace] = CedarSchemaNamespace{
 			EntityTypes: map[string]Entity{},
 			Actions:     map[string]ActionShape{},
 			CommonTypes: map[string]EntityShape{},
 		}
 	}
-	schema[namespace].EntityTypes[UserPrincipalType] = UserEntity()
-	schema[namespace].EntityTypes[GroupPrincipalType] = GroupEntity()
-	schema[namespace].EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
-	schema[namespace].EntityTypes[NodePrincipalType] = NodeEntity()
-	schema[namespace].EntityTypes[ExtraValueType] = ExtraEntity()
-	schema[namespace].CommonTypes[ExtraValuesAttributeType] = ExtraEntityShape()
+	ns.Annotations = docAnnotation("Kubernetes Authorization namespace")
+	ns.EntityTypes[UserPrincipalType] = UserEntity()
+	ns.EntityTypes[GroupPrincipalType] = GroupEntity()
+	ns.EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
+	ns.EntityTypes[NodePrincipalType] = NodeEntity()
+	ns.EntityTypes[ExtraValueType] = ExtraEntity()
+	ns.CommonTypes[ExtraValuesAttributeType] = ExtraEntityShape()
+	schema[namespace] = ns
 }
 
 // AdmissionPrincipalTypes returns the list of principal types from the
@@ -137,7 +146,12 @@ func AdmissionPrincipalTypes(namespace string) []string {
 // AuthorizationPrincipalTypes returns the list of principal types from the
 // specified namespace that can be used in authorization decisions
 func AuthorizationPrincipalTypes(namespace string) []string {
-	k8sPrincipals := []string{UserPrincipalType, GroupPrincipalType, ServiceAccountPrincipalType, NodePrincipalType}
+	k8sPrincipals := []string{
+		UserPrincipalType,
+		GroupPrincipalType,
+		ServiceAccountPrincipalType,
+		NodePrincipalType,
+	}
 	if namespace == "" {
 		return k8sPrincipals
 	}

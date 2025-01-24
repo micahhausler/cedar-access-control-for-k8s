@@ -1,33 +1,42 @@
 namespace k8s {
+	@doc("ExtraAttribute represents a set of key-value pairs for an idenitty")
 	type ExtraAttribute = {
 		"key": __cedar::String,
 		"values": Set < __cedar::String >
 	};
+	@doc("FieldRequirement represents a requirement on a field")
 	type FieldRequirement = {
 		"field": __cedar::String,
 		"operator": __cedar::String,
 		"value": __cedar::String
 	};
+	@doc("LabelRequirement represents a requirement on a label")
 	type LabelRequirement = {
 		"key": __cedar::String,
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
+	@doc("Extra represents a set of key-value pairs for an idenitty")
 	entity Extra = {
 		"key": __cedar::String,
 		"value"?: __cedar::String
 	};
+	@doc("Group represents a Kubernetes group")
 	entity Group = {
 		"name": __cedar::String
 	};
+	@doc("Node represents a Kubernetes node identity")
 	entity Node in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String
 	};
+	@doc("NonResourceURL represents a URL that is not associated with a Kubernetes resource")
 	entity NonResourceURL = {
 		"path": __cedar::String
 	};
+	@doc("PrincipalUID represents an impersonatable identifier for a principal")
 	entity PrincipalUID;
+	@doc("Resource represents an authorizable Kubernetes resource")
 	entity Resource = {
 		"apiGroup": __cedar::String,
 		"fieldSelector"?: Set < FieldRequirement >,
@@ -37,11 +46,13 @@ namespace k8s {
 		"resource": __cedar::String,
 		"subresource"?: __cedar::String
 	};
+	@doc("ServiceAccount represents a Kubernetes service account identity")
 	entity ServiceAccount in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String,
 		"namespace": __cedar::String
 	};
+	@doc("User represents a Kubernetes user identity")
 	entity User in [Group] = {
 		"extra"?: Set < ExtraAttribute >,
 		"name": __cedar::String
