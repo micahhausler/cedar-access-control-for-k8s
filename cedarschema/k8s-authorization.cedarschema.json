@@ -2,6 +2,9 @@
 	"k8s": {
 		"entityTypes": {
 			"Extra": {
+				"annotations": {
+					"doc": "Extra represents a set of key-value pairs for an idenitty"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -17,6 +20,9 @@
 				}
 			},
 			"Group": {
+				"annotations": {
+					"doc": "Group represents a Kubernetes group"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -28,6 +34,9 @@
 				}
 			},
 			"Node": {
+				"annotations": {
+					"doc": "Node represents a Kubernetes node identity"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -49,6 +58,9 @@
 				]
 			},
 			"NonResourceURL": {
+				"annotations": {
+					"doc": "NonResourceURL represents a URL that is not associated with a Kubernetes resource"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -60,12 +72,18 @@
 				}
 			},
 			"PrincipalUID": {
+				"annotations": {
+					"doc": "PrincipalUID represents an impersonatable identifier for a principal"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {}
 				}
 			},
 			"Resource": {
+				"annotations": {
+					"doc": "Resource represents an authorizable Kubernetes resource"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -107,6 +125,9 @@
 				}
 			},
 			"ServiceAccount": {
+				"annotations": {
+					"doc": "ServiceAccount represents a Kubernetes service account identity"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -132,6 +153,9 @@
 				]
 			},
 			"User": {
+				"annotations": {
+					"doc": "User represents a Kubernetes user identity"
+				},
 				"shape": {
 					"type": "Record",
 					"attributes": {
@@ -440,6 +464,9 @@
 		},
 		"commonTypes": {
 			"ExtraAttribute": {
+				"annotations": {
+					"doc": "ExtraAttribute represents a set of key-value pairs for an idenitty"
+				},
 				"type": "Record",
 				"attributes": {
 					"key": {
@@ -456,6 +483,9 @@
 				}
 			},
 			"FieldRequirement": {
+				"annotations": {
+					"doc": "FieldRequirement represents a requirement on a field"
+				},
 				"type": "Record",
 				"attributes": {
 					"field": {
@@ -473,6 +503,9 @@
 				}
 			},
 			"LabelRequirement": {
+				"annotations": {
+					"doc": "LabelRequirement represents a requirement on a label"
+				},
 				"type": "Record",
 				"attributes": {
 					"key": {

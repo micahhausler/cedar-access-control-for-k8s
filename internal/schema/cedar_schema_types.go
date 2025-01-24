@@ -59,8 +59,13 @@ func (cs CedarSchema) GetEntityShape(name string) (*EntityShape, bool) {
 	return nil, false
 }
 
+func docAnnotation(value string) map[string]string {
+	return map[string]string{"doc": value}
+}
+
 // CedarSchemaNamespace represents a namespace within a schema
 type CedarSchemaNamespace struct {
+	Annotations map[string]string      `json:"annotations,omitempty"`
 	EntityTypes map[string]Entity      `json:"entityTypes"`
 	Actions     map[string]ActionShape `json:"actions"`
 	CommonTypes map[string]EntityShape `json:"commonTypes,omitempty"`
@@ -68,62 +73,69 @@ type CedarSchemaNamespace struct {
 
 // Entity represents a Cedar entity that defines principals and resources
 type Entity struct {
-	Shape         EntityShape `json:"shape"`
-	MemberOfTypes []string    `json:"memberOfTypes,omitempty"`
+	Annotations   map[string]string `json:"annotations,omitempty"`
+	Shape         EntityShape       `json:"shape"`
+	MemberOfTypes []string          `json:"memberOfTypes,omitempty"`
 }
 
 // EntityShape represents the shape of a Cedar entity
 type EntityShape struct {
-	Type       string                     `json:"type"`
-	Attributes map[string]EntityAttribute `json:"attributes"`
+	Annotations map[string]string          `json:"annotations,omitempty"`
+	Type        string                     `json:"type"`
+	Attributes  map[string]EntityAttribute `json:"attributes"`
 }
 
 // EntityAttribute represents an attribute of a Cedar entity
 //
 // Element may on be used when the Type is "Set"
 type EntityAttribute struct {
-	Type       string
-	Name       string
-	Required   bool
-	Element    *EntityAttributeElement
-	Attributes map[string]EntityAttribute
+	Annotations map[string]string
+	Type        string
+	Name        string
+	Required    bool
+	Element     *EntityAttributeElement
+	Attributes  map[string]EntityAttribute
 }
 
 // this is a gross hack to work around the fact that cedar assumes that the attributes field is always present if the type is
 // "Record"
 type recordEntityAttribute struct {
-	Name       string                     `json:"name,omitempty"`
-	Type       string                     `json:"type"`
-	Required   bool                       `json:"required"` // omitempty is not used because cedar assumes its required
-	Element    *EntityAttributeElement    `json:"element,omitempty"`
-	Attributes map[string]EntityAttribute `json:"attributes"`
+	Annotations map[string]string          `json:"annotations,omitempty"`
+	Name        string                     `json:"name,omitempty"`
+	Type        string                     `json:"type"`
+	Required    bool                       `json:"required"` // omitempty is not used because cedar assumes its required
+	Element     *EntityAttributeElement    `json:"element,omitempty"`
+	Attributes  map[string]EntityAttribute `json:"attributes"`
 }
 
 type nonRecordEntityAttribute struct {
-	Name       string                     `json:"name,omitempty"`
-	Type       string                     `json:"type"`
-	Required   bool                       `json:"required"` // omitempty is not used because cedar assumes its required
-	Element    *EntityAttributeElement    `json:"element,omitempty"`
-	Attributes map[string]EntityAttribute `json:"attributes,omitempty"`
+	Annotations map[string]string          `json:"annotations,omitempty"`
+	Name        string                     `json:"name,omitempty"`
+	Type        string                     `json:"type"`
+	Required    bool                       `json:"required"` // omitempty is not used because cedar assumes its required
+	Element     *EntityAttributeElement    `json:"element,omitempty"`
+	Attributes  map[string]EntityAttribute `json:"attributes,omitempty"`
 }
 
 func (ea *EntityAttribute) toRecordEA() *recordEntityAttribute {
 	return &recordEntityAttribute{
-		Type:       ea.Type,
-		Required:   ea.Required,
-		Element:    ea.Element,
-		Attributes: ea.Attributes,
-		Name:       ea.Name,
+		Annotations: ea.Annotations,
+		Type:        ea.Type,
+		Required:    ea.Required,
+		Element:     ea.Element,
+		Attributes:  ea.Attributes,
+		Name:        ea.Name,
 	}
 }
 
 func (ea *EntityAttribute) toNonRecordEA() *nonRecordEntityAttribute {
 	return &nonRecordEntityAttribute{
-		Type:       ea.Type,
-		Required:   ea.Required,
-		Element:    ea.Element,
-		Attributes: ea.Attributes,
-		Name:       ea.Name,
+		Annotations: ea.Annotations,
+		Type:        ea.Type,
+		Required:    ea.Required,
+		Element:     ea.Element,
+		Attributes:  ea.Attributes,
+		Name:        ea.Name,
 	}
 }
 
@@ -145,8 +157,9 @@ type EntityAttributeElement struct {
 
 // ActionShape represents the shape of a Cedar action
 type ActionShape struct {
-	AppliesTo ActionAppliesTo `json:"appliesTo"`
-	MemberOf  []ActionMember  `json:"memberOf,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
+	AppliesTo   ActionAppliesTo   `json:"appliesTo"`
+	MemberOf    []ActionMember    `json:"memberOf,omitempty"`
 }
 
 // ActionMember represents a parent type of a Cedar action

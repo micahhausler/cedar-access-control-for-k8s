@@ -44,19 +44,21 @@ func main() {
 	braceCount := 0
 	indent := ""
 	for _, line := range strings.Split(string(content), "\n") {
-		indent = strings.Repeat("\t", braceCount)
+		indent = strings.Repeat("\t", intOrZero(braceCount))
 		if line == "}" && braceCount == 1 {
 			// handle end of namespace
-			fmt.Println(line + "\n")
+			fmt.Println(strings.TrimRight(line, " ") + "\n")
 		} else if (strings.HasSuffix(line, "};") && !strings.HasSuffix(line, "{};")) ||
 			strings.HasSuffix(line, "},") ||
 			strings.HasSuffix(line, "}") &&
-				!strings.HasSuffix(line, "{}") {
+				!strings.HasSuffix(line, "{}") &&
+				// handle annotations with curly braces
+				!strings.HasPrefix(line, "@") {
 			// handle end of entity
-			fmt.Println(strings.Repeat("\t", intOrZero(braceCount-1)) + line)
+			fmt.Println(strings.Repeat("\t", intOrZero(braceCount-1)) + strings.TrimRight(line, " "))
 		} else if len(line) > 0 {
 			// otherwise, print the non-emptty line with the appropriate indentation
-			fmt.Println(indent + line)
+			fmt.Println(indent + strings.TrimRight(line, " "))
 		}
 		// eat empty lines
 
