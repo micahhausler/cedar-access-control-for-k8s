@@ -1,0 +1,17 @@
+{
+  "apiVersion": "authorization.k8s.io/v1",
+  "kind": "SubjectAccessReview",
+  "metadata": {
+    "creationTimestamp": null
+  },
+  "spec": {
+    "uid": "14AABEB7-9A71-43BE-B850-9BDC0AA921C4",
+    "user": "test-user",
+    "groups": ["test-group"],
+    "resourceAttributes": {
+      "group": "",
+      "resource": "nodes",
+      "verb": "list"
+    }
+  }
+}
