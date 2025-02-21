@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::extract::Json;
 use cedar_policy;
-use kube::core::admission::{AdmissionReview, AdmissionResponse};
+use kube::core::admission::{AdmissionResponse, AdmissionReview};
 use kube::core::DynamicObject;
 
 use crate::admission_entities::request_from_review;
@@ -24,16 +24,15 @@ impl AdmissionServer {
         &self,
         Json(review): Json<AdmissionReview<DynamicObject>>,
     ) -> Json<AdmissionReview<DynamicObject>> {
-        let (request, entities) = request_from_review(&review);
-        let cedar_response = self.stores.is_authorized(&entities, &request);
+        let (request, entities) = request_from_review(&review).unwrap();
+        let cedar_response = self.stores.is_authorized(&entities, &request).unwrap();
         let allowed = cedar_response.decision() != cedar_policy::Decision::Deny;
-
         let mut resp = AdmissionResponse::from(&review.request.unwrap());
+        resp.types = review.types;
         if !allowed {
             resp = resp.deny("Not authorized by Cedar policies");
         }
 
         Json(resp.into_review())
     }
-    
 }

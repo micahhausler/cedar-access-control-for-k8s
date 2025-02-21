@@ -1,10 +1,19 @@
 # More info: https://docs.docker.com/engine/reference/builder/#dockerignore-file
 # Ignore build and test binaries.
-bin/
+../bin/
+
+../docs
 
 # ignore mounted files
-mount/
-# Ignore scratch files
-scratch/
+../mount/
 
-target/
+# Ignore scratch files
+../scratch/
+../kind
+
+# Go code
+../internal
+../api
+
+# Local builds
+../target

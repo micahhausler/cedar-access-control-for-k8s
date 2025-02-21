@@ -1,11 +1,12 @@
 use std::path::Path;
-use std::str::FromStr;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 use std::time::Duration;
 use std::{fs, thread};
+use uuid::Uuid;
 
 use anyhow::Result;
-use cedar_policy::{Authorizer, Decision, Entities, PolicySet, Response};
+use cedar_policy::{Authorizer, Decision, Entities, Policy, PolicyId, PolicySet, Response};
+use parking_lot::RwLock;
 
 /// A trait for types that provide access to a cedar PolicySet
 pub trait PolicyStore: Send + Sync {
@@ -14,51 +15,10 @@ pub trait PolicyStore: Send + Sync {
     fn initial_policy_load_complete(&self) -> bool;
 
     /// Returns a reference to the PolicySet
-    fn policy_set(&self) -> &PolicySet;
+    fn policy_set(&self) -> Result<PolicySet>;
 
     /// Returns the name of the policy store
     fn name(&self) -> &str;
-}
-
-/// An in-memory policy store that is immutable and can be configured to be ready or not
-pub struct MemoryStore {
-    policies: PolicySet,
-    load_complete: bool,
-    name: String,
-}
-
-impl MemoryStore {
-    /// Creates a new MemoryStore from a policy document
-    ///
-    /// # Arguments
-    /// * `name` - Name of the policy store/file
-    /// * `document` - The policy document as bytes
-    /// * `load_complete` - Whether the store should be considered ready
-    ///
-    /// # Returns
-    /// A Result containing the new MemoryStore or an error if the policy document is invalid
-    pub fn new(name: impl Into<String>, document: &str, load_complete: bool) -> Result<Self> {
-        let policies = PolicySet::from_str(document)?;
-        Ok(Self {
-            policies,
-            load_complete,
-            name: name.into(),
-        })
-    }
-}
-
-impl PolicyStore for MemoryStore {
-    fn initial_policy_load_complete(&self) -> bool {
-        self.load_complete
-    }
-
-    fn policy_set(&self) -> &PolicySet {
-        &self.policies
-    }
-
-    fn name(&self) -> &str {
-        &self.name
-    }
 }
 
 /// A static store that wraps a PolicySet directly
@@ -76,8 +36,8 @@ impl PolicyStore for StaticStore {
         true
     }
 
-    fn policy_set(&self) -> &PolicySet {
-        &self.0
+    fn policy_set(&self) -> Result<PolicySet> {
+        Ok(self.0.clone())
     }
 
     fn name(&self) -> &str {
@@ -86,37 +46,51 @@ impl PolicyStore for StaticStore {
 }
 
 /// A policy store that loads policies from a directory
+#[derive(Clone)]
 pub struct DirectoryStore {
-    // TODO: thread locking?
     policies: Arc<RwLock<PolicySet>>,
+    name: String,
 }
 
 impl DirectoryStore {
     /// Creates a new DirectoryStore
-    pub fn new(directory: impl AsRef<Path>, refresh_interval: Duration) -> Self {
+    pub fn new(directory: impl AsRef<Path>, refresh_interval: Duration) -> Result<Self> {
+        if refresh_interval.is_zero() {
+            return Err(anyhow::anyhow!("Refresh interval must be greater than 0"));
+        }
+        if refresh_interval < Duration::from_secs(1) {
+            return Err(anyhow::anyhow!("Refresh interval must be at least 1 second"));
+        }
+        
+
+        let dir_path = directory.as_ref().to_path_buf();
         let store = Self {
-            // directory: directory.as_ref().to_path_buf(),
             policies: Arc::new(RwLock::new(PolicySet::new())),
+            name: format!("DirectoryStore ({})", dir_path.display()),
         };
-        store.load_policies(directory.as_ref());
+        store.load_policies(&dir_path)?;
 
         // Start background refresh
-        let policies = store.policies.clone();
-        let dir = directory.as_ref().to_path_buf();
+        let policies = store.clone().policies.clone();
+        let dir = dir_path;
+        let cloned_store = store.clone();
         thread::spawn(move || loop {
             thread::sleep(refresh_interval);
-            Self::load_policies_into(&dir, &policies);
+            match Self::load_policies_into(&dir, &policies) {
+                Ok(_) => (),
+                Err(e) => log::error!("Error loading policies into store {}({}): {}", store.name, dir.display(), e),
+            }
         });
 
-        store
+        Ok(cloned_store)
     }
 
-    fn load_policies(&self, directory: &Path) {
-        Self::load_policies_into(directory, &self.policies);
+    fn load_policies(&self, directory: &Path) -> Result<()> {
+        Self::load_policies_into(directory, &self.policies)
     }
 
-    fn load_policies_into(directory: &Path, policies: &RwLock<PolicySet>) {
-        let mut policy_set = PolicySet::new();
+    fn load_policies_into(directory: &Path, policies: &RwLock<PolicySet>) -> Result<()> {
+        let mut pvec: Vec<Policy> = Vec::new();
 
         if let Ok(entries) = fs::read_dir(directory) {
             for entry in entries.flatten() {
@@ -128,37 +102,37 @@ impl DirectoryStore {
                 }
 
                 if let Ok(data) = fs::read_to_string(&path) {
-                    if let Ok(policies) = PolicySet::from_str(&data) {
-                        // TODO: We need to properly handle multiple policies in a file
-                        // This is a temporary solution that just replaces the entire set
-                        policy_set = policies;
+                    let local_pset: PolicySet = data.parse()?;
+                    // Parse each policy individually instead of as a PolicySet
+                    for policy in local_pset.policies() {
+                        //  use the `id` annotation or make a random string
+                        let id = match policy.annotation("id") {
+                            Some(id) => id.to_string(),
+                            None => Uuid::new_v4().to_string(),
+                        };
+                        pvec.push(policy.new_id(PolicyId::new(id)));
                     }
                 }
             }
         }
-
-        if let Ok(mut policies) = policies.write() {
-            *policies = policy_set;
-        }
+        log::debug!("DirectoryStore ({}) loaded {} policies", directory.display(), pvec.len());
+        let pset = PolicySet::from_policies(pvec)?;
+        *policies.write() = pset;
+        Ok(())
     }
 }
-
 
 impl PolicyStore for DirectoryStore {
     fn initial_policy_load_complete(&self) -> bool {
         true
     }
 
-    fn policy_set(&self) -> &PolicySet {
-        // This is safe because we know the lock exists for the lifetime of self
-        unsafe {
-            let guard = self.policies.read().unwrap();
-            std::mem::transmute::<&PolicySet, &PolicySet>(&*guard)
-        }
+    fn policy_set(&self) -> Result<PolicySet> {
+        Ok(self.policies.read().clone())
     }
 
     fn name(&self) -> &str {
-        "FilePolicyStore"
+        &self.name
     }
 }
 
@@ -176,16 +150,20 @@ impl<'a> TieredPolicyStores<'a> {
     /// Checks each policy store in sequence for an explicit decision.
     /// If no explicit decision is found in a store, it continues to the next store.
     /// If no explicit decision is found in the last store, that store's decision (deny) is returned.
-    pub fn is_authorized(&self, entities: &Entities, request: &cedar_policy::Request) -> Response {
+    pub fn is_authorized(&self, entities: &Entities, request: &cedar_policy::Request) -> Result<Response> {
         let authorizer = Authorizer::new();
 
         for (i, store) in self.stores.iter().enumerate() {
-            let response = authorizer.is_authorized(request, store.policy_set(), entities);
+            let pset = store.policy_set()?;
+            let response = authorizer.is_authorized(request, &pset, entities);
             let diagnostics = response.diagnostics();
+
+            // print a debug log for the response
+            log::debug!("Store {} response: {:?}", store.name(), response);
 
             // If this is the last store, return its decision regardless
             if i == self.stores.len() - 1 {
-                return response;
+                return Ok(response);
             }
 
             // If we got a Deny with no reasons or errors, continue to next store
@@ -197,7 +175,7 @@ impl<'a> TieredPolicyStores<'a> {
             }
 
             // Otherwise return this store's decision
-            return response;
+            return Ok(response);
         }
 
         // This should never happen as we always return in the last iteration
