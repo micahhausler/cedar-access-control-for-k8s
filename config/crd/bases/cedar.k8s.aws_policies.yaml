@@ -47,8 +47,9 @@ spec:
                 properties:
                   enforced:
                     default: false
-                    description: Enforced indicates if creation or updates to the
-                      policy require schema validation
+                    description: |-
+                      Enforced indicates if creation or updates to the policy require schema validation
+                      Syntax validation is always enforced.
                     type: boolean
                   validationMode:
                     description: |-
@@ -58,6 +59,7 @@ spec:
                     enum:
                     - strict
                     - permissive
+                    - partial
                     type: string
                 required:
                 - enforced

@@ -23,11 +23,13 @@ import (
 const (
 	StrictValidationMode     = "strict"
 	PermissiveValidationMode = "permissive"
+	PartialValidationMode    = "partial"
 )
 
 // PolicyValidation defines the
 type PolicyValidation struct {
 	// Enforced indicates if creation or updates to the policy require schema validation
+	// Syntax validation is always enforced.
 	//+required
 	//+kubebuilder:default:value=false
 	Enforced bool `json:"enforced"`
@@ -35,8 +37,8 @@ type PolicyValidation struct {
 	// ValidationMode indicates which validation mode to use.
 	// A value of `strict` requires that only literals are passed to extension functions (IP, decimal, datetime), and not entity attributes.
 	// See https://docs.cedarpolicy.com/policies/validation.html#validation-benefits-of-schema for more details.
-	//+kubebuilder:validation:Enum=strict;permissive
-	//+default:value=strict
+	//+kubebuilder:validation:Enum=strict;permissive;partial
+	//+default:value=permissive
 	//+optional
 	ValidationMode string `json:"validationMode"`
 }

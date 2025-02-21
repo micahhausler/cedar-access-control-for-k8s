@@ -9461,7 +9461,7 @@
 		"entityTypes": {
 			"Extra": {
 				"annotations": {
-					"doc": "Extra represents a set of key-value pairs for an idenitty"
+					"doc": "Extra represents a set of key-value pairs for an identity"
 				},
 				"shape": {
 					"type": "Record",
@@ -9740,12 +9740,7 @@
 						"NonResourceURL",
 						"Resource"
 					]
-				},
-				"memberOf": [
-					{
-						"id": "readOnly"
-					}
-				]
+				}
 			},
 			"head": {
 				"appliesTo": {
@@ -9789,12 +9784,7 @@
 					"resourceTypes": [
 						"Resource"
 					]
-				},
-				"memberOf": [
-					{
-						"id": "readOnly"
-					}
-				]
+				}
 			},
 			"options": {
 				"appliesTo": {
@@ -9849,19 +9839,6 @@
 					]
 				}
 			},
-			"readOnly": {
-				"appliesTo": {
-					"principalTypes": [
-						"Group",
-						"Node",
-						"ServiceAccount",
-						"User"
-					],
-					"resourceTypes": [
-						"Resource"
-					]
-				}
-			},
 			"sign": {
 				"appliesTo": {
 					"principalTypes": [
@@ -9912,18 +9889,13 @@
 					"resourceTypes": [
 						"Resource"
 					]
-				},
-				"memberOf": [
-					{
-						"id": "readOnly"
-					}
-				]
+				}
 			}
 		},
 		"commonTypes": {
 			"ExtraAttribute": {
 				"annotations": {
-					"doc": "ExtraAttribute represents a set of key-value pairs for an idenitty"
+					"doc": "ExtraAttribute represents a set of key-value pairs for an identity"
 				},
 				"type": "Record",
 				"attributes": {

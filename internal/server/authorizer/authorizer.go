@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
@@ -83,13 +84,6 @@ func (e *cedarWebhookAuthorizer) Authorize(ctx context.Context, requestAttribute
 	return authorizer.DecisionNoOpinion, "", nil
 }
 
-// mergeMaps merges right into left, overwriting any existing keys in left
-func mergeMaps[Map ~map[K]V, K comparable, V any](left Map, right Map) {
-	for k, v := range right {
-		left[k] = v
-	}
-}
-
 type entityDerivationFunc = func(attributes authorizer.Attributes) cedartypes.Entity
 
 func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.EntityMap, cedar.Request) {
@@ -100,7 +94,7 @@ func RecordToCedarResource(attributes authorizer.Attributes) (cedartypes.EntityM
 		Principal: principalUID,
 		Action:    action,
 	}
-	mergeMaps(reqEntities, principalEntities)
+	maps.Copy(reqEntities, principalEntities)
 
 	var resourceEntityFunc entityDerivationFunc = NonResourceToCedarEntity
 	if attributes.IsResourceRequest() {

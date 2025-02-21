@@ -125,7 +125,6 @@ const (
 	AuthorizationActionPost             = "post"
 	AuthorizationActionHead             = "head"
 	AuthorizationActionOptions          = "options"
-	AuthorizationActionReadOnly         = "readOnly"
 )
 
 // AllAuthorizationActionNames returns a list of all Cedar Authorization Actions
@@ -150,17 +149,11 @@ func AllAuthorizationActionNames() []string {
 		AuthorizationActionPost,
 		AuthorizationActionHead,
 		AuthorizationActionOptions,
-		AuthorizationActionReadOnly,
 	}
 }
 
 // GetAuthorizationActions returns a map of all Cedar Authorization Actions
 func GetAuthorizationActions(principalNs, entityNs, actionNs string) map[string]ActionShape {
-	readOnlyActions := []string{
-		AuthorizationActionGet,
-		AuthorizationActionList,
-		AuthorizationActionWatch,
-	}
 
 	nonResourceOnlyActions := []string{
 		AuthorizationActionPut,
@@ -170,7 +163,6 @@ func GetAuthorizationActions(principalNs, entityNs, actionNs string) map[string]
 	}
 
 	resourceOnlyActions := []string{
-		AuthorizationActionReadOnly,
 		AuthorizationActionList,
 		AuthorizationActionWatch,
 		AuthorizationActionCreate,
@@ -213,9 +205,6 @@ func GetAuthorizationActions(principalNs, entityNs, actionNs string) map[string]
 					entityPrefix + NonResourceURLEntityName,
 				},
 			},
-		}
-		if slices.Contains(readOnlyActions, action) {
-			localActionShape.MemberOf = []ActionMember{{ID: AuthorizationActionReadOnly}}
 		}
 		if slices.Contains(nonResourceOnlyActions, action) {
 			localActionShape.AppliesTo.ResourceTypes = []string{entityPrefix + NonResourceURLEntityName}

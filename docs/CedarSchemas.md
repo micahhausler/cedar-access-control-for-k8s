@@ -72,19 +72,6 @@ permit (
 };
 ```
 
-We do have an action group for all read-only actions. It encompasses `get`/`list`/`watch`, and is called `readOnly`, and only applies to `k8s::Resource` resources.
-
-```cedar
-permit (
-    principal in k8s::Group::"viewers",
-    action in k8s::Action::"readOnly", // allows any get/list/watch
-    resource is k8s::Resource
-) unless {
-    resource.resource == "secrets" &&
-    resource.apiGroup == "" // "" is the core API group in Kubernetes
-};
-```
-
 ### Resources
 
 > **`"resource"`, `"k8s::Resource"`, and `"resource.resource`, why the redundancy?!**

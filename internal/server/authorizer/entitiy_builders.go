@@ -1,7 +1,6 @@
 package authorizer
 
 import (
-	"slices"
 	"strings"
 
 	"github.com/awslabs/cedar-access-control-for-k8s/internal/schema"
@@ -19,16 +18,6 @@ func ActionEntities(verb string) (cedartypes.EntityUID, cedartypes.EntityMap) {
 			ID:   cedartypes.String(verb),
 		},
 	}
-	if slices.Contains([]string{"get", "list", "watch"}, verb) {
-		readOnlyEntityUID := cedartypes.EntityUID{
-			Type: schema.AuthorizationActionEntityType,
-			ID:   cedartypes.String("readOnly"),
-		}
-		resp[readOnlyEntityUID] = cedartypes.Entity{UID: readOnlyEntityUID}
-		action.Parents = cedartypes.NewEntityUIDSet(readOnlyEntityUID)
-		resp[action.UID] = action
-	}
-
 	return action.UID, resp
 }
 

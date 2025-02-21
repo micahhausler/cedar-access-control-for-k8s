@@ -27,7 +27,7 @@ namespace k8s::admission {
 }
 
 namespace k8s {
-	@doc("ExtraAttribute represents a set of key-value pairs for an idenitty")
+	@doc("ExtraAttribute represents a set of key-value pairs for an identity")
 	type ExtraAttribute = {
 		"key": __cedar::String,
 		"values": Set < __cedar::String >
@@ -44,7 +44,7 @@ namespace k8s {
 		"operator": __cedar::String,
 		"values": Set < __cedar::String >
 	};
-	@doc("Extra represents a set of key-value pairs for an idenitty")
+	@doc("Extra represents a set of key-value pairs for an identity")
 	entity Extra = {
 		"key": __cedar::String,
 		"value"?: __cedar::String
@@ -120,7 +120,7 @@ namespace k8s {
 		resource: [Resource],
 		context: {}
 	};
-	action "get" in [Action::"readOnly"] appliesTo {
+	action "get" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
 		resource: [NonResourceURL, Resource],
 		context: {}
@@ -135,7 +135,7 @@ namespace k8s {
 		resource: [Extra, Group, Node, PrincipalUID, ServiceAccount, User],
 		context: {}
 	};
-	action "list" in [Action::"readOnly"] appliesTo {
+	action "list" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
 		resource: [Resource],
 		context: {}
@@ -160,11 +160,6 @@ namespace k8s {
 		resource: [NonResourceURL],
 		context: {}
 	};
-	action "readOnly" appliesTo {
-		principal: [Group, Node, ServiceAccount, User],
-		resource: [Resource],
-		context: {}
-	};
 	action "sign" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
 		resource: [Resource],
@@ -180,7 +175,7 @@ namespace k8s {
 		resource: [Resource],
 		context: {}
 	};
-	action "watch" in [Action::"readOnly"] appliesTo {
+	action "watch" appliesTo {
 		principal: [Group, Node, ServiceAccount, User],
 		resource: [Resource],
 		context: {}

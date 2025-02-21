@@ -91,7 +91,7 @@ func NodeEntity() Entity {
 
 func ExtraEntityShape() EntityShape {
 	return EntityShape{
-		Annotations: docAnnotation("ExtraAttribute represents a set of key-value pairs for an idenitty"),
+		Annotations: docAnnotation("ExtraAttribute represents a set of key-value pairs for an identity"),
 		Type:        RecordType,
 		Attributes: map[string]EntityAttribute{
 			"key":    {Type: StringType, Required: true},
@@ -102,7 +102,7 @@ func ExtraEntityShape() EntityShape {
 
 func ExtraEntity() Entity {
 	return Entity{
-		Annotations:   docAnnotation("Extra represents a set of key-value pairs for an idenitty"),
+		Annotations:   docAnnotation("Extra represents a set of key-value pairs for an identity"),
 		MemberOfTypes: []string{},
 		Shape: EntityShape{
 			Type: RecordType,
