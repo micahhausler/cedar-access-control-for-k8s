@@ -20,14 +20,11 @@ import (
 var (
 	listAction = cedartypes.Entity{
 		UID:     cedartypes.EntityUID{Type: schema.AuthorizationActionEntityType, ID: "list"},
-		Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.AuthorizationActionEntityType, ID: "readOnly"}),
+		Parents: cedartypes.NewEntityUIDSet(),
 	}
 	getAction = cedartypes.Entity{
 		UID:     cedartypes.EntityUID{Type: schema.AuthorizationActionEntityType, ID: "get"},
-		Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.AuthorizationActionEntityType, ID: "readOnly"}),
-	}
-	readOnlyAction = cedartypes.Entity{
-		UID: cedartypes.EntityUID{Type: schema.AuthorizationActionEntityType, ID: "readOnly"},
+		Parents: cedartypes.NewEntityUIDSet(),
 	}
 )
 
@@ -87,7 +84,6 @@ func TestRecordToCedarResource(t *testing.T) {
 						"name":      cedartypes.String("test-pod"),
 					}),
 				},
-				readOnlyAction.UID: readOnlyAction,
 			},
 			cedartypes.Request{
 				Principal: cedartypes.EntityUID{
@@ -126,8 +122,7 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
-				listAction.UID:     listAction,
-				readOnlyAction.UID: readOnlyAction,
+				listAction.UID: listAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
@@ -190,8 +185,7 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "/metrics",
 			},
 			cedartypes.EntityMap{
-				getAction.UID:      getAction,
-				readOnlyAction.UID: readOnlyAction,
+				getAction.UID: getAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
@@ -316,8 +310,7 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
-				getAction.UID:      getAction,
-				readOnlyAction.UID: readOnlyAction,
+				getAction.UID: getAction,
 				cedartypes.EntityUID{Type: schema.ServiceAccountEntityType, ID: "1234567890"}: {
 					UID: cedartypes.EntityUID{Type: schema.ServiceAccountEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet([]cedartypes.EntityUID{
@@ -406,8 +399,7 @@ func TestRecordToCedarResource(t *testing.T) {
 				},
 			},
 			cedartypes.EntityMap{
-				listAction.UID:     listAction,
-				readOnlyAction.UID: readOnlyAction,
+				listAction.UID: listAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
