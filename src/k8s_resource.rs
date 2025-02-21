@@ -18,7 +18,7 @@ pub const USER_EXTRA_TYPE: &str = "k8s::Extra";
 pub const PRINCIPAL_UID_TYPE: &str = "k8s::PrincipalUID";
 
 /// Creates a Cedar Entity representing a Kubernetes resource
-pub fn create_resource_entity(review: &SubjectAccessReview) -> Result<Entity> {
+pub fn create_authorization_resource_entity(review: &SubjectAccessReview) -> Result<Entity> {
     // check if it is a resource request
     match review.spec.non_resource_attributes.as_ref() {
         Some(attrs) => non_resource_to_entity(attrs),

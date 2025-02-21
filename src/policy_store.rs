@@ -143,8 +143,6 @@ impl DirectoryStore {
     }
 }
 
-#[derive(Clone)]
-struct PolicySetRef(Arc<RwLock<PolicySet>>);
 
 impl PolicyStore for DirectoryStore {
     fn initial_policy_load_complete(&self) -> bool {

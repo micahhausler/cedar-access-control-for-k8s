@@ -1,53 +1,60 @@
-use anyhow::{anyhow, Result};
-use kube::core::admission::AdmissionReview;
-use kube::core::DynamicObject;
-use cedar_policy::{
-    Authorizer, Response, Context, Request, PolicySet, 
-    Entities, Entity, EntityId, EntityTypeName, EntityUid, 
-    Expression, RestrictedExpression};
-use k8s_openapi::api::authorization::v1::SubjectAccessReview;
-use k8s_openapi::api::authorization::v1::SubjectAccessReviewSpec;
 use crate::k8s_entities::create_user_entity;
-use std::collections::{HashMap, HashSet};
+use anyhow::{anyhow, Result};
+use cedar_policy::{
+    Context, Entities, Entity, EntityId, EntityTypeName, EntityUid, Request, RestrictedExpression,
+};
+use k8s_openapi::api::authorization::v1::{SubjectAccessReview, SubjectAccessReviewSpec};
+use kube::core::admission::{AdmissionReview, Operation};
+use kube::core::DynamicObject;
 use serde_json::Value;
+use std::collections::HashMap;
 use std::str::FromStr;
 
 const MAX_DEPTH: i32 = 32;
 
 /// Walks a serde_json::Value and converts it to a Cedar RestrictedExpression
-fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str, value: &Value) -> Result<RestrictedExpression> {
+fn walk_value(
+    depth: i32,
+    group: &str,
+    version: &str,
+    kind: &str,
+    key_name: &str,
+    value: &Value,
+) -> Result<RestrictedExpression> {
     if depth <= 0 {
         return Err(anyhow!("Max depth reached"));
     }
 
-
     match value {
         Value::Null => Ok(RestrictedExpression::new_string("".to_string())),
         Value::Bool(b) => Ok(RestrictedExpression::new_bool(*b)),
-        Value::Number(n) => {
-            if n.is_i64() {
-                Ok(RestrictedExpression::new_long(n.as_i64().unwrap()))
-            } else {
-                Ok(RestrictedExpression::new_decimal(n.to_string()))
-            }
+        Value::Number(n) => match n.as_i64() {
+            Some(i) => Ok(RestrictedExpression::new_long(i)),
+            None => Ok(RestrictedExpression::new_decimal(n.to_string())),
         },
         Value::String(s) => {
             // Handle IP addresses for known IP fields
-            let ip_fields = ["podIP", "clusterIP", "loadBalancerIP", "hostIP", "ip", "podIPs", "hostIPs"];
-            if ip_fields.contains(&key_name) {
-                // Note: Cedar's IP handling might differ from Go's implementation
-                Ok(RestrictedExpression::new_ip(s.to_string()))
-            } else {
-                Ok(RestrictedExpression::new_string(s.to_string()))
+            let ip_fields = [
+                "podIP",
+                "clusterIP",
+                "loadBalancerIP",
+                "hostIP",
+                "ip",
+                "podIPs",
+                "hostIPs",
+            ];
+            match ip_fields.contains(&key_name) {
+                true => Ok(RestrictedExpression::new_ip(s.to_string())), // Note: Cedar's IP handling might differ from Go's implementation
+                false => Ok(RestrictedExpression::new_string(s.to_string())),
             }
-        },
+        }
         Value::Array(arr) => {
             let mut values = Vec::new();
             for item in arr {
                 values.push(walk_value(depth - 1, group, version, kind, key_name, item)?);
             }
             Ok(RestrictedExpression::new_set(values))
-        },
+        }
         Value::Object(map) => {
             // Special handling for labels and annotations
             if key_name == "labels" || key_name == "annotations" {
@@ -55,8 +62,14 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
                 for (k, v) in map {
                     if let Value::String(v) = v {
                         let record = RestrictedExpression::new_record(HashMap::from([
-                            ("key".to_string(), RestrictedExpression::new_string(k.clone())),
-                            ("value".to_string(), RestrictedExpression::new_string(v.clone())),
+                            (
+                                "key".to_string(),
+                                RestrictedExpression::new_string(k.clone()),
+                            ),
+                            (
+                                "value".to_string(),
+                                RestrictedExpression::new_string(v.clone()),
+                            ),
                         ]))?;
                         set.push(record);
                     }
@@ -67,7 +80,7 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
             // Handle known key-value string maps (similar to Go's knownKeyValueStringMapAttributes)
             let known_maps: HashMap<&str, HashMap<&str, HashMap<&str, Vec<&str>>>> = {
                 let mut m = HashMap::new();
-                
+
                 // core/v1
                 let mut core = HashMap::new();
                 let mut v1 = HashMap::new();
@@ -76,7 +89,10 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
                 v1.insert("CSIVolumeSource", vec!["volumeAttributes"]);
                 v1.insert("FlexPersistentVolumeSource", vec!["options"]);
                 v1.insert("FlexVolumeSource", vec!["options"]);
-                v1.insert("PersistentVolumeClaimStatus", vec!["allocatedResourceStatuses"]);
+                v1.insert(
+                    "PersistentVolumeClaimStatus",
+                    vec!["allocatedResourceStatuses"],
+                );
                 v1.insert("Pod", vec!["nodeSelector"]);
                 v1.insert("ReplicationController", vec!["selector"]);
                 v1.insert("Secret", vec!["data", "stringData"]);
@@ -117,7 +133,6 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
                 m
             };
 
-
             if let Some(api_group) = known_maps.get(group) {
                 if let Some(api_version) = api_group.get(version) {
                     if let Some(attr_names) = api_version.get(kind) {
@@ -125,10 +140,17 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
                             let mut set = Vec::new();
                             for (k, v) in map {
                                 if let Value::String(v) = v {
-                                    let record = RestrictedExpression::new_record(HashMap::from([
-                                        ("key".to_string(), RestrictedExpression::new_string(k.clone())),
-                                        ("value".to_string(), RestrictedExpression::new_string(v.clone())),
-                                    ]))?;
+                                    let record =
+                                        RestrictedExpression::new_record(HashMap::from([
+                                            (
+                                                "key".to_string(),
+                                                RestrictedExpression::new_string(k.clone()),
+                                            ),
+                                            (
+                                                "value".to_string(),
+                                                RestrictedExpression::new_string(v.clone()),
+                                            ),
+                                        ]))?;
                                     set.push(record);
                                 }
                             }
@@ -177,13 +199,21 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
                                     let mut value_set = Vec::new();
                                     for val in values {
                                         if let Value::String(s) = val {
-                                            value_set.push(RestrictedExpression::new_string(s.clone()));
+                                            value_set
+                                                .push(RestrictedExpression::new_string(s.clone()));
                                         }
                                     }
-                                    let record = RestrictedExpression::new_record(HashMap::from([
-                                        ("key".to_string(), RestrictedExpression::new_string(k.clone())),
-                                        ("value".to_string(), RestrictedExpression::new_set(value_set)),
-                                    ]))?;
+                                    let record =
+                                        RestrictedExpression::new_record(HashMap::from([
+                                            (
+                                                "key".to_string(),
+                                                RestrictedExpression::new_string(k.clone()),
+                                            ),
+                                            (
+                                                "value".to_string(),
+                                                RestrictedExpression::new_set(value_set),
+                                            ),
+                                        ]))?;
                                     set.push(record);
                                 }
                             }
@@ -204,53 +234,102 @@ fn walk_value(depth: i32, group: &str, version: &str, kind: &str, key_name: &str
     }
 }
 
+pub fn admission_object_to_entity(review: &AdmissionReview<DynamicObject>) -> Result<Entity> {
+    let req = review
+        .request
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
+    let obj = req
+        .object
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview object is missing"))?;
+    create_admission_resource_entity(review, obj)
+}
+
+pub fn admission_old_object_to_entity(review: &AdmissionReview<DynamicObject>) -> Result<Entity> {
+    let req = review
+        .request
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
+    let obj = req
+        .old_object
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview old object is missing"))?;
+    create_admission_resource_entity(review, obj)
+}
+
 /// Creates a Cedar Entity from an AdmissionRequest's object
-fn create_resource_entity(obj: &DynamicObject) -> Result<Entity> {
+pub fn create_admission_resource_entity(
+    review: &AdmissionReview<DynamicObject>,
+    obj: &DynamicObject,
+) -> Result<Entity> {
+    let req = review
+        .request
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
+
+    let api_version = review.request.as_ref().unwrap().resource.version.clone();
+    let mut group = review.request.as_ref().unwrap().resource.group.clone();
+    if group.is_empty() {
+        group = "core".to_string();
+    }
+    let resource = review.request.as_ref().unwrap().resource.resource.clone();
+    let kind = review.request.as_ref().unwrap().kind.kind.clone();
+
+    let euid = EntityUid::from_type_name_and_id(
+        EntityTypeName::from_str(&format!("{}::{}::{}", group, api_version, kind))?,
+        EntityId::new(&entity_id_from_request(
+            review.request.as_ref().unwrap().resource.group.as_str(),
+            &api_version,
+            &resource,
+            req.name.as_str(),
+            req.namespace.as_deref().unwrap_or(""),
+            req.sub_resource.as_deref().unwrap_or(""),
+        )),
+    );
+
+    let attrs = dyn_object_to_attrs(
+        obj,
+        &review.request.as_ref().unwrap().resource.group,
+        &api_version,
+        &kind,
+    )?;
+    Entity::new(euid, attrs, Default::default()).map_err(|e| anyhow!(e))
+}
+
+fn dyn_object_to_attrs(
+    obj: &DynamicObject,
+    group: &str,
+    version: &str,
+    kind: &str,
+) -> Result<HashMap<String, RestrictedExpression>> {
     let mut attrs = HashMap::new();
-
-    // Add basic type information from the DynamicObject
-    let type_meta = obj.types.as_ref().ok_or_else(|| anyhow!("TypeMeta is missing"))?;
-    let api_version = type_meta.api_version.clone();
-    let kind = type_meta.kind.clone();
-    
-    // attrs.insert(
-    //     "apiVersion".to_string(),
-    //     RestrictedExpression::new_string(api_version.clone()),
-    // );
-    // attrs.insert(
-    //     "kind".to_string(),
-    //     RestrictedExpression::new_string(kind.clone()),
-    // );
-
-    // Create the entity UID using the group, version, and kind
-    let (group, version) = if let Some(idx) = api_version.find('/') {
-        let (g, v) = api_version.split_at(idx);
-        (g.to_string(), v[1..].to_string())  // Skip the '/' character
-    } else {
-        ("core".to_string(), api_version)
-    };
 
     // Convert the entire object to a Value and walk it
     let obj_value = serde_json::to_value(obj)?;
     if let Value::Object(map) = obj_value {
         for (k, v) in map {
-            if k != "types" {  // Skip the types field as we've already handled it
-                attrs.insert(k.clone(), walk_value(MAX_DEPTH, &group, &version, &kind, &k, &v)?);
+            if k != "types" {
+                // Skip the types field as we've already handled it
+                attrs.insert(
+                    k.clone(),
+                    walk_value(MAX_DEPTH, &group, &version, &kind, &k, &v)?,
+                );
             }
         }
     }
 
-    let type_name = EntityTypeName::from_str(&format!("{}::{}::{}", group, version, kind))?;
-    let entity_id = EntityId::from_str(&format!("{}/{}", obj.metadata.namespace.as_deref().unwrap_or(""), obj.metadata.name.as_deref().unwrap_or("")))?;
-    let uid = EntityUid::from_type_name_and_id(type_name, entity_id); 
-
-    Entity::new(uid, attrs, Default::default())
-        .map_err(|e| anyhow!("Failed to create resource entity: {}", e))
+    Ok(attrs)
 }
 
 /// Converts a Kubernetes AdmissionReview into a SubjectAccessReview
-pub fn create_subject_access_review(review: &AdmissionReview<DynamicObject>) -> Result<SubjectAccessReview> {
-    let request = review.request.as_ref().ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
+pub fn create_subject_access_review(
+    review: &AdmissionReview<DynamicObject>,
+) -> Result<SubjectAccessReview> {
+    let request = review
+        .request
+        .as_ref()
+        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
 
     let spec = SubjectAccessReviewSpec {
         // Copy over user information
@@ -271,17 +350,30 @@ pub fn create_subject_access_review(review: &AdmissionReview<DynamicObject>) -> 
     })
 }
 
-pub fn entity_id_from_request(api_group: &str, api_version: &str, kind: &str, name: &str, namespace: &str, sub_resource: &str) -> String {
+pub fn entity_id_from_request(
+    api_group: &str,
+    api_version: &str,
+    resource: &str,
+    name: &str,
+    namespace: &str,
+    sub_resource: &str,
+) -> String {
     let base = match api_group.is_empty() {
         true => "/api".to_string(),
         false => format!("/apis/{}", api_group),
     };
     let namespace_part = match namespace.is_empty() {
-        false => format!("/namespaces/{}/", namespace),
+        false => format!("/namespaces/{}", namespace),
         true => String::new(),
     };
 
-    let mut path = format!("{}/{}{}/{}", base, api_version, namespace_part, kind.to_lowercase());
+    let mut path = format!(
+        "{}/{}{}/{}",
+        base,
+        api_version,
+        namespace_part,
+        resource.to_lowercase()
+    );
 
     if !name.is_empty() {
         path.push_str(&format!("/{}", name));
@@ -294,173 +386,99 @@ pub fn entity_id_from_request(api_group: &str, api_version: &str, kind: &str, na
     path
 }
 
-pub fn review_request(review: &AdmissionReview<DynamicObject>) -> Response {
+pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request, Entities) {
     let principal_sar = create_subject_access_review(review).unwrap();
     let (principal_entity, group_entities) = create_user_entity(&principal_sar).unwrap();
 
     let mut all_entities = vec![principal_entity.clone()];
     all_entities.extend(group_entities);
 
-    // Add the resource entity if present
-    if let Some(request) = &review.request {
-        if let Some(obj) = &request.object {
-            if let Ok(resource_entity) = create_resource_entity(obj) {
-                all_entities.push(resource_entity);
-            }
+    let resource_euid = match review.request.as_ref().unwrap().operation {
+        Operation::Delete => {
+            let resource_entity = create_admission_resource_entity(
+                review,
+                review
+                    .request
+                    .as_ref()
+                    .unwrap()
+                    .old_object
+                    .as_ref()
+                    .unwrap(),
+            )
+            .unwrap();
+            let euid = resource_entity.uid();
+            all_entities.push(resource_entity);
+            Some(euid)
         }
-    }
+        Operation::Update => {
+            let orig_old_resource_entity = create_admission_resource_entity(
+                review,
+                review
+                    .request
+                    .as_ref()
+                    .unwrap()
+                    .old_object
+                    .as_ref()
+                    .unwrap(),
+            )
+            .unwrap();
+            let (orig_old_uid, orig_old_attrs, _) = orig_old_resource_entity.into_inner();
+            let old_uid = EntityUid::from_type_name_and_id(
+                orig_old_uid.type_name().clone(),
+                EntityId::new(&review.request.as_ref().unwrap().uid.clone()),
+            );
+            let old_resource_entity =
+                Entity::new(old_uid, orig_old_attrs, Default::default()).unwrap();
+            all_entities.push(old_resource_entity);
+            let tmp_resource_entity = create_admission_resource_entity(
+                review,
+                review.request.as_ref().unwrap().object.as_ref().unwrap(),
+            )
+            .unwrap();
+            let (resource_uid, mut resource_attrs, _) = tmp_resource_entity.into_inner();
+            resource_attrs.insert(
+                "oldObject".to_string(),
+                RestrictedExpression::new_entity_uid(orig_old_uid),
+            );
+            let euid = resource_uid.clone();
+            all_entities
+                .push(Entity::new(resource_uid, resource_attrs, Default::default()).unwrap());
+            Some(euid)
+        }
+        _ => {
+            let resource_entity = create_admission_resource_entity(
+                review,
+                review.request.as_ref().unwrap().object.as_ref().unwrap(),
+            )
+            .unwrap();
+            let euid = resource_entity.uid();
+            all_entities.push(resource_entity);
+            Some(euid)
+        }
+    };
 
     let entities = Entities::from_entities(all_entities, None).unwrap();
-    
-    let authorizer = Authorizer::new();
-    let request = Request::new(
-        Some(principal_entity.uid()),
-        None, // TODO: Add action entity
-        None, // TODO: Add resource entity UID
-        Context::empty(),
-        None,
-    ).unwrap();
-    let policy_set = PolicySet::new();
-    
-    authorizer.is_authorized(&request, &policy_set, &entities)
+
+    let action_str = match review.request.as_ref().unwrap().operation {
+        Operation::Create => "create",
+        Operation::Update => "update",
+        Operation::Delete => "delete",
+        Operation::Connect => "connect",
+    };
+    let action = EntityUid::from_type_name_and_id(
+        EntityTypeName::from_str("k8s::admission::Action").unwrap(),
+        EntityId::from_str(action_str).unwrap(),
+    );
+
+    (
+        Request::new(
+            Some(principal_entity.uid()),
+            Some(action),
+            resource_euid,
+            Context::empty(),
+            None,
+        )
+        .unwrap(),
+        entities,
+    )
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use kube::core::admission::{AdmissionRequest, Operation};
-    use kube::core::{GroupVersionKind, GroupVersionResource, TypeMeta};
-    use k8s_openapi::api::authentication::v1::UserInfo;
-    use std::collections::BTreeMap;
-
-    struct TestCase {
-        name: &'static str,
-        input: AdmissionReview<DynamicObject>,
-        want_err: bool,
-        expected_user: Option<String>,
-        expected_uid: Option<String>,
-        expected_groups: Option<Vec<String>>,
-        expected_extra: Option<BTreeMap<String, Vec<String>>>,
-    }
-
-    #[test]
-    fn test_create_subject_access_review() {
-        let test_cases = vec![
-            TestCase {
-                name: "valid review with all fields",
-                input: AdmissionReview {
-                    types: TypeMeta::default(),
-                    request: Some(AdmissionRequest {
-                        uid: "test-request-uid".to_string(),
-                        user_info: UserInfo {
-                            username: Some("test-user".to_string()),
-                            uid: Some("test-uid".to_string()),
-                            groups: Some(vec!["test-group".to_string()]),
-                            extra: Some({
-                                let mut extra = BTreeMap::new();
-                                extra.insert("test-key".to_string(), vec!["test-value".to_string()]);
-                                extra
-                            }),
-                        },
-                        name: "test-name".to_string(),
-                        namespace: Some("test-namespace".to_string()),
-                        operation: Operation::Create,
-                        kind: GroupVersionKind {
-                            group: "".to_string(),
-                            version: "v1".to_string(),
-                            kind: "Pod".to_string(),
-                        },
-                        resource: GroupVersionResource::gvr("", "v1", "pods"),
-                        sub_resource: None,
-                        request_kind: None,
-                        request_resource: None,
-                        request_sub_resource: None,
-                        object: None,
-                        old_object: None,
-                        dry_run: false,
-                        options: None,
-                        types: TypeMeta::default(),
-                    }),
-                    response: None,
-                },
-                want_err: false,
-                expected_user: Some("test-user".to_string()),
-                expected_uid: Some("test-uid".to_string()),
-                expected_groups: Some(vec!["test-group".to_string()]),
-                expected_extra: Some({
-                    let mut extra = BTreeMap::new();
-                    extra.insert("test-key".to_string(), vec!["test-value".to_string()]);
-                    extra
-                }),
-            },
-            TestCase {
-                name: "missing request",
-                input: AdmissionReview {
-                    types: TypeMeta::default(),
-                    request: None,
-                    response: None,
-                },
-                want_err: true,
-                expected_user: None,
-                expected_uid: None,
-                expected_groups: None,
-                expected_extra: None,
-            },
-            TestCase {
-                name: "minimal valid review",
-                input: AdmissionReview {
-                    types: TypeMeta::default(),
-                    request: Some(AdmissionRequest {
-                        uid: "test-request-uid".to_string(),
-                        user_info: UserInfo {
-                            username: None,
-                            uid: None,
-                            groups: None,
-                            extra: None,
-                        },
-                        name: "test-name".to_string(),
-                        namespace: Some("test-namespace".to_string()),
-                        operation: Operation::Create,
-                        kind: GroupVersionKind {
-                            group: "".to_string(),
-                            version: "v1".to_string(),
-                            kind: "Pod".to_string(),
-                        },
-                        resource: GroupVersionResource::gvr("", "v1", "pods"),
-                        sub_resource: None,
-                        request_kind: None,
-                        request_resource: None,
-                        request_sub_resource: None,
-                        object: None,
-                        old_object: None,
-                        dry_run: false,
-                        options: None,
-                        types: TypeMeta::default(),
-                    }),
-                    response: None,
-                },
-                want_err: false,
-                expected_user: None,
-                expected_uid: None,
-                expected_groups: None,
-                expected_extra: None,
-            },
-        ];
-
-        for tc in test_cases {
-            let result = create_subject_access_review(&tc.input);
-            
-            if tc.want_err {
-                assert!(result.is_err(), "{}: expected error but got success", tc.name);
-                continue;
-            }
-            
-            let sar = result.expect(&format!("{}: unexpected error", tc.name));
-            
-            assert_eq!(sar.spec.user, tc.expected_user, "{}: user mismatch", tc.name);
-            assert_eq!(sar.spec.uid, tc.expected_uid, "{}: uid mismatch", tc.name);
-            assert_eq!(sar.spec.groups, tc.expected_groups, "{}: groups mismatch", tc.name);
-            assert_eq!(sar.spec.extra, tc.expected_extra, "{}: extra mismatch", tc.name);
-        }
-    }
-} 
