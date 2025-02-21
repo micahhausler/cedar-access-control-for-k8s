@@ -7,7 +7,7 @@ use k8s_openapi::api::authorization::v1::{
     ResourceAttributes, SubjectAccessReview, SubjectAccessReviewSpec,
 };
 
-use crate::k8s_resource::{create_resource_entity, RESOURCE_TYPE};
+use crate::k8s_resource::{create_authorization_resource_entity, RESOURCE_TYPE};
 
 #[test]
 fn test_resource_entity_creation() -> Result<()> {
@@ -156,7 +156,7 @@ fn test_resource_entity_creation() -> Result<()> {
     ];
 
     for tc in test_cases {
-        let resource = create_resource_entity(&tc.input)?;
+        let resource = create_authorization_resource_entity(&tc.input)?;
         assert_eq!(resource, tc.expected_resource, "test case: {}", tc.name);
     }
 

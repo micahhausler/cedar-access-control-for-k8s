@@ -2,7 +2,8 @@ mod authorizer;
 mod k8s_entities;
 mod k8s_resource;
 mod policy_store;
-
+mod admission_handler;
+mod admission_entities;
 use std::net::SocketAddr;
 use std::path::Path;
 use std::time::Duration;
@@ -12,6 +13,8 @@ use axum::Router;
 use env_logger;
 use log::*;
 use tokio::net::TcpListener;
+
+use cedar_policy::PolicySet;
 
 #[tokio::main]
 async fn main() {
@@ -41,15 +44,46 @@ async fn main() {
         policy_store::DirectoryStore::new(Path::new("./policies"), Duration::from_secs(10)),
     )]);
 
+    let allow_all_admission_policy_raw: &str = r#"
+    permit(
+        principal,
+        action in [
+            k8s::admission::Action::"create",
+            k8s::admission::Action::"update",
+            k8s::admission::Action::"delete",
+            k8s::admission::Action::"connect"
+        ],
+        resource
+    );
+    "#;
+    let allow_all_admission_policy: PolicySet = allow_all_admission_policy_raw.parse().unwrap();
+
+
+    let admission_stores = policy_store::TieredPolicyStores::new(vec![
+        Box::new(policy_store::DirectoryStore::new(Path::new("./admission_policies"), Duration::from_secs(10))),
+        Box::new(policy_store::StaticStore::from(allow_all_admission_policy)),
+    ]);
+
     let authorizer = authorizer::AuthorizerServer::new(stores);
+    let admit_handler = admission_handler::AdmissionServer::new(admission_stores);
 
     // Create our application router
-    let app = Router::new().route(
+    let mut app = Router::new().route(
         "/authorize",
         post(move |review| {
             let auth = authorizer.clone();
             async move {
                 auth.with_logging(review, authorizer::AuthorizerServer::authorize_handler)
+                    .await
+            }
+        }),
+    );
+    app = app.route(
+        "/admit",
+        post(move |review| {
+            let admit = admit_handler.clone();
+            async move {
+                admit.handle(review)
                     .await
             }
         }),

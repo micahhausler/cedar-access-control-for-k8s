@@ -9,7 +9,7 @@ use cedar_policy::{
 use k8s_openapi::api::authorization::v1::SubjectAccessReview;
 
 use crate::k8s_resource::{
-    create_resource_entity, ACTION_TYPE, GROUP_TYPE, NODE_TYPE, SERVICE_ACCOUNT_TYPE, USER_TYPE,
+    create_authorization_resource_entity, ACTION_TYPE, GROUP_TYPE, NODE_TYPE, SERVICE_ACCOUNT_TYPE, USER_TYPE,
 };
 
 /// Represents the different types of entities in our system
@@ -225,7 +225,7 @@ pub fn create_entities_and_request(
     // Create each entity and collect them
     let (user, groups) = create_user_entity(review)?;
     let action = create_action_entity(review)?;
-    let resource = create_resource_entity(review)?;
+    let resource = create_authorization_resource_entity(review)?;
 
     // Create a new Entities collection with our entities
     let mut entity_set = Vec::new();
