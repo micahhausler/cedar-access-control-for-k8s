@@ -450,9 +450,9 @@ fn test_request_from_review() {
                 EntityId::from_str("/api/v1/namespaces/default/pods/test-pod").unwrap(),
             );
             Request::new(
-                Some(principal_uid),
-                Some(action_uid),
-                Some(resource_uid),
+                principal_uid,
+                action_uid,
+                resource_uid,
                 Context::empty(),
                 None,
             )
@@ -546,7 +546,7 @@ fn test_request_from_review() {
     }];
 
     for tc in test_cases {
-        let (request, entities) = request_from_review(&tc.review);
+        let (request, entities) = request_from_review(&tc.review).unwrap();
 
         // Verify request components
         assert_eq!(

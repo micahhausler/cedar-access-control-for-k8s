@@ -1,4 +1,5 @@
 use crate::k8s_entities::create_user_entity;
+use crate::name_transform::gvk_to_cedar;
 use anyhow::{anyhow, Result};
 use cedar_policy::{
     Context, Entities, Entity, EntityId, EntityTypeName, EntityUid, Request, RestrictedExpression,
@@ -234,30 +235,6 @@ fn walk_value(
     }
 }
 
-pub fn admission_object_to_entity(review: &AdmissionReview<DynamicObject>) -> Result<Entity> {
-    let req = review
-        .request
-        .as_ref()
-        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
-    let obj = req
-        .object
-        .as_ref()
-        .ok_or_else(|| anyhow!("AdmissionReview object is missing"))?;
-    create_admission_resource_entity(review, obj)
-}
-
-pub fn admission_old_object_to_entity(review: &AdmissionReview<DynamicObject>) -> Result<Entity> {
-    let req = review
-        .request
-        .as_ref()
-        .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
-    let obj = req
-        .old_object
-        .as_ref()
-        .ok_or_else(|| anyhow!("AdmissionReview old object is missing"))?;
-    create_admission_resource_entity(review, obj)
-}
-
 /// Creates a Cedar Entity from an AdmissionRequest's object
 pub fn create_admission_resource_entity(
     review: &AdmissionReview<DynamicObject>,
@@ -269,15 +246,11 @@ pub fn create_admission_resource_entity(
         .ok_or_else(|| anyhow!("AdmissionReview request is missing"))?;
 
     let api_version = review.request.as_ref().unwrap().resource.version.clone();
-    let mut group = review.request.as_ref().unwrap().resource.group.clone();
-    if group.is_empty() {
-        group = "core".to_string();
-    }
     let resource = review.request.as_ref().unwrap().resource.resource.clone();
     let kind = review.request.as_ref().unwrap().kind.kind.clone();
 
     let euid = EntityUid::from_type_name_and_id(
-        EntityTypeName::from_str(&format!("{}::{}::{}", group, api_version, kind))?,
+        EntityTypeName::from_str(&gvk_to_cedar(&req.kind))?,
         EntityId::new(&entity_id_from_request(
             review.request.as_ref().unwrap().resource.group.as_str(),
             &api_version,
@@ -386,9 +359,9 @@ pub fn entity_id_from_request(
     path
 }
 
-pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request, Entities) {
-    let principal_sar = create_subject_access_review(review).unwrap();
-    let (principal_entity, group_entities) = create_user_entity(&principal_sar).unwrap();
+pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> Result<(Request, Entities)> {
+    let principal_sar = create_subject_access_review(review)?;
+    let (principal_entity, group_entities) = create_user_entity(&principal_sar)?;
 
     let mut all_entities = vec![principal_entity.clone()];
     all_entities.extend(group_entities);
@@ -404,11 +377,10 @@ pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request,
                     .old_object
                     .as_ref()
                     .unwrap(),
-            )
-            .unwrap();
+            )?;
             let euid = resource_entity.uid();
             all_entities.push(resource_entity);
-            Some(euid)
+            euid
         }
         Operation::Update => {
             let orig_old_resource_entity = create_admission_resource_entity(
@@ -420,8 +392,7 @@ pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request,
                     .old_object
                     .as_ref()
                     .unwrap(),
-            )
-            .unwrap();
+            )?;
             let (orig_old_uid, orig_old_attrs, _) = orig_old_resource_entity.into_inner();
             let old_uid = EntityUid::from_type_name_and_id(
                 orig_old_uid.type_name().clone(),
@@ -433,8 +404,7 @@ pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request,
             let tmp_resource_entity = create_admission_resource_entity(
                 review,
                 review.request.as_ref().unwrap().object.as_ref().unwrap(),
-            )
-            .unwrap();
+            )?;
             let (resource_uid, mut resource_attrs, _) = tmp_resource_entity.into_inner();
             resource_attrs.insert(
                 "oldObject".to_string(),
@@ -443,17 +413,16 @@ pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request,
             let euid = resource_uid.clone();
             all_entities
                 .push(Entity::new(resource_uid, resource_attrs, Default::default()).unwrap());
-            Some(euid)
+            euid
         }
         _ => {
             let resource_entity = create_admission_resource_entity(
                 review,
                 review.request.as_ref().unwrap().object.as_ref().unwrap(),
-            )
-            .unwrap();
+            )?;
             let euid = resource_entity.uid();
             all_entities.push(resource_entity);
-            Some(euid)
+            euid
         }
     };
 
@@ -466,19 +435,17 @@ pub fn request_from_review(review: &AdmissionReview<DynamicObject>) -> (Request,
         Operation::Connect => "connect",
     };
     let action = EntityUid::from_type_name_and_id(
-        EntityTypeName::from_str("k8s::admission::Action").unwrap(),
-        EntityId::from_str(action_str).unwrap(),
+        EntityTypeName::from_str("k8s::admission::Action")?,
+        EntityId::from_str(action_str)?,
     );
 
-    (
-        Request::new(
-            Some(principal_entity.uid()),
-            Some(action),
-            resource_euid,
-            Context::empty(),
-            None,
-        )
-        .unwrap(),
-        entities,
-    )
+    let request = Request::new(
+        principal_entity.uid(),
+        action,
+        resource_euid,
+        Context::empty(),
+        None,
+    )?;
+
+    Ok((request, entities))
 }

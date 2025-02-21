@@ -2,7 +2,10 @@ use std::sync::Arc;
 
 use axum::extract::Json;
 use cedar_policy::Decision;
-use k8s_openapi::api::authorization::v1::{SubjectAccessReview, SubjectAccessReviewStatus};
+use k8s_openapi::api::authorization::v1::{
+    SubjectAccessReview, SubjectAccessReviewStatus, ResourceAttributes,
+};
+use cedar_policy::Schema;
 use log::*;
 use uuid;
 
@@ -11,12 +14,14 @@ use crate::policy_store;
 #[derive(Clone)]
 pub struct AuthorizerServer {
     stores: Arc<policy_store::TieredPolicyStores<'static>>,
+    schema: Option<Arc<Schema>>,
 }
 
 impl AuthorizerServer {
-    pub fn new(stores: policy_store::TieredPolicyStores<'static>) -> Self {
+    pub fn new(stores: policy_store::TieredPolicyStores<'static>, schema: Option<Arc<Schema>>) -> Self {
         Self {
             stores: Arc::new(stores),
+            schema,
         }
     }
 
@@ -26,8 +31,12 @@ impl AuthorizerServer {
         Json(review): Json<SubjectAccessReview>,
         handler: fn(&Self, Json<SubjectAccessReview>) -> Json<SubjectAccessReview>,
     ) -> Json<SubjectAccessReview> {
-        let username = review.spec.user.as_deref().unwrap_or("unknown");
-        let uid = review.spec.uid.as_deref().unwrap_or("unknown");
+        let username = review.spec.user.as_deref().unwrap_or("");
+        let uid = review.spec.uid.as_deref().unwrap_or("");
+
+        if username == "" {
+            return Json(no_opinion(review));
+        }
 
         info!(
             "Processing authorization request for user '{}' (uid: '{}')",
@@ -68,6 +77,17 @@ impl AuthorizerServer {
         let request_id = uuid::Uuid::new_v4().to_string();
         let mut response = review.clone();
         response.metadata.uid = Some(request_id);
+
+
+        // check for empty group/resource/verb (should never happen)
+        if review.spec.resource_attributes.as_ref().is_some()
+            && review.spec.resource_attributes.as_ref().unwrap_or(&ResourceAttributes::default()).group.is_none()
+            && review.spec.resource_attributes.as_ref().unwrap_or(&ResourceAttributes::default()).resource.is_none()
+            && review.spec.resource_attributes.as_ref().unwrap_or(&ResourceAttributes::default()).verb.is_none()
+        {
+            return Json(no_opinion(response));
+        }
+
 
         // Always allow self to read policies
         if review.spec.user == Some("cedar-authorizer".to_string())
@@ -124,26 +144,40 @@ impl AuthorizerServer {
             return Json(no_opinion(response));
         }
 
-        let (entities, request) =
-            crate::k8s_entities::create_entities_and_request(&review, None).unwrap();
+        let (entities, request) = match crate::k8s_entities::create_entities_and_request(&review, self.schema.clone()) {    
+            Ok((entities, request)) => (entities, request),
+            Err(e) => {
+                error!("Error creating entities and request: {}", e);
+                return Json(no_opinion(response));
+            }
+        };
         let cedar_response = self.stores.is_authorized(&entities, &request);
 
-        if cedar_response.decision() == Decision::Deny
-            && cedar_response.diagnostics().errors().count() == 0
-            && cedar_response.diagnostics().reason().count() == 0
-        {
-            return Json(no_opinion(response));
+        match cedar_response {
+            Ok(cedar_response) => {
+                if cedar_response.decision() == Decision::Deny
+                    && cedar_response.diagnostics().errors().count() == 0
+                    && cedar_response.diagnostics().reason().count() == 0
+                {
+                    return Json(no_opinion(response));
+                }
+
+                // Create response
+                response.status = Some(SubjectAccessReviewStatus {
+                    allowed: cedar_response.decision() == Decision::Allow,
+                    denied: Some(cedar_response.decision() == Decision::Deny),
+                    reason: None,
+                    ..Default::default()
+                });
+
+                return Json(response)
+            }
+            Err(e) => {
+                error!("Error authorizing request: {}", e);
+                return Json(no_opinion(response));
+            }
         }
 
-        // Create response
-        response.status = Some(SubjectAccessReviewStatus {
-            allowed: cedar_response.decision() == Decision::Allow,
-            denied: Some(cedar_response.decision() == Decision::Deny),
-            reason: None,
-            ..Default::default()
-        });
-
-        Json(response)
     }
 }
 

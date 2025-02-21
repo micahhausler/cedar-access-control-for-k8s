@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
+use std::sync::Arc;
 
 use anyhow::{anyhow, Result};
 use cedar_policy::{
@@ -49,7 +50,6 @@ pub enum ActionType {
     Patch,
     Post,
     Put,
-    ReadOnly,
     Sign,
     Update,
     Use,
@@ -74,7 +74,6 @@ impl ActionType {
             ActionType::Patch => "patch",
             ActionType::Post => "post",
             ActionType::Put => "put",
-            ActionType::ReadOnly => "readOnly",
             ActionType::Sign => "sign",
             ActionType::Update => "update",
             ActionType::Use => "use",
@@ -220,7 +219,7 @@ pub fn create_action_entity(review: &SubjectAccessReview) -> Result<Entity> {
 /// Creates all entities needed for authorization from a SubjectAccessReview
 pub fn create_entities_and_request(
     review: &SubjectAccessReview,
-    schema: Option<&Schema>,
+    schema: Option<Arc<Schema>>,
 ) -> Result<(Entities, Request)> {
     // Create each entity and collect them
     let (user, groups) = create_user_entity(review)?;
@@ -234,14 +233,28 @@ pub fn create_entities_and_request(
     entity_set.push(action.clone());
     entity_set.push(resource.clone());
 
-    let request = Request::new(
-        Some(user.uid()),
-        Some(action.uid()),
-        Some(resource.uid()),
+    let schema_ref = schema.as_ref().map(|s| s.as_ref());
+    let request =  match Request::new(
+        user.uid(),
+        action.uid(),
+        resource.uid(),
         Context::empty(),
-        schema,
+        schema_ref,
     )
-    .map_err(|e| anyhow!("Failed to create request: {}", e))?;
+    .map_err(|e| anyhow!("Failed to create request: {}", e)) {
+        Ok(request) => request,
+        Err(e) => {
+            log::error!("Failed to create request: {:?}", e);
+            return Err(e);
+        }
+    };
+    let entities =  match Entities::from_entities(entity_set, schema_ref) {
+        Ok(entities) => entities,
+        Err(e) => {
+            log::error!("Failed to create entities: {:#?}", e);
+            return Err(anyhow!("Failed to create entities: {:?}", e));
+        }
+    };
 
-    Ok((Entities::from_entities(entity_set, schema)?, request))
+    Ok((entities, request))
 }

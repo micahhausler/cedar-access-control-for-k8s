@@ -1,8 +1,10 @@
 #! /usr/bin/env bash
 set -e
 
-mkdir ../policies
-cat << EOF > ../policies/test1.cedar
+mkdir -p ../policies
+if [ ! -f ./policies/test1.cedar ]; then
+    mkdir -p ../policies
+    cat << EOF > ../policies/test1.cedar
 // test-user can get/list/watch pods at cluster scope
 permit (
     principal,
@@ -23,13 +25,14 @@ forbid (
     resource.resource == "nodes"
 };
 EOF
+fi
 
 cd ..;
-cargo build
+#cargo build
 
-echo "running server in background... run 'fg' to take control and kill"
-RUST_LOG=TRACE ./target/debug/cedar-k8s-webhook &
+#echo "running server in background... run 'fg' to take control and kill"
+#RUST_LOG=TRACE ./target/debug/cedar-k8s-webhook &
 
-curl -H "content-type: application/json" http://localhost:8443/authorize -d @scratch/no-opinion.sar.json -v |jq
-curl -H "content-type: application/json" http://localhost:8443/authorize -d @scratch/deny.sar.json -v |jq
-curl -H "content-type: application/json" http://localhost:8443/authorize -d @scratch/allow.sar.json -v |jq
+curl -H "content-type: application/json" -k https://localhost:8443/authorize -d @rusttest/no-opinion.sar.json -v |jq
+curl -H "content-type: application/json" -k https://localhost:8443/authorize -d @rusttest/deny.sar.json -v |jq
+curl -H "content-type: application/json" -k https://localhost:8443/authorize -d @rusttest/allow.sar.json -v |jq
