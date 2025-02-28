@@ -10278,63 +10278,66 @@
 		}
 	},
 	"meta::v1": {
-		"entityTypes": {},
-		"actions": {},
-		"commonTypes": {
+		"entityTypes": {
 			"APIResource": {
-				"type": "Record",
-				"attributes": {
-					"categories": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "String"
-						}
-					},
-					"group": {
-						"type": "String",
-						"required": false
-					},
-					"kind": {
-						"type": "String",
-						"required": true
-					},
-					"name": {
-						"type": "String",
-						"required": true
-					},
-					"namespaced": {
-						"type": "Boolean",
-						"required": true
-					},
-					"shortNames": {
-						"type": "Set",
-						"required": false,
-						"element": {
-							"type": "String"
-						}
-					},
-					"singularName": {
-						"type": "String",
-						"required": true
-					},
-					"storageVersionHash": {
-						"type": "String",
-						"required": false
-					},
-					"verbs": {
-						"type": "Set",
-						"required": true,
-						"element": {
-							"type": "String"
-						}
-					},
-					"version": {
-						"type": "String",
-						"required": false
+				"shape": {
+					"type": "Record",
+					"attributes": {
+						"categories": {
+							"type": "Set",
+							"required": false,
+							"element": {
+								"type": "String"
+							}
+						},
+						"group": {
+							"type": "String",
+							"required": false
+						},
+						"kind": {
+							"type": "String",
+							"required": true
+						},
+						"name": {
+							"type": "String",
+							"required": true
+						},
+						"namespaced": {
+							"type": "Boolean",
+							"required": true
+						},
+						"shortNames": {
+							"type": "Set",
+							"required": false,
+							"element": {
+								"type": "String"
+							}
+						},
+						"singularName": {
+							"type": "String",
+							"required": true
+						},
+						"storageVersionHash": {
+							"type": "String",
+							"required": false
+						},
+						"verbs": {
+							"type": "Set",
+							"required": true,
+							"element": {
+								"type": "String"
+							}
+						},
+						"version": {
+							"type": "String",
+							"required": false
+							}
 					}
 				}
-			},
+			}
+		},
+		"actions": {},
+		"commonTypes": {
 			"APIResourceList": {
 				"type": "Record",
 				"attributes": {
