@@ -57,7 +57,6 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
-				getAction.UID: getAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
@@ -122,7 +121,6 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
-				listAction.UID: listAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
@@ -185,7 +183,6 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "/metrics",
 			},
 			cedartypes.EntityMap{
-				getAction.UID: getAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
@@ -310,7 +307,6 @@ func TestRecordToCedarResource(t *testing.T) {
 				Path:            "",
 			},
 			cedartypes.EntityMap{
-				getAction.UID: getAction,
 				cedartypes.EntityUID{Type: schema.ServiceAccountEntityType, ID: "1234567890"}: {
 					UID: cedartypes.EntityUID{Type: schema.ServiceAccountEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet([]cedartypes.EntityUID{
@@ -399,7 +395,6 @@ func TestRecordToCedarResource(t *testing.T) {
 				},
 			},
 			cedartypes.EntityMap{
-				listAction.UID: listAction,
 				cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"}: {
 					UID:     cedartypes.EntityUID{Type: schema.UserEntityType, ID: "1234567890"},
 					Parents: cedartypes.NewEntityUIDSet(cedartypes.EntityUID{Type: schema.GroupEntityType, ID: "test-group"}),
