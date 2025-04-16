@@ -25,6 +25,7 @@ rustls = { version = "0.23", features = ["ring"] }
 rustls-pemfile = "2.0"
 tokio-rustls = "0.25"
 ring = "0.17"
+structopt = "0.3"
 
 [dev-dependencies]
 kube = { version = "0.98.0", features = ["runtime", "derive", "admission", "default"] }
