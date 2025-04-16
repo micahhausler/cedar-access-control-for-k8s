@@ -121,13 +121,12 @@ func ExtraEntity() Entity {
 func AddPrincipalsToSchema(schema CedarSchema, namespace string) {
 	ns, ok := schema[namespace]
 	if !ok {
-		schema[namespace] = CedarSchemaNamespace{
+		ns = CedarSchemaNamespace{
 			EntityTypes: map[string]Entity{},
 			Actions:     map[string]ActionShape{},
 			CommonTypes: map[string]EntityShape{},
 		}
 	}
-	ns.Annotations = docAnnotation("Kubernetes Authorization namespace")
 	ns.EntityTypes[UserPrincipalType] = UserEntity()
 	ns.EntityTypes[GroupPrincipalType] = GroupEntity()
 	ns.EntityTypes[ServiceAccountPrincipalType] = ServiceAccountEntity()
