@@ -21,8 +21,8 @@ jobs:
         with:
           go-version: stable
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
           args: --timeout=5m
-          version: v1.60
+          version: v2.0
           only-new-issues: true
