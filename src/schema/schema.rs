@@ -23,6 +23,8 @@ pub const ACTION_POST: &str = "post";
 pub const ACTION_HEAD: &str = "head";
 pub const ACTION_OPTIONS: &str = "options";
 pub const ACTION_CONNECT: &str = "connect";
+pub const ACTION_ALL: &str = "all";
+
 
 // All Cedar Authorization Actions
 pub const ALL_ACTIONS: &[&str] = &[
@@ -45,17 +47,46 @@ pub const ALL_ACTIONS: &[&str] = &[
     ACTION_POST,
     ACTION_HEAD,
     ACTION_OPTIONS,
-    ACTION_CONNECT,
+    // ACTION_CONNECT,
 ];
 
 pub const ADMISSION_ACTIONS: &[&str] = &[
     ACTION_CREATE,
     ACTION_UPDATE,
-    ACTION_PATCH,
+    // ACTION_PATCH,
     ACTION_DELETE,
-    ACTION_DELETECOLLECTION,
+    // ACTION_DELETECOLLECTION,
     ACTION_CONNECT,
 ];
+
+
+pub fn sort_action_entities(schema: &mut CedarSchema) {
+    let cloned_schema = schema.clone();
+    for (namespace, ns) in cloned_schema.iter() {
+        let mut cloned_ns = ns.clone();
+        let action_keys = cloned_ns.actions.keys().collect::<Vec<&String>>();
+
+        let mut sorted_actions = HashMap::new();
+
+        for key in action_keys {
+            let mut sorted_principal_types = cloned_ns.actions.get(key).unwrap().applies_to.principal_types.clone();            
+            sorted_principal_types.sort();
+            let mut sorted_resource_types = cloned_ns.actions.get(key).unwrap().applies_to.resource_types.clone();
+            sorted_resource_types.sort();
+            sorted_actions.insert(key.clone(), ActionShape {
+                annotations: cloned_ns.actions.get(key).unwrap().annotations.clone(),
+                applies_to: ActionAppliesTo {
+                    principal_types: sorted_principal_types,
+                    resource_types: sorted_resource_types,
+                    context: cloned_ns.actions.get(key).unwrap().applies_to.context.clone(),
+                },
+                member_of: cloned_ns.actions.get(key).unwrap().member_of.clone(),
+            });
+        }
+        cloned_ns.actions = sorted_actions;
+        schema.insert(namespace.clone(), cloned_ns);
+    }
+}
 
 
 /// Creates a new Cedar schema with standard Kubernetes actions.
@@ -139,7 +170,7 @@ pub fn add_entity_to_schema(
             return Err(format!("Entity {} already exists in entity types", entity_name));
         }
 
-        if ns.entity_types.is_none() {
+        if ns.entity_types.is_empty() {
             ns.entity_types = HashMap::new();
         }
         ns.entity_types.insert(entity_name.to_string(), entity);

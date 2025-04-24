@@ -8,15 +8,20 @@ featureGates:
   AuthorizeWithSelectors: true
 kubeadmConfigPatches:
   - |
-    apiVersion: kubeadm.k8s.io/v1beta3
+    apiVersion: kubeadm.k8s.io/v1beta4
     kind: ClusterConfiguration
     apiServer:
       extraArgs:
-        authorization-config: "/cedar-authorizer/authorization-config.yaml"
-        audit-policy-file: "/cedar-authorizer/audit-policy.yaml"
-        audit-log-path: "/cedar-authorizer/logs/kube-apiserver-audit.log"
-        audit-log-maxsize: "50"
-        audit-log-maxbackup: "1"
+        - name: "authorization-config"
+          value: "/cedar-authorizer/authorization-config.yaml"
+        - name: "audit-policy-file"
+          value: "/cedar-authorizer/audit-policy.yaml"
+        - name: "audit-log-path"
+          value: "/cedar-authorizer/logs/kube-apiserver-audit.log"
+        - name: "audit-log-maxsize"
+          value: "50"
+        - name: "audit-log-maxbackup"
+          value: "1"
       extraVolumes:
       - hostPath: /cedar-authorizer
         mountPath: /cedar-authorizer

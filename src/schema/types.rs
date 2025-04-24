@@ -2,12 +2,11 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize, Serializer, ser::SerializeMap};
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use std::fmt;
-use serde_json::{Value, json};
 
 /// Cedar schema types constants
 pub const STRING_TYPE: &str = "String";
 pub const LONG_TYPE: &str = "Long";
-pub const BOOL_TYPE: &str = "Bool";
+pub const BOOL_TYPE: &str = "Boolean";
 pub const RECORD_TYPE: &str = "Record";
 pub const SET_TYPE: &str = "Set";
 pub const ENTITY_TYPE: &str = "Entity";
@@ -258,6 +257,7 @@ impl ActionAppliesTo {
         self.principal_types.contains(&principal_type.to_string())
     }
 }
+
 
 /// Helper trait to sort action entities (similar to the Go SortActionEntities method)
 pub trait SchemaSorting {
