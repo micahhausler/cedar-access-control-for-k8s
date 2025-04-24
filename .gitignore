@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-bin/*
+/bin/*
 .DS_Store
 # Ignore transient kind/cert files
 mount/logs/*
@@ -42,7 +42,7 @@ go.work.sum
 # Amazon specific ignores
 /build
 gen
-bin
+/bin
 
 
 # Added by cargo

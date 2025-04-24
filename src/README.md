@@ -12,7 +12,6 @@ The rust port currently includes:
 cargo build
 ```
 
-
 ## Schema builder
 
 ```bash
