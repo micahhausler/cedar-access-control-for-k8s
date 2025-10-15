@@ -248,20 +248,6 @@ This gives administrators powerful and unmatched new tools to secure their clust
 [kyverno]: https://kyverno.io/
 [containers-roadmap]: https://github.com/aws/containers-roadmap/issues/2463
 
-## Community Participation
-
-Development and discussion is coordinated in the [Cedar Slack (invite link)][cedar-slack] channel [#cedar-for-k8s][cedar-for-k8s].
-
-Community Meetings are monthly on the second Tuesday of the month at 8:00am PT (UTC-8), 11:00pm ET (UTC-5), 17:00 CET (UTC+1).
-The first meeting is December 10th, 2024.
-
-* Amazon Chime Meeting Link: https://chime.aws/9830820801
-* You can [download Amazon Chime][chime download] desktop or mobile apps, or use the web client in Google Chrome.
-
-[cedar-slack]: https://communityinviter.com/apps/cedar-policy/cedar-policy-language
-[cedar-for-k8s]: https://cedar-policy.slack.com/archives/C0802SC27UY
-[chime download]: https://aws.amazon.com/chime/download-chime/?p=pm&c=ch&z=1
-
 ## Security
 
 If you think you've found a security issue, [please let AWS know][aws security reporting]!
