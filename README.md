@@ -5,6 +5,58 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/awslabs/cedar-access-control-for-k8s.svg)](https://pkg.go.dev/github.com/awslabs/cedar-access-control-for-k8s)
 
+## ⚠️⚠️⚠️ Project Update ⚠️⚠️⚠️
+
+**This repository is no longer maintained.** This repository served as a proof of concept to demonstrate how Cedar could be used with Kubernetes. Development will be moving to a new Rust-based implementation (location TBD) for the following reasons:
+
+* Cedar's [Partial Evaluation](https://cedarland.blog/usage/partial-evaluation/content.html) and [Typed Partial Evaluation](https://github.com/cedar-policy/rfcs/blob/9dc2c079a011ab273bbde82fc225e3e87588dc9c/text/0095-type-aware-partial-evaluation.md) could work very well with Kubernetes, but are only available in the Rust library.
+
+    Partial Evaluation can return a set of policies (residuals) that might apply to the request when you don't know the full request content yet (as is the case in Kubernetes Authorization). These policies can be propagated to a later point where the full request content is known (as is the case in Kubernetes Admission) where they can be evaluated.
+
+* We want a unified schema between Authorization and Admission, rather than separate namespaces requiring two rules (a permit in authZ and a corresponding forbid in admission). This repository's approach where Authorization is deny-by-default and Admission is allow-by-default creates confusing pairs of policy statements to enforce a single intent.
+
+    In this repository, if you wanted to allow `test-user` to create ConfigMaps that have do not start with `prod` in the default namespace, you would need two policies like the following:
+    ```cedar
+    // Authorization policy
+    // test-user can do Action::"*" on configmaps in the default namespace
+    permit (
+        principal is k8s::User,
+        action == k8s::Action::"create", // authorization create action
+        resource is k8s::Resource        // authorization resource
+    ) when {
+        principal.name == "test-user" &&
+        resource has namespace &&
+        resource.namespace == "default" &&
+        resource.apiGroup == "" &&
+        resource.resource == "configmaps"
+    };
+
+    // Admission policy preventing test-user from creating configmaps with name starting with "prod"
+    forbid (
+        principal is k8s::User,
+        action == k8s::admission::Action::"create", // admission create action
+        resource is core::v1::ConfigMap             // admission resource
+    ) when {
+        principal.name == "test-user" &&
+        resource.metadata.name like "prod*"
+    };
+    ```
+
+    With a unified schema, partial authorization, and some pending Kubernetes changes, we can enable a single policy to govern this action
+    ```cedar
+    permit (
+        principal is k8s::User,
+        action == k8s::Action::"create", // a single unified action
+        resource is core::configmaps
+    ) when {
+        principal.username == "test-user" &&
+        resource.namespace == "default"
+    } unless {
+        resource.name like "prod*"
+    };
+    ```
+
+
 ## Overview
 
 This project allows users to enforce access control on Kubernetes API requests using [Cedar policies](https://cedarpolicy.com/en).
