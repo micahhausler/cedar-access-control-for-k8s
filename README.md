@@ -18,7 +18,7 @@
     In this repository, if you wanted to allow `test-user` to create ConfigMaps that have do not start with `prod` in the default namespace, you would need two policies like the following:
     ```cedar
     // Authorization policy
-    // test-user can do Action::"*" on configmaps in the default namespace
+    // test-user can do Action::"create" on configmaps in the default namespace
     permit (
         principal is k8s::User,
         action == k8s::Action::"create", // authorization create action
